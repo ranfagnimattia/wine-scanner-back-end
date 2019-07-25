@@ -11,7 +11,7 @@ class Wine(models.Model):
 
 class WeatherHistory(models.Model):
     wine = models.ForeignKey(Wine, on_delete=models.CASCADE)
-    day = models.DateField()
+    date = models.DateField()
     time = models.IntegerField()
     icon = models.CharField(max_length=200)
     summary = models.CharField(max_length=200)
@@ -51,7 +51,7 @@ class WeatherHistory(models.Model):
     apparentTemperatureLowTime = models.IntegerField()
 
     def __str__(self):
-        return self.day.strftime('%m/%d/%Y') + '-' + self.wine.type
+        return self.date.strftime('%m/%d/%Y') + '-' + self.wine.type
 
 
 class VintageRating(models.Model):
@@ -66,3 +66,29 @@ class VintageRating(models.Model):
 
     def __str__(self):
         return str(self.year) + '-' + self.wine.type
+
+
+class SensorHistory(models.Model):
+    date = models.DateField()
+    temperatureAvg = models.FloatField()
+    temperatureMax = models.FloatField()
+    temperatureMin = models.FloatField()
+    humidityAvg = models.FloatField()
+    humidityMax = models.FloatField()
+    humidityMin = models.FloatField()
+    dewPointAvg = models.FloatField(default=None, blank=True, null=True)
+    dewPointMax = models.FloatField(default=None, blank=True, null=True)
+    dewPointMin = models.FloatField(default=None, blank=True, null=True)
+    upperLeafWetnessHours = models.FloatField(default=None, blank=True, null=True)
+    upperLeafWetnessMax = models.FloatField(default=None, blank=True, null=True)
+    upperLeafWetnessMin = models.FloatField(default=None, blank=True, null=True)
+    lowerLeafWetnessHours = models.FloatField(default=None, blank=True, null=True)
+    lowerLeafWetnessMax = models.FloatField(default=None, blank=True, null=True)
+    lowerLeafWetnessMin = models.FloatField(default=None, blank=True, null=True)
+    rain = models.FloatField()
+    windSpeedAvg = models.FloatField()
+    windSpeedMax = models.FloatField()
+    windDirection = models.FloatField(default=None, blank=True, null=True)
+
+    def __str__(self):
+        return self.date.strftime('%m/%d/%Y')
