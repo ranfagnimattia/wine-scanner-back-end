@@ -1,0 +1,22 @@
+{% extends 'WineApp/base.html' %}
+{% load static %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="{% static 'WineApp/css/index.css' %}">
+{% endblock %}
+
+{% block content %}
+    {% if list %}
+        <ul>
+            {% for item in list %}
+                <li>{{ item }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No wines available.</p>
+    {% endif %}
+{% endblock %}
+
+{% block javascript %}
+    <script type="text/javascript" src="{% static 'WineApp/js/index.js' %}"></script>
+{% endblock %}

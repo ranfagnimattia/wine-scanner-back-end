@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}Wine App{% endblock %}</title>
+    {% block stylesheet %}{% endblock %}
+</head>
+<body>
+<header></header>
+<main>
+    {% block content %}
+    {% endblock %}
+</main>
+<footer></footer>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+{% block javascript %}{% endblock %}
+</body>
+</html>
