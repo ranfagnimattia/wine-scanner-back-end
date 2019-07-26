@@ -1,6 +1,7 @@
 from django.shortcuts import render
 
 import WineApp.data.sensor_data as sensor_data
+import WineApp.algorithms.exponential_smoothing as es
 from WineApp.models import Wine
 
 
@@ -20,3 +21,10 @@ def download_sensor_data(request):
 def update_daily_sensor_data(request):
     data = sensor_data.update_daily_data()
     return render(request, 'WineApp/index.html', {'list': data})
+
+
+def prediction(request, field):
+    pred, actual, dates = es.exponential_smoothing(field)
+    data = {'prediction': pred, 'actual': actual, 'dates': dates}
+    return render(request, 'WineApp/predict.html', data)
+

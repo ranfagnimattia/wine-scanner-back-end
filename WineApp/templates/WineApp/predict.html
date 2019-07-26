@@ -1,0 +1,15 @@
+{% extends 'WineApp/base.html' %}
+{% block content %}
+    <h1>Actuals</h1>
+    <ul>
+        {% for item in actual %}
+            <li>{{ item }} </li>
+        {% endfor %}
+    </ul>
+    <h1>Prediction</h1>
+    <ul>
+        {% for item in prediction %}
+            <li>{{ item }} </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
