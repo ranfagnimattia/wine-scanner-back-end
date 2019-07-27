@@ -80,15 +80,20 @@ def _get_series(field: str):
 
 def detect_anomalies(actual, prediction):
     error = [actual[i] - prediction[i] for i in range(0, len(actual))]
+    absolute_error = [abs(error[i]) for i in range(0, len(error))]
     anomaly1 = []
     anomaly2 = []
     anomaly3 = []
 
+    std1 = []
+    std2 = []
+    std3 = []
+
     # stddev calculate at the beginning
     std = statistics.stdev(error)
-    print(std)
     for i in range(0, len(error)):
-        if abs(error[i]) > 3 * std:
+        std1.append(2 * std)
+        if abs(error[i]) > 2 * std:
             anomaly1.append(actual[i])
         else:
             anomaly1.append(np.NaN)
@@ -100,14 +105,17 @@ def detect_anomalies(actual, prediction):
     count = 0
     for i in range(0, len(error)):
         new_mean, new_var = update(mean, var, error[i], count + 1)
-        std = math.sqrt(new_var / i)
-        if abs(error[i]) > 3 * std:
+        std = math.sqrt(new_var / count)
+        if abs(error[i]) > 2 * std:
             anomaly2.append(actual[i])
+            std2.append(std2[i-1])
         else:
             anomaly2.append(np.NaN)
+            std2.append(2 * std)
             mean = new_mean
             var = new_var
             count = count + 1
+    print(std2)
     print(std)
 
     # stdev
@@ -116,15 +124,19 @@ def detect_anomalies(actual, prediction):
     for i in range(0, len(error)):
         mean, var = update(mean, var, error[i], i + 1)
         std = math.sqrt(var / i)
-        if abs(error[i]) > 3 * std:
+        std3.append(2 * std)
+        if abs(error[i]) > 2 * std:
             anomaly3.append(actual[i])
         else:
             anomaly3.append(np.NaN)
     print(std)
 
-    plt.plot(error, '-g')
-    plt.plot(error, '-g')
-    plt.title('Error')
+    plt.plot(absolute_error, '-k')
+    plt.plot(std1, '--g', label='std')
+    plt.plot(std2, '--y', label='stdev_corr',linewidth=3)
+    plt.plot(std3, '--m', label='stdev_welford')
+    plt.title('Absolute Error')
+    plt.legend()
     plt.show()
     return anomaly1, anomaly2, anomaly3
 
