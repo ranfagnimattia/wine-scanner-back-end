@@ -9,6 +9,8 @@ from statsmodels.tsa.holtwinters import ExponentialSmoothing
 from WineApp.models import SensorHistory, DailySensorData
 
 
+# todo scomporre database con anomaly, mean, var
+# todo nella tabella dei sensori: id, name, seasonal, parametri modello
 # todo stl, lstm
 def exponential_smoothing(field):
     train, test, seasonal, test_dates = _get_series(field)
@@ -22,6 +24,7 @@ def exponential_smoothing(field):
     #         str(fit_model.params['smoothing_level']) + " " + field
 
     anomaly1, anomaly2, anomaly3 = detect_anomalies(test, normal)
+    anomaly1_1, anomaly2_1, anomaly3_1 = detect_anomalies(test, iterative)
 
     title = str(0.45) + ' ' + str(0.6) + ' ' + field
     plt.title(title)
@@ -31,6 +34,9 @@ def exponential_smoothing(field):
     plt.plot(anomaly1, 'og', label='std', markersize=17)
     plt.plot(anomaly2, 'vy', label='stdev_corr', markersize=12)
     plt.plot(anomaly3, 'sm', label='stdev welford', markersize=5)
+    plt.plot(anomaly1_1, 'og', markersize=17)
+    plt.plot(anomaly2_1, 'vy', markersize=12)
+    plt.plot(anomaly3_1, 'sm', markersize=5)
 
     plt.legend()
     plt.show()
@@ -89,12 +95,14 @@ def detect_anomalies(actual, prediction):
     std2 = []
     std3 = []
 
+    k = 2.5
+
     # stddev calculate at the beginning
     std = statistics.stdev(error)
     for i in range(0, len(error)):
-        std1.append(2 * std)
-        if abs(error[i]) > 2 * std:
-            anomaly1.append(actual[i])
+        std1.append(k * std)
+        if abs(error[i]) > k * std:
+            anomaly1.append(prediction[i])
         else:
             anomaly1.append(np.NaN)
     print(std)
@@ -106,12 +114,12 @@ def detect_anomalies(actual, prediction):
     for i in range(0, len(error)):
         new_mean, new_var = update(mean, var, error[i], count + 1)
         std = math.sqrt(new_var / count)
-        if abs(error[i]) > 2 * std:
-            anomaly2.append(actual[i])
-            std2.append(std2[i-1])
+        if abs(error[i]) > k * std:
+            anomaly2.append(prediction[i])
+            std2.append(std2[i - 1])
         else:
             anomaly2.append(np.NaN)
-            std2.append(2 * std)
+            std2.append(k * std)
             mean = new_mean
             var = new_var
             count = count + 1
@@ -124,16 +132,16 @@ def detect_anomalies(actual, prediction):
     for i in range(0, len(error)):
         mean, var = update(mean, var, error[i], i + 1)
         std = math.sqrt(var / i)
-        std3.append(2 * std)
-        if abs(error[i]) > 2 * std:
-            anomaly3.append(actual[i])
+        std3.append(k * std)
+        if abs(error[i]) > k * std:
+            anomaly3.append(prediction[i])
         else:
             anomaly3.append(np.NaN)
     print(std)
 
     plt.plot(absolute_error, '-k')
     plt.plot(std1, '--g', label='std')
-    plt.plot(std2, '--y', label='stdev_corr',linewidth=3)
+    plt.plot(std2, '--y', label='stdev_corr', linewidth=3)
     plt.plot(std3, '--m', label='stdev_welford')
     plt.title('Absolute Error')
     plt.legend()
