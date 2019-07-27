@@ -1,65 +1,91 @@
-import matplotlib.pyplot as plt
+import statistics
+
 import math
+import matplotlib.pyplot as plt
 import numpy as np
+from django.http import Http404
 from statsmodels.tsa.holtwinters import ExponentialSmoothing
 
 from WineApp.models import SensorHistory, DailySensorData
 
 
+# todo stl, lstm
 def exponential_smoothing(field):
-    train, test, test_dates = _get_series(field)
+    train, test, seasonal, test_dates = _get_series(field)
     plt.plot(train)
     plt.show()
-    ss = 0.45
-    sl = 0.6
-    if field == 'airTemperatureAvg' or field == 'dewPointAvg' \
-            or field == 'airTemperatureMax' or field == 'airTemperatureMin':
-        model = ExponentialSmoothing(train, trend='add', seasonal='add', seasonal_periods=365)
-    else:
-        model = ExponentialSmoothing(train, trend='add', seasonal=None)
-    fit_model = model.fit(smoothing_seasonal=ss, smoothing_level=sl)
 
-    title = "" + str(ss) + " " + str(sl) + " " + field
+    normal = normal_exponential_smoothing(train, seasonal)
+    iterative = iterative_exponential_smoothing(train, seasonal, test)
 
-    pred = fit_model.forecast(10)
+    # title = "Normal " + str(fit_model.params['smoothing_seasonal']) + " " + \
+    #         str(fit_model.params['smoothing_level']) + " " + field
 
-    anomaly1, anomaly2, anomaly3 = detect_anomalies(test, pred)
+    anomaly1, anomaly2, anomaly3 = detect_anomalies(test, normal)
 
+    title = str(0.45) + ' ' + str(0.6) + ' ' + field
     plt.title(title)
-    plt.plot(pred, '-r', label='Predictions')
-    plt.plot(test, '-b', label='Actual')
-    # Plot anomalies
+    plt.plot(test, '#000000', label='Actual')
+    plt.plot(normal, '#eb4634', label='Pred normal')
+    plt.plot(iterative, '#ebcc34', label='Pred iterative')
     plt.plot(anomaly1, 'og', label='std', markersize=17)
     plt.plot(anomaly2, 'vy', label='stdev_corr', markersize=12)
     plt.plot(anomaly3, 'sm', label='stdev welford', markersize=5)
+
     plt.legend()
     plt.show()
-    actual = test
-    return pred, actual, test_dates
+    return normal, test, test_dates
 
 
-def _get_series(field):
-    data = SensorHistory.objects.filter(date__gte='2017-03-12', date__lte='2019-07-16')
-    train_values = data.values_list(field, flat=True)
+def normal_exponential_smoothing(train, seasonal):
+    if seasonal:
+        model = ExponentialSmoothing(train, trend='add', seasonal='add', seasonal_periods=365)
+    else:
+        model = ExponentialSmoothing(train, trend='add', seasonal=None)
+    fit_model = model.fit(smoothing_seasonal=0.45, smoothing_level=0.6)
+    return fit_model.forecast(10)
 
-    data = DailySensorData.objects.filter()
-    dates = data.values_list('date', flat=True)
-    test_values = data.values_list(field, flat=True)
 
-    train_values = list(train_values)
-    test_values = list(test_values)
+def iterative_exponential_smoothing(train, seasonal, test):
+    pred_list = []
 
-    return train_values, test_values, dates
+    for point in test:
+        if seasonal:
+            model = ExponentialSmoothing(train, trend='add', seasonal='add', seasonal_periods=365)
+        else:
+            model = ExponentialSmoothing(train, trend='add', seasonal=None)
+        fit_model = model.fit(smoothing_seasonal=0.45, smoothing_level=0.6)
+        pred_list.extend(fit_model.forecast())
+        train.append(point)
+
+    return pred_list
+
+
+def _get_series(field: str):
+    seasonal_fields = ['airTemperatureAvg', 'airTemperatureMin', 'airTemperatureMax', 'rainAvg',
+                       'windSpeedAvg', 'windSpeedMax', 'dewPointAvg', 'dewPointMax', 'dewPointMin']
+    if field not in seasonal_fields:
+        raise Http404("Field does not exist")
+    if field.startswith('dewPoint'):
+        train_set = SensorHistory.objects.filter(date__gte='2017-03-12')
+    else:
+        train_set = SensorHistory.objects.all()
+    train_list = list(train_set.values_list(field, flat=True))
+
+    test_set = DailySensorData.objects.all()
+    test_list = list(test_set.values_list(field, flat=True))
+
+    return train_list, test_list, field in seasonal_fields, test_set.values_list('date', flat=True)
 
 
 def detect_anomalies(actual, prediction):
-    error = actual - prediction
+    error = [actual[i] - prediction[i] for i in range(0, len(actual))]
     anomaly1 = []
     anomaly2 = []
     anomaly3 = []
 
     # stddev calculate at the beginning
-    std = error.std()
+    std = statistics.stdev(error)
     print(std)
     for i in range(0, len(error)):
         if abs(error[i]) > 3 * std:
@@ -96,6 +122,7 @@ def detect_anomalies(actual, prediction):
             anomaly3.append(np.NaN)
     print(std)
 
+    plt.plot(error, '-g')
     plt.plot(error, '-g')
     plt.title('Error')
     plt.show()
