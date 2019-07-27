@@ -70,12 +70,12 @@ class VintageRating(models.Model):
 
 class SensorHistory(models.Model):
     date = models.DateField()
-    temperatureAvg = models.FloatField()
-    temperatureMax = models.FloatField()
-    temperatureMin = models.FloatField()
-    humidityAvg = models.FloatField()
-    humidityMax = models.FloatField()
-    humidityMin = models.FloatField()
+    airTemperatureAvg = models.FloatField()
+    airTemperatureMax = models.FloatField()
+    airTemperatureMin = models.FloatField()
+    airHumidityAvg = models.FloatField()
+    airHumidityMax = models.FloatField()
+    airHumidityMin = models.FloatField()
     dewPointAvg = models.FloatField(default=None, blank=True, null=True)
     dewPointMax = models.FloatField(default=None, blank=True, null=True)
     dewPointMin = models.FloatField(default=None, blank=True, null=True)
@@ -85,10 +85,10 @@ class SensorHistory(models.Model):
     lowerLeafWetnessHours = models.FloatField(default=None, blank=True, null=True)
     lowerLeafWetnessMax = models.FloatField(default=None, blank=True, null=True)
     lowerLeafWetnessMin = models.FloatField(default=None, blank=True, null=True)
-    rain = models.FloatField()
+    rainAvg = models.FloatField()
     windSpeedAvg = models.FloatField()
     windSpeedMax = models.FloatField()
-    windDirection = models.FloatField(default=None, blank=True, null=True)
+    windDirectionAvg = models.FloatField(default=None, blank=True, null=True)
 
     def __str__(self):
         return self.date.strftime('%d/%m/%Y')

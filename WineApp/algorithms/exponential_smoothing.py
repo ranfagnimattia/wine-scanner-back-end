@@ -1,6 +1,7 @@
-from WineApp.models import SensorHistory
-from statsmodels.tsa.holtwinters import ExponentialSmoothing
 import matplotlib.pyplot as plt
+from statsmodels.tsa.holtwinters import ExponentialSmoothing
+
+from WineApp.models import SensorHistory, DailySensorData
 
 
 def exponential_smoothing(field):
@@ -9,7 +10,7 @@ def exponential_smoothing(field):
     plt.show()
     ss = 0.45
     sl = 0.6
-    if (field == 'temperatureAvg' or field == 'dewPointAvg'):
+    if field == 'airTemperatureAvg' or field == 'dewPointAvg':
         model = ExponentialSmoothing(train, trend='add', seasonal='add', seasonal_periods=365)
     else:
         model = ExponentialSmoothing(train, trend='add', seasonal=None)
@@ -17,7 +18,7 @@ def exponential_smoothing(field):
 
     title = ""+str(ss)+" "+str(sl)+" "+field
 
-    pred = fit_model.forecast(135)
+    pred = fit_model.forecast(10)
     plt.title(title)
     plt.plot(pred, '-r', label='Predictions')
     plt.plot(test, 'b', label='Actual')
@@ -29,10 +30,10 @@ def exponential_smoothing(field):
 
 
 def _get_series(field):
-    data = SensorHistory.objects.filter(date__gte='2017-03-10', date__lte='2019-03-10')
+    data = SensorHistory.objects.filter(date__gte='2017-03-12', date__lte='2019-07-16')
     train_values = data.values_list(field, flat=True)
 
-    data = SensorHistory.objects.filter(date__gte='2019-03-11')
+    data = DailySensorData.objects.filter()
     dates = data.values_list('date', flat=True)
     test_values = data.values_list(field, flat=True)
 
