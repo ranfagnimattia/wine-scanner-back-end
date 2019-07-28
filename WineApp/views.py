@@ -2,6 +2,7 @@ from django.shortcuts import render
 
 import WineApp.data.sensor_data as sensor_data
 import WineApp.algorithms.exponential_smoothing as es
+import WineApp.algorithms.seasonal_decompose as sd
 from WineApp.models import Wine
 
 
@@ -27,4 +28,8 @@ def prediction(request, field):
     pred, actual, dates = es.exponential_smoothing(field)
     data = {'prediction': pred, 'actual': actual, 'dates': dates}
     return render(request, 'WineApp/predict.html', data)
+
+def decompose(request, field):
+    sd.stl(field)
+    return render(request, 'WineApp/decompose.html')
 

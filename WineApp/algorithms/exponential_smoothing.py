@@ -1,5 +1,4 @@
 import statistics
-
 import math
 import matplotlib.pyplot as plt
 import numpy as np
@@ -123,7 +122,6 @@ def detect_anomalies(actual, prediction):
             mean = new_mean
             var = new_var
             count = count + 1
-    print(std2)
     print(std)
 
     # stdev
