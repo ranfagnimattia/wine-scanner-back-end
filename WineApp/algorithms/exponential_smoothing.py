@@ -1,4 +1,5 @@
 import statistics
+
 import math
 import matplotlib.pyplot as plt
 import numpy as np
@@ -26,16 +27,17 @@ def exponential_smoothing(field):
     anomaly1_1, anomaly2_1, anomaly3_1 = detect_anomalies(test, iterative)
 
     title = str(0.45) + ' ' + str(0.6) + ' ' + field
+    plt.figure(figsize=(12, 7), dpi=400)
     plt.title(title)
     plt.plot(test, '#000000', label='Actual')
     plt.plot(normal, '#eb4634', label='Pred normal')
     plt.plot(iterative, '#ebcc34', label='Pred iterative')
-    plt.plot(anomaly1, 'og', label='std', markersize=17)
-    plt.plot(anomaly2, 'vy', label='stdev_corr', markersize=12)
-    plt.plot(anomaly3, 'sm', label='stdev welford', markersize=5)
-    plt.plot(anomaly1_1, 'og', markersize=17)
-    plt.plot(anomaly2_1, 'vy', markersize=12)
-    plt.plot(anomaly3_1, 'sm', markersize=5)
+    plt.plot(anomaly1, 'og', label='std', markersize=7)
+    plt.plot(anomaly2, 'oy', label='stdev_corr', markersize=5)
+    plt.plot(anomaly3, 'om', label='stdev welford', markersize=3)
+    plt.plot(anomaly1_1, 'og', markersize=7)
+    plt.plot(anomaly2_1, 'oy', markersize=5)
+    plt.plot(anomaly3_1, 'om', markersize=3)
 
     plt.legend()
     plt.show()
