@@ -25,7 +25,7 @@ def exponential_smoothing(field):
     anomaly1, anomaly2, anomaly3 = detect_anomalies(test, normal)
     anomaly1_1, anomaly2_1, anomaly3_1 = detect_anomalies(test, iterative)
 
-    title = str(0.45) + ' ' + str(0.6) + ' ' + field
+    title = 'Exp ' + str(0.45) + ' ' + str(0.6) + ' ' + field
     plt.figure(figsize=(12, 7), dpi=200)
     plt.title(title)
     plt.plot(test, '#000000', label='Actual')
@@ -39,6 +39,7 @@ def exponential_smoothing(field):
     plt.plot(anomaly3_1, 'om', markersize=3)
 
     plt.legend()
+    plt.savefig(title + '.png')
     plt.show()
     return normal, test, test_dates
 

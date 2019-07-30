@@ -12,7 +12,6 @@ from pandas import Series
 from pandas import concat
 from sklearn.metrics import mean_squared_error
 from sklearn.preprocessing import MinMaxScaler
-from statsmodels.tsa.holtwinters import ExponentialSmoothing
 
 from WineApp.models import SensorHistory, DailySensorData
 
@@ -22,35 +21,23 @@ def lstm(field):
     plt.plot(train)
     plt.show()
 
-    iterative = normal_lstm(train, seasonal, test)
+    normal = normal_lstm(train, seasonal, test)
 
-    # title = "Normal " + str(fit_model.params['smoothing_seasonal']) + " " + \
-    #         str(fit_model.params['smoothing_level']) + " " + field
+    anomaly1_1, anomaly2_1, anomaly3_1 = detect_anomalies(test, normal)
 
-    # anomaly1, anomaly2, anomaly3 = detect_anomalies(test, normal)
-    anomaly1_1, anomaly2_1, anomaly3_1 = detect_anomalies(test, iterative)
-
-    title = "LSTM 30 32 1 10 " + field
+    title = 'LSTM 30 32 1 10 ' + field
     plt.figure(figsize=(12, 7), dpi=200)
     plt.title(title)
     plt.plot(test, '#000000', label='Actual')
-    plt.plot(iterative, '#ebcc34', label='LSTM')
+    plt.plot(normal, '#ebcc34', label='LSTM')
     plt.plot(anomaly1_1, 'og', markersize=7)
     plt.plot(anomaly2_1, 'oy', markersize=5)
     plt.plot(anomaly3_1, 'om', markersize=3)
+
     plt.legend()
     plt.savefig(title + '.png')
     plt.show()
-    return iterative, test, test_dates
-
-
-def normal_exponential_smoothing(train, seasonal):
-    if seasonal:
-        model = ExponentialSmoothing(train, trend='add', seasonal='add', seasonal_periods=365)
-    else:
-        model = ExponentialSmoothing(train, trend='add', seasonal=None)
-    fit_model = model.fit(smoothing_seasonal=0.45, smoothing_level=0.6)
-    return fit_model.forecast(10)
+    return normal, test, test_dates
 
 
 # frame a sequence as a supervised learning problem
