@@ -3,6 +3,7 @@ from django.shortcuts import render
 import WineApp.algorithms.exponential_smoothing as es
 import WineApp.algorithms.lstm as ls
 import WineApp.algorithms.seasonal_decompose as sd
+import WineApp.algorithms.correlation as cor
 import WineApp.data.sensor_data as sensor_data
 from WineApp.models import Wine
 
@@ -41,3 +42,6 @@ def decompose(request, field):
     sd.stl(field)
     return render(request, 'WineApp/decompose.html')
 
+def correlation(request):
+    cor.correlation()
+    return render(request,'WineApp/correlation.html')

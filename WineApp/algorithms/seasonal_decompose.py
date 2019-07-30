@@ -23,15 +23,16 @@ def stl(field: str):
 
     anomaly1, anomaly2, anomaly3 = detect_anomalies(error, values)
 
-    title = field + 'Anomaly Detection'
+    title = 'STL '+field
 
-    plt.figure(figsize=(12, 7), dpi=400)
+    plt.figure(figsize=(12, 7), dpi=200)
     plt.title(title)
     plt.plot(values, '#000000', label='Actual')
     plt.plot(anomaly1, 'og', label='std', markersize=7)
     plt.plot(anomaly2, 'oy', label='stdev_corr', markersize=5)
     plt.plot(anomaly3, 'om', label='stdev welford', markersize=3)
     plt.legend()
+    plt.savefig(title+'.png')
     plt.show()
 
 

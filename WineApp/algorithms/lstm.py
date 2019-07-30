@@ -22,7 +22,6 @@ def lstm(field):
     plt.plot(train)
     plt.show()
 
-    normal = normal_exponential_smoothing(train, seasonal)
     iterative = normal_lstm(train, seasonal, test)
 
     # title = "Normal " + str(fit_model.params['smoothing_seasonal']) + " " + \
@@ -31,22 +30,18 @@ def lstm(field):
     # anomaly1, anomaly2, anomaly3 = detect_anomalies(test, normal)
     anomaly1_1, anomaly2_1, anomaly3_1 = detect_anomalies(test, iterative)
 
-    title = str(0.45) + ' ' + str(0.6) + ' ' + field
-    plt.figure(figsize=(12, 7), dpi=400)
+    title = "LSTM 30 32 1 10 " + field
+    plt.figure(figsize=(12, 7), dpi=200)
     plt.title(title)
     plt.plot(test, '#000000', label='Actual')
-    plt.plot(normal, '#eb4634', label='Pred normal')
-    plt.plot(iterative, '#ebcc34', label='Pred iterative')
-    # plt.plot(anomaly1, 'og', label='std', markersize=7)
-    # plt.plot(anomaly2, 'oy', label='stdev_corr', markersize=5)
-    # plt.plot(anomaly3, 'om', label='stdev welford', markersize=3)
+    plt.plot(iterative, '#ebcc34', label='LSTM')
     plt.plot(anomaly1_1, 'og', markersize=7)
     plt.plot(anomaly2_1, 'oy', markersize=5)
     plt.plot(anomaly3_1, 'om', markersize=3)
-
     plt.legend()
+    plt.savefig(title + '.png')
     plt.show()
-    return normal, test, test_dates
+    return iterative, test, test_dates
 
 
 def normal_exponential_smoothing(train, seasonal):
