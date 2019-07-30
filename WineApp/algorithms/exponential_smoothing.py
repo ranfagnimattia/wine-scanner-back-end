@@ -11,13 +11,12 @@ from WineApp.models import SensorHistory, DailySensorData
 
 # todo scomporre database con anomaly, mean, var
 # todo nella tabella dei sensori: id, name, seasonal, parametri modello
-# todo stl, lstm
 def exponential_smoothing(field):
     train, test, seasonal, test_dates = _get_series(field)
     plt.plot(train)
     plt.show()
 
-    normal = normal_exponential_smoothing(train, seasonal)
+    normal = normal_exponential_smoothing(train, seasonal, test)
     iterative = iterative_exponential_smoothing(train, seasonal, test)
 
     # title = "Normal " + str(fit_model.params['smoothing_seasonal']) + " " + \
@@ -27,7 +26,7 @@ def exponential_smoothing(field):
     anomaly1_1, anomaly2_1, anomaly3_1 = detect_anomalies(test, iterative)
 
     title = str(0.45) + ' ' + str(0.6) + ' ' + field
-    plt.figure(figsize=(12, 7), dpi=400)
+    plt.figure(figsize=(12, 7), dpi=200)
     plt.title(title)
     plt.plot(test, '#000000', label='Actual')
     plt.plot(normal, '#eb4634', label='Pred normal')
@@ -44,13 +43,13 @@ def exponential_smoothing(field):
     return normal, test, test_dates
 
 
-def normal_exponential_smoothing(train, seasonal):
+def normal_exponential_smoothing(train, seasonal, test):
     if seasonal:
         model = ExponentialSmoothing(train, trend='add', seasonal='add', seasonal_periods=365)
     else:
         model = ExponentialSmoothing(train, trend='add', seasonal=None)
     fit_model = model.fit(smoothing_seasonal=0.45, smoothing_level=0.6)
-    return fit_model.forecast(10)
+    return fit_model.forecast(len(test))
 
 
 def iterative_exponential_smoothing(train, seasonal, test):
@@ -61,7 +60,7 @@ def iterative_exponential_smoothing(train, seasonal, test):
             model = ExponentialSmoothing(train, trend='add', seasonal='add', seasonal_periods=365)
         else:
             model = ExponentialSmoothing(train, trend='add', seasonal=None)
-        fit_model = model.fit(smoothing_seasonal=0.45, smoothing_level=0.6)
+        fit_model = model.fit(smoothing_seasonal=0.45, smoothing_level=0.2)
         pred_list.extend(fit_model.forecast())
         train.append(point)
 

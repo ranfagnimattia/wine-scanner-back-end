@@ -28,7 +28,7 @@ def lstm(field):
     # title = "Normal " + str(fit_model.params['smoothing_seasonal']) + " " + \
     #         str(fit_model.params['smoothing_level']) + " " + field
 
-    anomaly1, anomaly2, anomaly3 = detect_anomalies(test, normal)
+    # anomaly1, anomaly2, anomaly3 = detect_anomalies(test, normal)
     anomaly1_1, anomaly2_1, anomaly3_1 = detect_anomalies(test, iterative)
 
     title = str(0.45) + ' ' + str(0.6) + ' ' + field
@@ -37,9 +37,9 @@ def lstm(field):
     plt.plot(test, '#000000', label='Actual')
     plt.plot(normal, '#eb4634', label='Pred normal')
     plt.plot(iterative, '#ebcc34', label='Pred iterative')
-    plt.plot(anomaly1, 'og', label='std', markersize=7)
-    plt.plot(anomaly2, 'oy', label='stdev_corr', markersize=5)
-    plt.plot(anomaly3, 'om', label='stdev welford', markersize=3)
+    # plt.plot(anomaly1, 'og', label='std', markersize=7)
+    # plt.plot(anomaly2, 'oy', label='stdev_corr', markersize=5)
+    # plt.plot(anomaly3, 'om', label='stdev welford', markersize=3)
     plt.plot(anomaly1_1, 'og', markersize=7)
     plt.plot(anomaly2_1, 'oy', markersize=5)
     plt.plot(anomaly3_1, 'om', markersize=3)
@@ -168,10 +168,10 @@ def memory_lstm(train, seasonal, test):
 
 def create_dataset(dataset, look_back=1):
     dataX, dataY = [], []
-    for i in range(len(dataset) - look_back - 1):
+    for i in range(len(dataset) - look_back):
         a = dataset[i:(i + look_back)]
         dataX.append(a)
-        dataY.append(dataset[i + look_back])
+        dataY.append([dataset[i + look_back]])
     return np.array(dataX), np.array(dataY)
 
 
@@ -179,15 +179,18 @@ def normal_lstm(train, seasonal, test):
     # fix random seed for reproducibility
     np.random.seed(7)
 
-    dataset = np.array(train[-300:] + test)
+    look_back = 30
+    neurons = 32
+    batch_size = 1
+    epochs = 10
+    dataset = np.array(train + test)
     dataset = dataset.reshape(-1, 1)
     # normalize the dataset
     scaler = MinMaxScaler(feature_range=(0, 1))
     dataset = scaler.fit_transform(dataset)
     # split into train and test sets
-    train, test = dataset[0:-10, 0], dataset[-10:, 0]
+    train, test = dataset[0:-len(test), 0], dataset[-len(test) - look_back:, 0]
     # reshape into X=t and Y=t+1
-    look_back = 1
     trainX, trainY = create_dataset(train, look_back)
     testX, testY = create_dataset(test, look_back)
     # reshape input to be [samples, time steps, features]
@@ -195,38 +198,38 @@ def normal_lstm(train, seasonal, test):
     testX = np.reshape(testX, (testX.shape[0], 1, testX.shape[1]))
     # create and fit the LSTM network
     model = Sequential()
-    model.add(LSTM(4, input_shape=(1, look_back)))
+    model.add(LSTM(neurons, input_shape=(1, look_back)))
     model.add(Dense(1))
     model.compile(loss='mean_squared_error', optimizer='adam')
-    model.fit(trainX, trainY, epochs=20, batch_size=1, verbose=2)
+    model.fit(trainX, trainY, epochs=epochs, batch_size=batch_size, verbose=2)
     # make predictions
     trainPredict = model.predict(trainX)
     testPredict = model.predict(testX)
     # invert predictions
     trainPredict = scaler.inverse_transform(trainPredict)
-    trainY = scaler.inverse_transform([trainY])
+    trainY = scaler.inverse_transform(trainY)
     testPredict = scaler.inverse_transform(testPredict)
-    testY = scaler.inverse_transform([testY])
+    testY = scaler.inverse_transform(testY)
     # calculate root mean squared error
-    trainScore = math.sqrt(mean_squared_error(trainY[0], trainPredict[:, 0]))
+    trainScore = math.sqrt(mean_squared_error(trainY[:, 0], trainPredict[:, 0]))
     print('Train Score: %.2f RMSE' % (trainScore))
-    testScore = math.sqrt(mean_squared_error(testY[0], testPredict[:, 0]))
+    testScore = math.sqrt(mean_squared_error(testY[:, 0], testPredict[:, 0]))
     print('Test Score: %.2f RMSE' % (testScore))
     # shift train predictions for plotting
-    trainPredictPlot = np.empty_like(dataset)
-    trainPredictPlot[:, :] = np.nan
-    trainPredictPlot[look_back:len(trainPredict) + look_back, :] = trainPredict
-    # shift test predictions for plotting
-    testPredictPlot = np.empty_like(dataset)
-    testPredictPlot[:, :] = np.nan
-    testPredictPlot[len(trainPredict) + (look_back * 2) + 1:len(dataset) - 1, :] = testPredict
-    # plot baseline and predictions
-    plt.plot(scaler.inverse_transform(dataset))
-    plt.plot(trainPredictPlot)
-    plt.plot(testPredictPlot)
-    plt.show()
-    prediction = testPredict.reshape(1, -1)
-    return np.append(prediction, [30, 30])
+    # trainPredictPlot = np.empty_like(dataset)
+    # trainPredictPlot[:, :] = np.nan
+    # trainPredictPlot[look_back:len(trainPredict) + look_back, :] = trainPredict
+    # # shift test predictions for plotting
+    # testPredictPlot = np.empty_like(dataset)
+    # testPredictPlot[:, :] = np.nan
+    # testPredictPlot[len(trainPredict) + (look_back * 2) + 1:len(dataset) - 1, :] = testPredict
+    # # plot baseline and predictions
+    # plt.plot(scaler.inverse_transform(dataset))
+    # plt.plot(trainPredictPlot)
+    # plt.plot(testPredictPlot)
+    # plt.show()
+    predict = testPredict.reshape(1, -1)
+    return predict[0]
 
 
 def _get_series(field: str):
