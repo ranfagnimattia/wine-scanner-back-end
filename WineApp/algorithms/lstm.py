@@ -7,6 +7,7 @@ from django.http import Http404
 from keras.layers import Dense
 from keras.layers import LSTM
 from keras.models import Sequential
+from keras.optimizers import Adam
 from pandas import DataFrame
 from pandas import Series
 from pandas import concat
@@ -182,8 +183,8 @@ def normal_lstm(train, seasonal, test):
     model = Sequential()
     model.add(LSTM(neurons, input_shape=(1, look_back)))
     model.add(Dense(1))
-    model.compile(loss='mean_squared_error', optimizer='adam')
-    model.fit(trainX, trainY, epochs=epochs, batch_size=batch_size, verbose=2)
+    model.compile(loss='mean_squared_error', optimizer=Adam(lr=0.0001))
+    model.fit(trainX, trainY, epochs=epochs, batch_size=batch_size, verbose=2, validation_data=[testX, testY] )
     # make predictions
     trainPredict = model.predict(trainX)
     testPredict = model.predict(testX)
