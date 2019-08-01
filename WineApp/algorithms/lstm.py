@@ -13,7 +13,7 @@ from pandas import concat
 from sklearn.metrics import mean_squared_error
 from sklearn.preprocessing import MinMaxScaler
 
-from WineApp.models import SensorHistory, DailySensorData
+from WineApp.models import WeatherHistory, DailyData
 
 
 def lstm(field):
@@ -220,12 +220,12 @@ def _get_series(field: str):
     if field not in seasonal_fields:
         raise Http404("Field does not exist")
     if field.startswith('dewPoint'):
-        train_set = SensorHistory.objects.filter(date__gte='2017-03-12')
+        train_set = WeatherHistory.objects.filter(date__gte='2017-03-12')
     else:
-        train_set = SensorHistory.objects.all()
+        train_set = WeatherHistory.objects.all()
     train_list = list(train_set.values_list(field, flat=True))
 
-    test_set = DailySensorData.objects.all()
+    test_set = DailyData.objects.all()
     test_list = list(test_set.values_list(field, flat=True))
 
     return train_list, test_list, field in seasonal_fields, test_set.values_list('date', flat=True)

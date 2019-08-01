@@ -6,7 +6,7 @@ import numpy as np
 from django.http import Http404
 from statsmodels.tsa.seasonal import seasonal_decompose
 
-from WineApp.models import SensorHistory
+from WineApp.models import WeatherHistory
 
 
 def stl(field: str):
@@ -117,9 +117,9 @@ def _get_series(field: str):
     if field not in seasonal_fields:
         raise Http404("Field does not exist")
     if field.startswith('dewPoint'):
-        train_set = SensorHistory.objects.filter(date__gte='2017-03-12')
+        train_set = WeatherHistory.objects.filter(date__gte='2017-03-12')
     else:
-        train_set = SensorHistory.objects.all()
+        train_set = WeatherHistory.objects.all()
     values_list = list(train_set.values_list(field, flat=True))
     dates_list = list(train_set.values_list('date', flat=True))
 

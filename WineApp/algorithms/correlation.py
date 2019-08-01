@@ -1,5 +1,6 @@
-from WineApp.models import SensorHistory
 import numpy as np
+
+from WineApp.models import WeatherHistory
 
 
 class bcolors:
@@ -37,5 +38,5 @@ def correlation():
 
 
 def _get_series(fields):
-    data = SensorHistory.objects.filter(date__gte='2017-03-12').values_list(*fields)
+    data = WeatherHistory.objects.filter(date__gte='2017-03-12').values_list(*fields)
     return np.array(data)

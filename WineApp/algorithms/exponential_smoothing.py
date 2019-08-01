@@ -6,7 +6,7 @@ import numpy as np
 from django.http import Http404
 from statsmodels.tsa.holtwinters import ExponentialSmoothing
 
-from WineApp.models import SensorHistory, DailySensorData
+from WineApp.models import WeatherHistory, DailyData
 
 
 # todo scomporre database con anomaly, mean, var
@@ -74,12 +74,12 @@ def _get_series(field: str):
     if field not in seasonal_fields:
         raise Http404("Field does not exist")
     if field.startswith('dewPoint'):
-        train_set = SensorHistory.objects.filter(date__gte='2017-03-12')
+        train_set = WeatherHistory.objects.filter(date__gte='2017-03-12')
     else:
-        train_set = SensorHistory.objects.all()
+        train_set = WeatherHistory.objects.all()
     train_list = list(train_set.values_list(field, flat=True))
 
-    test_set = DailySensorData.objects.all()
+    test_set = DailyData.objects.all()
     test_list = list(test_set.values_list(field, flat=True))
 
     return train_list, test_list, field in seasonal_fields, test_set.values_list('date', flat=True)
