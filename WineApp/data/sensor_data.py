@@ -3,24 +3,7 @@ from xml.etree import ElementTree
 import requests
 from django.utils import timezone
 
-from WineApp.models import DailyData, Sensor
-
-
-def update():
-    parameter = {'username': 'collosorbo', 'password': '10sorbo19', 'start_date': '2019-07-19',
-                 'end_date': '2019-07-25'}
-    response = requests.post('https://live.netsens.it/export/xml_export_1A.php', data=parameter)
-    root = ElementTree.fromstring(response.content)
-    station = root[0]
-    unit = station[0]
-    sensors = unit.findall('sensore')
-    s = sensors[0]
-    misures = s.findall('misura')
-    pressione = []
-    for m in misures:
-        pressione.append({'date': m.get('data_ora'), 'value': m.get('valore')})
-    print(pressione)
-    return pressione
+from WineApp.models import DailyData, Sensor, RealTimeData
 
 
 def update_daily_data():
@@ -63,6 +46,43 @@ def update_daily_data():
                     pass
 
             debug_data.append(date_elem.get('data') + '  ' + string)
+
+    debug_data.append(start_date + '   ' + end_date)
+    return debug_data
+
+
+def update_realtime_data():
+    try:
+        start_date = DailyData.objects.latest('date').date.strftime('%Y-%m-%d')
+    except DailyData.DoesNotExist:
+        start_date = '2019-07-17'
+    end_date = timezone.localtime().strftime('%Y-%m-%d')
+    parameter = {'username': 'collosorbo', 'password': '10sorbo19', 'start_date': start_date,
+                 'end_date': end_date}
+    response = requests.post('https://live.netsens.it/export/xml_export_1A.php', data=parameter)
+
+    if response.status_code != requests.codes.ok:
+        return 'Request error'
+    root_elem = ElementTree.fromstring(response.content)
+    if root_elem.get('errore') != '0':
+        return 'API error: ' + root_elem.get('messaggio')
+    station_elem = root_elem[0]
+
+    debug_data = []
+    for unit_elem in station_elem.findall('unita'):
+        for sensor_elem in unit_elem.findall('sensore'):
+            try:
+                sensor = Sensor.objects.get(name=sensor_elem.get('nome'))
+                for measure_elem in sensor_elem.findall('misura'):
+                    data, created = RealTimeData.objects.update_or_create(time=measure_elem.get('data_ora'),
+                                                                          sensor=sensor,
+                                                                          defaults={
+                                                                              'value': measure_elem.get('valore')})
+                    debug_data.append(
+                        str(created) + ': ' + measure_elem.get('data_ora') + '  ' + measure_elem.get('valore'))
+            except Sensor.DoesNotExist:
+                debug_data.append(sensor_elem.get('nome') + '  NONE')
+                pass
 
     debug_data.append(start_date + '   ' + end_date)
     return debug_data

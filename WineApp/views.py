@@ -17,13 +17,13 @@ def index(request):
     return render(request, 'WineApp/index.html', {'list': history})
 
 
-def download_sensor_data(request):
-    pressione = sensor_data.update()
-    return render(request, 'WineApp/download.html', {'dati': pressione})
-
-
-def update_daily_sensor_data(request):
+def update_daily_data(request):
     data = sensor_data.update_daily_data()
+    return render(request, 'WineApp/index.html', {'list': data})
+
+
+def update_realtime_data(request):
+    data = sensor_data.update_realtime_data()
     return render(request, 'WineApp/index.html', {'list': data})
 
 
