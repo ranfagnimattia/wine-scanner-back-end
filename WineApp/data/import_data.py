@@ -2,9 +2,46 @@ from datetime import datetime
 
 import matplotlib.pyplot as plt
 import pandas as pd
+import numpy as np
 from django.http import Http404
 
 from WineApp.models import WeatherHistory
+from WineApp.models import DailyData
+from WineApp.models import Sensor
+
+
+def download_data():
+    df = pd.read_excel('AllData05-19.xlsx')
+    df['Date'] = pd.to_datetime(df['Date'], format='%Y-%m-%d')
+    print(df.dtypes)
+    print(len(df))
+    for i in range(0,len(df)):
+        x = df.loc[i]
+        date = x['Date']
+        print(date)
+        _save_into_db(date, x['Tavg'], x['Tmax'], x['Tmin'], np.NaN, 'Temperatura aria')
+        _save_into_db(date, x['Havg'], x['Hmax'], x['Hmin'], np.NaN, 'Umidità aria')
+        _save_into_db(date, x['Dewavg'], x['Dewmax'], x['Dewmin'], np.NaN, 'Punto di rugiada')
+        bfsavg = (x['Bfsavg']/24)*100
+        _save_into_db(date, bfsavg, x['Bfsmax'], x['Bfsmin'], np.NaN, 'Bagnatura fogliare sup')
+        bfiavg = (x['Bfiavg']/24)*100
+        _save_into_db(date, bfiavg, x['Bfimax'], x['Bfimin'], np.NaN, 'Bagnatura fogliare inf')
+        _save_into_db(date, np.NaN, np.NaN, np.NaN, x['Raintot'], 'Pioggia')
+        _save_into_db(date, x['Windavg'], x['Windmax'], x['Windmin'], np.NaN, 'Velocità vento')
+
+
+def _save_into_db(date, avg, max, min, tot, sensor):
+    if np.isnan(avg) and np.isnan(min) and np.isnan(max) and np.isnan(tot):
+        return
+    else:
+        idS = Sensor.objects.get(name=sensor)
+        measure = DailyData(date=date, sensor=idS)
+        measure.avg = avg
+        measure.min = min
+        measure.max = max
+        measure.tot = tot
+        measure.save()
+        return
 
 
 def my_agg(x):

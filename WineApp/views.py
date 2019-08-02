@@ -5,6 +5,7 @@ import WineApp.algorithms.exponential_smoothing as es
 import WineApp.algorithms.lstm as ls
 import WineApp.algorithms.seasonal_decompose as sd
 import WineApp.data.sensor_data as sensor_data
+import WineApp.data.import_data as import_data
 
 
 def index(request):
@@ -18,8 +19,8 @@ def index(request):
 
 
 def download_sensor_data(request):
-    pressione = sensor_data.update()
-    return render(request, 'WineApp/download.html', {'dati': pressione})
+    import_data.download_data()
+    return render(request, 'WineApp/download.html')
 
 
 def update_daily_sensor_data(request):
