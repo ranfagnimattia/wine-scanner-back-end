@@ -19,7 +19,8 @@ def index(request):
 
 
 def download_sensor_data(request):
-    import_data.download_data()
+    # import_data.download_data()
+    import_data.show_data()
     return render(request, 'WineApp/download.html')
 
 

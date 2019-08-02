@@ -6,23 +6,6 @@ from django.utils import timezone
 from WineApp.models import DailyData, Sensor
 
 
-def update():
-    parameter = {'username': 'collosorbo', 'password': '10sorbo19', 'start_date': '2019-07-19',
-                 'end_date': '2019-07-25'}
-    response = requests.post('https://live.netsens.it/export/xml_export_1A.php', data=parameter)
-    root = ElementTree.fromstring(response.content)
-    station = root[0]
-    unit = station[0]
-    sensors = unit.findall('sensore')
-    s = sensors[0]
-    misures = s.findall('misura')
-    pressione = []
-    for m in misures:
-        pressione.append({'date': m.get('data_ora'), 'value': m.get('valore')})
-    print(pressione)
-    return pressione
-
-
 def update_daily_data():
     try:
         start_date = DailyData.objects.latest('date').date.strftime('%Y-%m-%d')
