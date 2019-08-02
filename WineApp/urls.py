@@ -5,6 +5,7 @@ from WineApp import views
 app_name = 'WineApp'
 urlpatterns = [
     path('', views.index, name='index'),
+    path('showdata', views.show_data, name='showdata'),
     path('update/daily', views.update_daily_data, name='update.daily'),
     path('update/realtime', views.update_realtime_data, name='update.realtime'),
     path('<field>/predict', views.prediction, name='predict'),
