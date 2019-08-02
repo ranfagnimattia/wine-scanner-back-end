@@ -35,28 +35,28 @@ def update_daily_data():
 
     if response.status_code != requests.codes.ok:
         return 'Request error'
-    root = ElementTree.fromstring(response.content)
-    if root.get('errore') != '0':
-        return 'API error: ' + root.get('messaggio')
-    station = root[0]
-    units = station.findall('unita')
-    if len(units) != 2:
-        return 'Sensor unities error (' + str(len(units)) + '/2)'
+    root_elem = ElementTree.fromstring(response.content)
+    if root_elem.get('errore') != '0':
+        return 'API error: ' + root_elem.get('messaggio')
+    station_elem = root_elem[0]
+    unit_list = station_elem.findall('unita')
+    if len(unit_list) != 2:
+        return 'Sensor unities error (' + str(len(unit_list)) + '/2)'
 
-    weather_unit = station[0]
-    ground_unit = station[1]
-    weather_dates = weather_unit.findall('giorno')
-    ground_dates = ground_unit.findall('giorno')
-    sensor_data = []
-    for date in weather_dates:
-        sensor_readings = date.findall('sensore')
-        ground_date = next((x for x in ground_dates if x.get('data') == date.get('data')), None)
+    weather_date_list = station_elem[0].findall('giorno')
+    ground_dates_list = station_elem[1].findall('giorno')
+    debug_data = []
+    for date_elem in weather_date_list:
+        sensor_list = date_elem.findall('sensore')
+        ground_date = next((x for x in ground_dates_list if x.get('data') == date_elem.get('data')), None)
         if ground_date is not None:
-            sensor_readings += ground_date.findall('sensore')
+            sensor_list += ground_date.findall('sensore')
 
-        for sensor_reading in sensor_readings:
+        string = ''
+        for sensor_reading in sensor_list:
             sensor = Sensor.objects.get(name__exact=sensor_reading.get('nome'))
-            data = DailyData(date=date.get('data'), sensor=sensor)
+            data, created = DailyData.objects.get_or_create(date=date_elem.get('data'), sensor=sensor)
+
             if sensor.values:
                 data.avg = sensor_reading.get('media')
                 data.max = sensor_reading.get('massima')
@@ -66,9 +66,9 @@ def update_daily_data():
             if sensor.tot:
                 data.tot = sensor_reading.get('cumulato')
             data.save()
+            string += sensor_reading.get('nome') + ' ' + str(created)
 
-        sensor_data.append(
-            date.get('data') + '  ' + str([s.get('nome') + ' ' + s.get('unita') for s in sensor_readings]))
+        debug_data.append(date_elem.get('data') + '  ' + string)
 
-    sensor_data.append(start_date + '   ' + end_date)
-    return sensor_data
+    debug_data.append(start_date + '   ' + end_date)
+    return debug_data

@@ -5,15 +5,15 @@ import WineApp.algorithms.exponential_smoothing as es
 import WineApp.algorithms.lstm as ls
 import WineApp.algorithms.seasonal_decompose as sd
 import WineApp.data.sensor_data as sensor_data
-from WineApp.data.import_data import import_history
 
 
 def index(request):
+    history = []
     # wine = Wine.objects.get(pk=2)
     # history = list(wine.weatherhistory_set.all()[:10])
     # history.append('...')
     # history += list(wine.weatherhistory_set.all().order_by('-pk')[:10])[::-1]
-    history = import_history()
+    # history = import_history()
     return render(request, 'WineApp/index.html', {'list': history})
 
 
