@@ -39,36 +39,30 @@ def update_daily_data():
     if root_elem.get('errore') != '0':
         return 'API error: ' + root_elem.get('messaggio')
     station_elem = root_elem[0]
-    unit_list = station_elem.findall('unita')
-    if len(unit_list) != 2:
-        return 'Sensor unities error (' + str(len(unit_list)) + '/2)'
 
-    weather_date_list = station_elem[0].findall('giorno')
-    ground_dates_list = station_elem[1].findall('giorno')
     debug_data = []
-    for date_elem in weather_date_list:
-        sensor_list = date_elem.findall('sensore')
-        ground_date = next((x for x in ground_dates_list if x.get('data') == date_elem.get('data')), None)
-        if ground_date is not None:
-            sensor_list += ground_date.findall('sensore')
+    for unit_elem in station_elem.findall('unita'):
+        for date_elem in unit_elem.findall('giorno'):
+            string = ''
+            for sensor_elem in date_elem.findall('sensore'):
+                try:
+                    sensor = Sensor.objects.get(name=sensor_elem.get('nome'))
+                    data, created = DailyData.objects.get_or_create(date=date_elem.get('data'), sensor=sensor)
+                    if sensor.values:
+                        data.avg = sensor_elem.get('media')
+                        data.max = sensor_elem.get('massima')
+                        data.maxTime = sensor_elem.get('ora_massima')
+                        data.min = sensor_elem.get('minima')
+                        data.minTime = sensor_elem.get('ora_minima')
+                    if sensor.tot:
+                        data.tot = sensor_elem.get('cumulato')
+                    data.save()
+                    string += sensor_elem.get('nome') + str(created) + ' '
+                except Sensor.DoesNotExist:
+                    string += sensor_elem.get('nome') + 'NONE '
+                    pass
 
-        string = ''
-        for sensor_reading in sensor_list:
-            sensor = Sensor.objects.get(name__exact=sensor_reading.get('nome'))
-            data, created = DailyData.objects.get_or_create(date=date_elem.get('data'), sensor=sensor)
-
-            if sensor.values:
-                data.avg = sensor_reading.get('media')
-                data.max = sensor_reading.get('massima')
-                data.maxTime = sensor_reading.get('ora_massima')
-                data.min = sensor_reading.get('minima')
-                data.minTime = sensor_reading.get('ora_minima')
-            if sensor.tot:
-                data.tot = sensor_reading.get('cumulato')
-            data.save()
-            string += sensor_reading.get('nome') + ' ' + str(created)
-
-        debug_data.append(date_elem.get('data') + '  ' + string)
+            debug_data.append(date_elem.get('data') + '  ' + string)
 
     debug_data.append(start_date + '   ' + end_date)
     return debug_data
