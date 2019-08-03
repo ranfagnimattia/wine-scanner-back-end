@@ -2,7 +2,7 @@ from xml.etree import ElementTree
 
 import requests
 from django.utils import timezone
-
+from django.http import Http404
 from WineApp.models import DailyData, Sensor, RealTimeData
 
 
@@ -86,3 +86,30 @@ def update_realtime_data():
 
     debug_data.append(start_date + '   ' + end_date)
     return debug_data
+
+# todo choose size of train and test set
+def _get_series(field: str, measure: str):
+    fields = {'airTemperature': 'Temperatura aria', 'rain': 'Pioggia', 'windSpeed': 'Velocità vento',
+              'dewPoint': 'Punto di rugiada'}
+    if field not in fields.keys():
+        raise Http404("Field does not exist")
+    sensor = Sensor.objects.get(name=fields[field])
+    train_set = DailyData.objects.filter(sensor=sensor, date__lte='2018-12-31').order_by('date')
+    train_list = list(train_set.values_list(measure, flat=True))
+    test_set = DailyData.objects.filter(sensor=sensor, date__gte='2019-01-01').order_by('date')
+    test_list = list(test_set.values_list(measure, flat=True))
+    return train_list, test_list, field in fields.keys(), test_set.values_list('date', flat=True)
+    # seasonal_fields = ['airTemperatureAvg', 'airTemperatureMin', 'airTemperatureMax', 'rainAvg',
+    #                    'windSpeedAvg', 'windSpeedMax', 'dewPointAvg', 'dewPointMax', 'dewPointMin']
+    # if field not in seasonal_fields:
+    #     raise Http404("Field does not exist")
+    # if field.startswith('dewPoint'):
+    #     train_set = WeatherHistory.objects.filter(date__gte='2017-03-12')
+    # else:
+    #     train_set = WeatherHistory.objects.all()
+    # train_list = list(train_set.values_list(field, flat=True))
+    #
+    # test_set = DailyData.objects.all()
+    # test_list = list(test_set.values_list(field, flat=True))
+    #
+    # return train_list, test_list, field in seasonal_fields, test_set.values_list('date', flat=True)

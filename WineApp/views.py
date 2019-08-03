@@ -39,8 +39,8 @@ def expsmoothing(request, field, measure):
     return render(request, 'WineApp/predict.html', data)
 
 
-def lstm(request, field):
-    pred, actual, dates = ls.lstm(field)
+def lstm(request, field, measure):
+    pred, actual, dates = ls.lstm(field,measure)
     data = {'prediction': pred, 'actual': actual, 'dates': dates}
     return render(request, 'WineApp/predict.html', data)
 

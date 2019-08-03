@@ -1,9 +1,11 @@
-import statistics
 
 import math
 import matplotlib.pyplot as plt
 import numpy as np
-from django.http import Http404
+
+from WineApp.data.sensor_data import _get_series
+from WineApp.algorithms.exponential_smoothing import detect_anomalies
+
 from keras.layers import Dense
 from keras.layers import LSTM
 from keras.models import Sequential
@@ -14,19 +16,23 @@ from pandas import concat
 from sklearn.metrics import mean_squared_error
 from sklearn.preprocessing import MinMaxScaler
 
-from WineApp.models import WeatherHistory, DailyData
 
 
-def lstm(field):
-    train, test, seasonal, test_dates = _get_series(field)
+# todo controllare valori del dewpoint max & min alcuni sono sballati
+def lstm(field,measure):
+    train, test, seasonal, test_dates = _get_series(field,measure)
+    plt.title('Train Set')
     plt.plot(train)
+    plt.show()
+    plt.title('Test Set')
+    plt.plot(test)
     plt.show()
 
     normal = normal_lstm(train, seasonal, test)
 
     anomaly1_1, anomaly2_1, anomaly3_1 = detect_anomalies(test, normal)
 
-    title = 'LSTM 30 32 1 10 ' + field
+    title = 'LSTM 30 32 1 10 ' + field+measure
     plt.figure(figsize=(12, 7), dpi=200)
     plt.title(title)
     plt.plot(test, '#000000', label='Actual')
@@ -36,7 +42,7 @@ def lstm(field):
     plt.plot(anomaly3_1, 'om', markersize=3)
 
     plt.legend()
-    plt.savefig(title + '.png')
+    # plt.savefig(title + '.png')
     plt.show()
     return normal, test, test_dates
 
@@ -164,8 +170,8 @@ def normal_lstm(train, seasonal, test):
 
     look_back = 30
     neurons = 32
-    batch_size = 1
-    epochs = 10
+    batch_size = 30
+    epochs = 20
     dataset = np.array(train + test)
     dataset = dataset.reshape(-1, 1)
     # normalize the dataset
@@ -213,90 +219,3 @@ def normal_lstm(train, seasonal, test):
     # plt.show()
     predict = testPredict.reshape(1, -1)
     return predict[0]
-
-
-def _get_series(field: str):
-    seasonal_fields = ['airTemperatureAvg', 'airTemperatureMin', 'airTemperatureMax', 'rainAvg',
-                       'windSpeedAvg', 'windSpeedMax', 'dewPointAvg', 'dewPointMax', 'dewPointMin']
-    if field not in seasonal_fields:
-        raise Http404("Field does not exist")
-    if field.startswith('dewPoint'):
-        train_set = WeatherHistory.objects.filter(date__gte='2017-03-12')
-    else:
-        train_set = WeatherHistory.objects.all()
-    train_list = list(train_set.values_list(field, flat=True))
-
-    test_set = DailyData.objects.all()
-    test_list = list(test_set.values_list(field, flat=True))
-
-    return train_list, test_list, field in seasonal_fields, test_set.values_list('date', flat=True)
-
-
-def detect_anomalies(actual, prediction):
-    error = [actual[i] - prediction[i] for i in range(0, len(actual))]
-    absolute_error = [abs(error[i]) for i in range(0, len(error))]
-    anomaly1 = []
-    anomaly2 = []
-    anomaly3 = []
-
-    std1 = []
-    std2 = []
-    std3 = []
-
-    k = 2.5
-
-    # stddev calculate at the beginning
-    std = statistics.stdev(error)
-    for i in range(0, len(error)):
-        std1.append(k * std)
-        if abs(error[i]) > k * std:
-            anomaly1.append(prediction[i])
-        else:
-            anomaly1.append(np.NaN)
-    print(std)
-
-    # stdev_corr
-    mean = 0
-    var = 0
-    count = 0
-    for i in range(0, len(error)):
-        new_mean, new_var = update(mean, var, error[i], count + 1)
-        std = math.sqrt(new_var / count)
-        if abs(error[i]) > k * std:
-            anomaly2.append(prediction[i])
-            std2.append(std2[i - 1])
-        else:
-            anomaly2.append(np.NaN)
-            std2.append(k * std)
-            mean = new_mean
-            var = new_var
-            count = count + 1
-    print(std)
-
-    # stdev
-    mean = 0
-    var = 0
-    for i in range(0, len(error)):
-        mean, var = update(mean, var, error[i], i + 1)
-        std = math.sqrt(var / i)
-        std3.append(k * std)
-        if abs(error[i]) > k * std:
-            anomaly3.append(prediction[i])
-        else:
-            anomaly3.append(np.NaN)
-    print(std)
-
-    plt.plot(absolute_error, '-k')
-    plt.plot(std1, '--g', label='std')
-    plt.plot(std2, '--y', label='stdev_corr', linewidth=3)
-    plt.plot(std3, '--m', label='stdev_welford')
-    plt.title('Absolute Error')
-    plt.legend()
-    plt.show()
-    return anomaly1, anomaly2, anomaly3
-
-
-def update(m, v, val, n):
-    mean = m + (1 / n) * (val - m)
-    var = v + (val - m) * (val - mean)
-    return mean, var

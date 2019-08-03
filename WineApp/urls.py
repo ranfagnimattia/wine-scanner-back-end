@@ -10,7 +10,8 @@ urlpatterns = [
     path('update/realtime', views.update_realtime_data, name='update.realtime'),
     path('<field>/<measure>/expsmoothing', views.expsmoothing, name='expsmoothing'),
     # es airTemperature/avg/expsmoothing
-    path('<field>/lstm', views.lstm, name='lstm'),
+    path('<field>/<measure>/lstm', views.lstm, name='lstm'),
+    # es airTemperature/avg/lstm
     path('<field>/decompose', views.decompose, name='decompose'),
     path('correlation', views.correlation, name='correlation')
 ]
