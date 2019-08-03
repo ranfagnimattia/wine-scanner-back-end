@@ -27,13 +27,14 @@ def update_daily_data(request):
     data = sensor_data.update_daily_data()
     return render(request, 'WineApp/index.html', {'list': data})
 
+
 def update_realtime_data(request):
     data = sensor_data.update_realtime_data()
     return render(request, 'WineApp/index.html', {'list': data})
 
 
-def prediction(request, field):
-    pred, actual, dates = es.exponential_smoothing(field)
+def expsmoothing(request, field, measure):
+    pred, actual, dates = es.exponential_smoothing(field, measure)
     data = {'prediction': pred, 'actual': actual, 'dates': dates}
     return render(request, 'WineApp/predict.html', data)
 
