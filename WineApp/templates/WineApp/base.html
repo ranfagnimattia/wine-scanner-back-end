@@ -1,9 +1,14 @@
+{% load static %}
 <!doctype html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
     <title>{% block title %}Wine App{% endblock %}</title>
     {% block stylesheet %}{% endblock %}
+    <script type="text/javascript" src="{% static "WineApp/lib/fusioncharts/fusioncharts.js" %}"></script>
+    <script type="text/javascript"
+            src="{% static "WineApp/lib/fusioncharts/themes/fusioncharts.theme.fusion.js" %}"></script>
+
 </head>
 <body>
 <header></header>

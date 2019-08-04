@@ -1,13 +1,13 @@
 from datetime import datetime
 
 import matplotlib.pyplot as plt
-import pandas as pd
 import numpy as np
+import pandas as pd
 from django.http import Http404
 
-from WineApp.models import WeatherHistory
 from WineApp.models import DailyData
 from WineApp.models import Sensor
+from WineApp.models import WeatherHistory
 
 
 def download_data():
@@ -31,14 +31,17 @@ def download_data():
 
 
 def show_data():
-    field = 'Pioggia'
-    measure = 'tot'
+    field = 'Temperatura aria'
     sensor = Sensor.objects.get(name=field)
-    history = DailyData.objects.filter(sensor=sensor).order_by('date')
-    values = history.values_list(measure, flat=True)
-    plt.figure(figsize=(12, 7), dpi=200)
-    plt.plot(values)
-    plt.show()
+    history = sensor.dailydata_set.order_by('date')
+    values = history.values_list('date', 'avg', 'min', 'max')
+    # plt.figure(figsize=(12, 7), dpi=200)
+    # plt.plot(values)
+    # plt.show()
+    values_list = [list(elem) for elem in values]
+    for elem in values_list:
+        elem[0] = elem[0].strftime('%Y-%m-%d')
+    return values_list
 
 
 def _save_into_db(date, avg, max, min, tot, sensor):
