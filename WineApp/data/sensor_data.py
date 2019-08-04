@@ -87,8 +87,9 @@ def update_realtime_data():
     debug_data.append(start_date + '   ' + end_date)
     return debug_data
 
+
 # todo choose size of train and test set
-def _get_series(field: str, measure: str):
+def get_series(field: str, measure: str):
     fields = {'airTemperature': 'Temperatura aria', 'rain': 'Pioggia', 'windSpeed': 'Velocità vento',
               'dewPoint': 'Punto di rugiada'}
     if field not in fields.keys():

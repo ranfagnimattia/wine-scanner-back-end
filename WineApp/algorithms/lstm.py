@@ -1,10 +1,9 @@
-
 import math
 import matplotlib.pyplot as plt
 import numpy as np
 
-from WineApp.data.sensor_data import _get_series
-from WineApp.algorithms.exponential_smoothing import detect_anomalies
+from WineApp.data.sensor_data import get_series
+from WineApp.algorithms.anomaly_detection import detect_anomalies
 
 from keras.layers import Dense
 from keras.layers import LSTM
@@ -17,10 +16,9 @@ from sklearn.metrics import mean_squared_error
 from sklearn.preprocessing import MinMaxScaler
 
 
-
 # todo controllare valori del dewpoint max & min alcuni sono sballati
-def lstm(field,measure):
-    train, test, seasonal, test_dates = _get_series(field,measure)
+def lstm(field, measure):
+    train, test, seasonal, test_dates = get_series(field, measure)
     plt.title('Train Set')
     plt.plot(train)
     plt.show()
@@ -30,9 +28,10 @@ def lstm(field,measure):
 
     normal = normal_lstm(train, seasonal, test)
 
-    anomaly1_1, anomaly2_1, anomaly3_1 = detect_anomalies(test, normal)
+    error = [test[i] - normal[i] for i in range(0, len(test))]
+    anomaly1_1, anomaly2_1, anomaly3_1 = detect_anomalies(error, normal)
 
-    title = 'LSTM 30 32 1 10 ' + field+measure
+    title = 'LSTM 30 32 1 10 ' + field + measure
     plt.figure(figsize=(12, 7), dpi=200)
     plt.title(title)
     plt.plot(test, '#000000', label='Actual')
@@ -190,7 +189,7 @@ def normal_lstm(train, seasonal, test):
     model.add(LSTM(neurons, input_shape=(1, look_back)))
     model.add(Dense(1))
     model.compile(loss='mean_squared_error', optimizer=Adam(lr=0.0001))
-    model.fit(trainX, trainY, epochs=epochs, batch_size=batch_size, verbose=2, validation_data=[testX, testY] )
+    model.fit(trainX, trainY, epochs=epochs, batch_size=batch_size, verbose=2, validation_data=[testX, testY])
     # make predictions
     trainPredict = model.predict(trainX)
     testPredict = model.predict(testX)
