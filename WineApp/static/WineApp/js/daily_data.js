@@ -1,49 +1,37 @@
-let data;
-try {
-    data = JSON.parse(document.getElementById('data').textContent);
-} catch (e) {
-
-}
-
-if (data) {
-    console.log(data);
-} else {
-    console.log("No data");
-}
-
 $('document').ready(function () {
+    const schema = [
+        {
+            name: "Time",
+            type: "date",
+            format: "%Y-%m-%d"
+        },
+        {
+            name: "Avg",
+            type: "number"
+        },
+        {
+            name: "Min",
+            type: "number"
+        },
+        {
+            name: "Max",
+            type: "number"
+        }];
+
+    const fusionDataStore = new FusionCharts.DataStore();
+
     $('#sensors').on('change', function () {
         const sensor_id = this.value;
         $.getJSON({
-            url: data.ajaxUrl,
+            url: data_py.ajax_url,
             data: {
                 'sensor_id': sensor_id
             },
             success: function (response) {
                 if (response) {
                     console.log(response);
-                    // First we are creating a DataStore
-                    const fusionDataStore = new FusionCharts.DataStore();
-                    // After that we are creating a DataTable by passing our data and schema as arguments
-                    const schema = [
-                        {
-                            name: "Time",
-                            type: "date",
-                            format: "%Y-%m-%d"
-                        },
-                        {
-                            name: "Avg",
-                            type: "number"
-                        },
-                        {
-                            name: "Min",
-                            type: "number"
-                        },
-                        {
-                            name: "Max",
-                            type: "number"
-                        }];
-                    const fusionTable = fusionDataStore.createDataTable(response.data.data, schema);
+
+                    const fusionTable = fusionDataStore.createDataTable(response.data, schema);
 
                     $('#chart-cont').updateFusionCharts({
                         dataSource: {
@@ -65,29 +53,9 @@ $('document').ready(function () {
         });
     });
 
-
     // First we are creating a DataStore
-    const fusionDataStore = new FusionCharts.DataStore();
     // After that we are creating a DataTable by passing our data and schema as arguments
-    const schema = [
-        {
-            name: "Time",
-            type: "date",
-            format: "%Y-%m-%d"
-        },
-        {
-            name: "Avg",
-            type: "number"
-        },
-        {
-            name: "Min",
-            type: "number"
-        },
-        {
-            name: "Max",
-            type: "number"
-        }];
-    const fusionTable = fusionDataStore.createDataTable(data.data, schema);
+    const fusionTable = fusionDataStore.createDataTable(data_py.data, schema);
 
     $('#chart-cont').insertFusionCharts({
         type: 'timeseries',

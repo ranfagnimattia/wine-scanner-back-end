@@ -36,8 +36,8 @@
 
 <!-- Less -->
 {#<script src="//cdnjs.cloudflare.com/ajax/libs/less.js/3.9.0/less.min.js$version_js"></script>#}
+{{ data_js | json_script:"data_js" }}
 <script src="{% static 'WineApp/js/base.js' %}"></script>
-
 {% block javascript %}{% endblock %}
 </body>
 </html>

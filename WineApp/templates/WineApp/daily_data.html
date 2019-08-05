@@ -14,9 +14,7 @@
         </select>
     </div>
     <div id="chart-cont"></div>
-    {#    <div id="myFirstchart-container">{{ output|safe }}</div>#}
 {% endblock %}
 {% block javascript %}
-    {{ data | json_script:"data" }}
     <script src="{% static 'WineApp/js/daily_data.js' %}"></script>
 {% endblock %}

@@ -90,6 +90,21 @@ def update_realtime_data():
     return debug_data
 
 
+def get_daily_data(sensor_id: int = 1) -> list:
+    """
+    Get daily data of a sensor
+
+    :param sensor_id: int
+    :return: list of lists [date, avg, min, max]
+    """
+    history = Sensor.objects.get(pk=sensor_id).dailydata_set.order_by('date')
+    values = history.values_list('date', 'avg', 'min', 'max')
+    values_list = [list(elem) for elem in values]
+    for elem in values_list:
+        elem[0] = elem[0].strftime('%Y-%m-%d')
+    return values_list
+
+
 # todo choose size of train and test set
 def get_series(field: str, measure: str):
     fields = {'airTemperature': 'Temperatura aria', 'rain': 'Pioggia', 'windSpeed': 'Velocità vento',
