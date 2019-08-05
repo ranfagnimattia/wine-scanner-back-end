@@ -7,7 +7,7 @@
         <label for="sensors">Sensors</label>
         <select class="form-control" id="sensors">
             {% for sensor in sensors %}
-                <option value="{{ sensor.id }}" {% if not sensor.values %}disabled{% endif %}>
+                <option value="{{ sensor.id }}">
                     {{ sensor.name }}
                 </option>
             {% endfor %}

@@ -90,19 +90,23 @@ def update_realtime_data():
     return debug_data
 
 
-def get_daily_data(sensor_id: int = 1) -> list:
+def get_daily_data(sensor_id: int = 1) -> (list, Sensor):
     """
     Get daily data of a sensor
 
     :param sensor_id: int
-    :return: list of lists [date, avg, min, max]
+    :return: list of lists [date, avg, min, max] or [date,tot], sensor object
     """
-    history = Sensor.objects.get(pk=sensor_id).dailydata_set.order_by('date')
-    values = history.values_list('date', 'avg', 'min', 'max')
+    sensor = Sensor.objects.get(pk=sensor_id)
+    history = sensor.dailydata_set.order_by('date')
+    if sensor.tot:
+        values = history.values_list('date', 'tot')
+    else:
+        values = history.values_list('date', 'avg', 'min', 'max')
     values_list = [list(elem) for elem in values]
     for elem in values_list:
         elem[0] = elem[0].strftime('%Y-%m-%d')
-    return values_list
+    return values_list, sensor
 
 
 # todo choose size of train and test set
@@ -117,17 +121,3 @@ def get_series(field: str, measure: str):
     test_set = DailyData.objects.filter(sensor=sensor, date__gte='2019-01-01').order_by('date')
     test_list = list(test_set.values_list(measure, flat=True))
     return train_list, test_list, field in fields.keys(), test_set.values_list('date', flat=True)
-    # seasonal_fields = ['airTemperatureAvg', 'airTemperatureMin', 'airTemperatureMax', 'rainAvg',
-    #                    'windSpeedAvg', 'windSpeedMax', 'dewPointAvg', 'dewPointMax', 'dewPointMin']
-    # if field not in seasonal_fields:
-    #     raise Http404("Field does not exist")
-    # if field.startswith('dewPoint'):
-    #     train_set = WeatherHistory.objects.filter(date__gte='2017-03-12')
-    # else:
-    #     train_set = WeatherHistory.objects.all()
-    # train_list = list(train_set.values_list(field, flat=True))
-    #
-    # test_set = DailyData.objects.all()
-    # test_list = list(test_set.values_list(field, flat=True))
-    #
-    # return train_list, test_list, field in seasonal_fields, test_set.values_list('date', flat=True)
