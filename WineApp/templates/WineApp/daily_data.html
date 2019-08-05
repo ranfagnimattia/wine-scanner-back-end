@@ -1,0 +1,22 @@
+{% extends 'WineApp/base.html' %}
+{% load static %}
+
+{% block content %}
+    <i class="material-icons">linked_camera</i>
+    <div class="form-group">
+        <label for="sensors">Sensors</label>
+        <select class="form-control" id="sensors">
+            {% for sensor in sensors %}
+                <option value="{{ sensor.id }}" {% if not sensor.values %}disabled{% endif %}>
+                    {{ sensor.name }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+    <div id="chart-cont"></div>
+    {#    <div id="myFirstchart-container">{{ output|safe }}</div>#}
+{% endblock %}
+{% block javascript %}
+    {{ data | json_script:"data" }}
+    <script src="{% static 'WineApp/js/daily_data.js' %}"></script>
+{% endblock %}

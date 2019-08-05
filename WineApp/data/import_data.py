@@ -30,9 +30,8 @@ def download_data():
         _save_into_db(date, x['Windavg'], x['Windmax'], x['Windmin'], np.NaN, 'Velocità vento')
 
 
-def show_data():
-    field = 'Temperatura aria'
-    sensor = Sensor.objects.get(name=field)
+def show_data(sensor_id=1):
+    sensor = Sensor.objects.get(pk=sensor_id)
     history = sensor.dailydata_set.order_by('date')
     values = history.values_list('date', 'avg', 'min', 'max')
     # plt.figure(figsize=(12, 7), dpi=200)

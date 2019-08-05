@@ -1,4 +1,6 @@
+from django.http import JsonResponse
 from django.shortcuts import render
+from django.urls import reverse
 
 import WineApp.algorithms.correlation as cor
 import WineApp.algorithms.exponential_smoothing as es
@@ -10,6 +12,7 @@ import WineApp.data.sensor_data as sensor_data
 from WineApp.fusioncharts import FusionCharts
 from WineApp.fusioncharts import FusionTable
 from WineApp.fusioncharts import TimeSeries
+from WineApp.models import Sensor
 
 
 def index(request):
@@ -55,8 +58,23 @@ def show_data(request):
     # Create an object for the chart using the FusionCharts class constructor
     fcChart = FusionCharts("timeseries", "myFirstChart", 700, 450, "myFirstchart-container", "json", timeSeries)
 
-    return render(request, 'WineApp/download.html', {
-        'output': fcChart.render()
+    return render(request, 'WineApp/daily_data.html', {
+        'sensors': Sensor.objects.all(),
+        'data': {'schema': schema,
+                 'data': data,
+                 'ajaxUrl': reverse('WineApp:ajax.getDailyData')}
+    })
+    # return render(request, 'WineApp/daily_data.html', {
+    #     'output': fcChart.render()
+    # })
+
+
+def get_daily_data(request):
+    sensor_id = request.GET.get('sensor_id', 1)
+
+    data = import_data.show_data(sensor_id)
+    return JsonResponse({
+        'data': {'data': data, 'id': sensor_id}
     })
 
 

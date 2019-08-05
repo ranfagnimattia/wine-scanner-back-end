@@ -1,8 +1,9 @@
 from xml.etree import ElementTree
 
 import requests
-from django.utils import timezone
 from django.http import Http404
+from django.utils import timezone
+
 from WineApp.models import DailyData, Sensor, RealTimeData
 
 
@@ -53,10 +54,11 @@ def update_daily_data():
 
 def update_realtime_data():
     try:
-        start_date = DailyData.objects.latest('date').date.strftime('%Y-%m-%d')
-    except DailyData.DoesNotExist:
+        start_date = RealTimeData.objects.latest('time').time.strftime('%Y-%m-%d')
+    except RealTimeData.DoesNotExist:
         start_date = '2019-07-17'
-    end_date = timezone.localtime().strftime('%Y-%m-%d')
+    end_date = '2019-07-17'
+    # end_date = timezone.localtime().strftime('%Y-%m-%d')
     parameter = {'username': 'collosorbo', 'password': '10sorbo19', 'start_date': start_date,
                  'end_date': end_date}
     response = requests.post('https://live.netsens.it/export/xml_export_1A.php', data=parameter)

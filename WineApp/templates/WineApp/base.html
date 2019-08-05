@@ -4,10 +4,18 @@
 <head>
     <meta charset="utf-8">
     <title>{% block title %}Wine App{% endblock %}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap, Material icons and FontAwesome-->
+    <link rel="stylesheet" href="{% static "WineApp/lib/bootstrap/bootstrap.min.css" %}">
+    <link rel="stylesheet" href="{% static "WineApp/lib/material-icons/material-icons.css" %}">
+    {#    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">#}
+
+    <link rel="stylesheet" type="text/css" href="{% static 'WineApp/css/base.css' %}">
+
     {% block stylesheet %}{% endblock %}
-    <script type="text/javascript" src="{% static "WineApp/lib/fusioncharts/fusioncharts.js" %}"></script>
-    <script type="text/javascript"
-            src="{% static "WineApp/lib/fusioncharts/themes/fusioncharts.theme.fusion.js" %}"></script>
 
 </head>
 <body>
@@ -17,8 +25,19 @@
     {% endblock %}
 </main>
 <footer></footer>
+<!-- jQuery and Bootstrap -->
+<script src="{% static "WineApp/lib/jquery/jquery.min.js" %}"></script>
+<script src="{% static "WineApp/lib/popper/popper.min.js" %}"></script>
+<script src="{% static "WineApp/lib/bootstrap/bootstrap.min.js" %}"></script>
+<!-- Fusion charts -->
+<script src="{% static "WineApp/lib/fusioncharts/fusioncharts.js" %}"></script>
+<script src="{% static "WineApp/lib/fusioncharts/themes/fusioncharts.theme.fusion.js" %}"></script>
+<script src="{% static "WineApp/lib/fusioncharts/jquery-fusioncharts.min.js" %}"></script>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<!-- Less -->
+{#<script src="//cdnjs.cloudflare.com/ajax/libs/less.js/3.9.0/less.min.js$version_js"></script>#}
+<script src="{% static 'WineApp/js/base.js' %}"></script>
+
 {% block javascript %}{% endblock %}
 </body>
 </html>
