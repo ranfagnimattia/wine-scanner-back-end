@@ -8,10 +8,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Bootstrap, Material icons and FontAwesome-->
+    <!-- Bootstrap, Poppins, Material icons and FontAwesome -->
     <link rel="stylesheet" href="{% static "WineApp/lib/bootstrap/bootstrap.min.css" %}">
-    <link rel="stylesheet" href="{% static "WineApp/lib/material-icons/material-icons.css" %}">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+    <link rel="stylesheet" href="{% static "WineApp/fonts/poppins/poppins.css" %}">
+    <link rel="stylesheet" href="{% static "WineApp/fonts/material-icons/material-icons.css" %}">
+    <link rel="stylesheet" href="{% static "WineApp/fonts/fontawesome/css/all.min.css" %}">
+
+    <!-- Dashboard css -->
+    <link href="{% static "WineApp/lib/black-dashboard/black-dashboard.css" %}" rel="stylesheet"/>
 
     <link rel="stylesheet" type="text/css" href="{% static 'WineApp/css/base.css' %}">
 
@@ -27,15 +31,19 @@
 <footer></footer>
 <!-- jQuery and Bootstrap -->
 <script src="{% static "WineApp/lib/jquery/jquery.min.js" %}"></script>
+<script src="{% static "WineApp/lib/jquery/perfect-scrollbar.jquery.min.js" %}"></script>
 <script src="{% static "WineApp/lib/popper/popper.min.js" %}"></script>
 <script src="{% static "WineApp/lib/bootstrap/bootstrap.min.js" %}"></script>
 <!-- Fusion charts -->
 <script src="{% static "WineApp/lib/fusioncharts/fusioncharts.js" %}"></script>
-<script src="{% static "WineApp/lib/fusioncharts/themes/fusioncharts.theme.fusion.js" %}"></script>
+<script src="{% static "WineApp/lib/fusioncharts/themes/theme.black-timeseries.js" %}"></script>
+<script src="{% static "WineApp/lib/fusioncharts/themes/fusioncharts.theme.candy.js" %}"></script>
 <script src="{% static "WineApp/lib/fusioncharts/jquery-fusioncharts.min.js" %}"></script>
-
+<!-- Black Dashboard -->
+<script src="{% static "WineApp/lib/black-dashboard/black-dashboard.js" %}"></script>
 <!-- Less -->
 {#<script src="//cdnjs.cloudflare.com/ajax/libs/less.js/3.9.0/less.min.js$version_js"></script>#}
+
 {{ data_js | json_script:"data_js" }}
 <script src="{% static 'WineApp/js/base.js' %}"></script>
 {% block javascript %}{% endblock %}

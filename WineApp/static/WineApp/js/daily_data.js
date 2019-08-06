@@ -1,52 +1,9 @@
 $('document').ready(function () {
     console.log(data_py);
-    let sensor = data_py.sensor;
-    let schema, caption, subcaption, plot, format;
-    let schemaVal = [
-        {
-            name: "Time",
-            type: "date",
-            format: "%Y-%m-%d"
-        },
-        {
-            name: "Avg",
-            type: "number"
-        },
-        {
-            name: "Min",
-            type: "number"
-        },
-        {
-            name: "Max",
-            type: "number"
-        }];
-    let schemaTot = [
-        {
-            name: "Time",
-            type: "date",
-            format: "%Y-%m-%d"
-        },
-        {
-            name: "Tot",
-            type: "number"
-        }];
-    if (sensor.tot) {
-        schema = schemaTot;
-        subcaption = sensor.name + ' tot';
-        plot = [{"value": "Tot"}];
-    } else {
-        schema = schemaVal;
-        subcaption = sensor.name + ' avg, max, min';
-        plot = [{"value": "Avg"}, {"value": "Min"}, {"value": "Max"}];
-    }
-    caption = sensor.name;
-    format = {"suffix": sensor.unit};
-
-    const fusionDataStore = new FusionCharts.DataStore();
+    updateChart(data_py.sensor, data_py.data);
 
     $('.sensor').on('click', function () {
         console.log("click");
-        console.log($(this).attr('data-sensor'));
         const sensor_id = $(this).attr('data-sensor');
         $.getJSON({
             url: data_py.ajax_url,
@@ -56,66 +13,80 @@ $('document').ready(function () {
             success: function (response) {
                 if (response) {
                     console.log(response);
-                    let sensor = response.sensor;
-                    if (sensor.tot) {
-                        schema = schemaTot;
-                        subcaption = sensor.name + ' tot';
-                        plot = [{"value": "Tot"}];
-                    } else {
-                        schema = schemaVal;
-                        subcaption = sensor.name + ' avg, max, min';
-                        plot = [{"value": "Avg"}, {"value": "Min"}, {"value": "Max"}];
-                    }
-                    caption = sensor.name;
-                    format = {"suffix": sensor.unit};
-
-                    const fusionTable = fusionDataStore.createDataTable(response.data, schema);
-
-                    $('.active').removeClass("active");
-                    $('#sensor_' + sensor_id).parent().addClass("active");
-
-
-                    $('#chart-cont').updateFusionCharts({
-                        dataSource: {
-                            data: fusionTable,
-                            caption: {
-                                text: caption
-                            },
-                            subcaption: {
-                                text: subcaption
-                            },
-                            yAxis: [{
-                                "plot": plot,
-                                "format": format, "title": caption
-                            }]
-                        }
-                    });
+                    updateChart(response.sensor, response.data);
                 }
             }
         });
     });
+});
 
-    // First we are creating a DataStore
-    // After that we are creating a DataTable by passing our data and schema as arguments
-    const fusionTable = fusionDataStore.createDataTable(data_py.data, schema);
 
-    $('#chart-cont').insertFusionCharts({
+function updateChart(sensor, data) {
+    let plot;
+    let subcaption;
+    let schema;
+    const chartElem = $('#sensor-chart');
+    if (sensor.tot) {
+        schema = [
+            {
+                name: "Time",
+                type: "date",
+                format: "%Y-%m-%d"
+            },
+            {
+                name: "Tot",
+                type: "number"
+            }];
+        subcaption = sensor.name + ' tot';
+        plot = [{"value": "Tot"}];
+    } else {
+        schema = [
+            {
+                name: "Time",
+                type: "date",
+                format: "%Y-%m-%d"
+            },
+            {
+                name: "Avg",
+                type: "number"
+            },
+            {
+                name: "Min",
+                type: "number"
+            },
+            {
+                name: "Max",
+                type: "number"
+            }];
+        subcaption = sensor.name + ' avg, max, min';
+        plot = [{"value": "Avg"}, {"value": "Min"}, {"value": "Max"}];
+    }
+    let caption = sensor.name;
+    let format = {"suffix": sensor.unit};
+
+    const fusionDataStore = new FusionCharts.DataStore();
+    const fusionTable = fusionDataStore.createDataTable(data, schema);
+
+    $('.active').removeClass("active");
+    $('#sensor_' + sensor.id).parent().addClass("active");
+
+    chartElem.find('.card-title').text(caption);
+    chartElem.find('.card-category').text(subcaption);
+    chartElem.find('.chart').insertFusionCharts({
         type: 'timeseries',
-        width: '600',
-        height: '400',
+        width: '100%',
+        height: '100%',
         dataFormat: 'json',
         dataSource: {
+            chart: {
+                theme: 'candy',
+            },
             data: fusionTable,
-            caption: {
-                text: caption
-            },
-            subcaption: {
-                text: subcaption
-            },
             yAxis: [{
                 "plot": plot,
-                "format": format, "title": caption
+                "format": format,
+                title: ''
             }]
         }
     });
-});
+}

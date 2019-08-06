@@ -6,7 +6,14 @@
     user-select: none; /* Chrome and Opera */
 }
 
+.card-chart .chart-area-big, .card-chart .chart-area-big .chart {
+    height: 500px;
+}
 
-.flex {
-    flex: 1 1 0;
+.fc-crs-widget .fc-cal-container {
+    border: none !important;
+}
+
+.ps .ps__rail-y:hover {
+    background-color: transparent;
 }

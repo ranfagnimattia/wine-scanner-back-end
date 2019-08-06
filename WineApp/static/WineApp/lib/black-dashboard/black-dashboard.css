@@ -2105,7 +2105,7 @@ pre code {
     background-color: #ffffff;
     border-color: rgba(50, 151, 211, 0.25);
     outline: 0;
-    box-shadow: none, none;
+    box-shadow: none;
 }
 
 .form-control::placeholder {
@@ -4244,7 +4244,7 @@ input[type="button"].btn-block {
 }
 
 .custom-control-input:focus ~ .custom-control-label::before {
-    box-shadow: none, none;
+    box-shadow: none;
 }
 
 .custom-control-input:focus:not(:checked) ~ .custom-control-label::before {
@@ -4513,15 +4513,15 @@ input[type="button"].btn-block {
 }
 
 .custom-range:focus::-webkit-slider-thumb {
-    box-shadow: 0 0 0 1px #1e1e2f, none;
+    box-shadow: 0 0 0 1px #1e1e2f;
 }
 
 .custom-range:focus::-moz-range-thumb {
-    box-shadow: 0 0 0 1px #1e1e2f, none;
+    box-shadow: 0 0 0 1px #1e1e2f;
 }
 
 .custom-range:focus::-ms-thumb {
-    box-shadow: 0 0 0 1px #1e1e2f, none;
+    box-shadow: 0 0 0 1px #1e1e2f;
 }
 
 .custom-range::-moz-focus-outer {
@@ -16827,21 +16827,6 @@ hr {
     margin-bottom: 30px;
 }
 
-table.tablesorter thead tr .header {
-    background-image: url("../img/bg.gif");
-    background-repeat: no-repeat;
-    background-position: center right;
-    cursor: pointer;
-}
-
-table.tablesorter thead tr .headerSortUp {
-    background-image: url("../img/asc.gif");
-}
-
-table.tablesorter thead tr .headerSortDown {
-    background-image: url("../img/desc.gif");
-}
-
 .dataTables_wrapper .table-striped tbody tr:nth-of-type(odd) {
     background-color: rgba(0, 0, 0, 0.05);
 }
@@ -19790,7 +19775,7 @@ Copyright (c) 2015 Daniel Eden
 
 .white-content .card:not(.card-white) {
     background: #ffffff;
-    box-shadow: 0 1px 15px 0 rgba(,,, 0.05);
+    box-shadow: 0 1px 15px 0 rgba(0, 0, 0, 0.05);
 }
 
 .white-content .card:not(.card-white) .card-header {
@@ -20199,7 +20184,7 @@ Copyright (c) 2015 Daniel Eden
     padding: 1.25rem;
 }
 
-@media (max-width: 767.98px) {
+@media (max-width: 767px) {
     .card.card-chart .card-header .btn-group-toggle .tim-icons {
         font-size: .875rem;
         top: -1px;
