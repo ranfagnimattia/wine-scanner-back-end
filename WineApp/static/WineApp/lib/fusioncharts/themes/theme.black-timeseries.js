@@ -19,7 +19,11 @@ const themeBlackTimeseries = {
         style: {
             text: {"font-family": "Poppins, sans-serif"},
             background: {fill: themeColors.card},
-            canvas: {fill: themeColors.card, stroke: themeColors.text, "stroke-width": .5}
+            canvas: {
+                fill: themeColors.card,
+                stroke: themeColors.text,
+                "stroke-width": .5
+            }
         }
     },
     tooltip: {

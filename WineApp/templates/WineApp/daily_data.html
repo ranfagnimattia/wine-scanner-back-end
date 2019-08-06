@@ -8,29 +8,33 @@
             <!--
               Tip 1: You can change the color of the sidebar using: data-color="blue | green | orange | red"
           -->
-            <div class="sidebar-wrapper">
+            <div class="d-flex sidebar-wrapper flex-column">
                 <div class="logo">
                     <p>Sensors</p>
                 </div>
-                <ul class="nav">
-                    {% for sensor in sensors %}
-                        {% if sensor.id == data_js.sensor.id %}
-                            <li class="nav-item active ">
-                                <a href="#" class="sensor" id="sensor_{{ sensor.id }}" data-sensor="{{ sensor.id }}">
-                                    <i class="{{ sensor.icon }}"></i>
-                                    {{ sensor }}
-                                </a>
-                            </li>
-                        {% else %}
-                            <li class="nav-item ">
-                                <a href="#" class="sensor" id="sensor_{{ sensor.id }}" data-sensor="{{ sensor.id }}">
-                                    <i class=" {{ sensor.icon }}"></i>
-                                    {{ sensor }}
-                                </a>
-                            </li>
-                        {% endif %}
-                    {% endfor %}
-                </ul>
+                <div class="scroll-y">
+                    <ul class="nav">
+                        {% for sensor in sensors %}
+                            {% if sensor.id == data_js.sensor.id %}
+                                <li class="nav-item active ">
+                                    <a href="#" class="sensor" id="sensor_{{ sensor.id }}"
+                                       data-sensor="{{ sensor.id }}">
+                                        <i class="{{ sensor.icon }}"></i>
+                                        {{ sensor }}
+                                    </a>
+                                </li>
+                            {% else %}
+                                <li class="nav-item ">
+                                    <a href="#" class="sensor" id="sensor_{{ sensor.id }}"
+                                       data-sensor="{{ sensor.id }}">
+                                        <i class=" {{ sensor.icon }}"></i>
+                                        {{ sensor }}
+                                    </a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
             </div>
         </div>
         <div class="main-panel" data="blue">
@@ -123,7 +127,7 @@
                         <script>
                             document.write(new Date().getFullYear())
                         </script>
-                        , made with  <i class="far fa-heart"></i>  by
+                        , made with <i class="far fa-heart"></i> by
                         Lorenzo and Andrea for a better wine.
                     </div>
                     <!-- your footer here -->
