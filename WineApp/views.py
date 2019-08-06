@@ -74,3 +74,7 @@ def decompose(request, field):
 def correlation(request):
     cor.correlation()
     return render(request, 'WineApp/correlation.html')
+
+
+def dashboard(request):
+    return render(request, 'WineApp/dashboard.html')
