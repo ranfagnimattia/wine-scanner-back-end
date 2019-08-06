@@ -3,33 +3,33 @@ $('document').ready(function () {
     let sensor = data_py.sensor;
     let schema, caption, subcaption, plot, format;
     let schemaVal = [
-            {
-                name: "Time",
-                type: "date",
-                format: "%Y-%m-%d"
-            },
-            {
-                name: "Avg",
-                type: "number"
-            },
-            {
-                name: "Min",
-                type: "number"
-            },
-            {
-                name: "Max",
-                type: "number"
-            }];
+        {
+            name: "Time",
+            type: "date",
+            format: "%Y-%m-%d"
+        },
+        {
+            name: "Avg",
+            type: "number"
+        },
+        {
+            name: "Min",
+            type: "number"
+        },
+        {
+            name: "Max",
+            type: "number"
+        }];
     let schemaTot = [
-            {
-                name: "Time",
-                type: "date",
-                format: "%Y-%m-%d"
-            },
-            {
-                name: "Tot",
-                type: "number"
-            }];
+        {
+            name: "Time",
+            type: "date",
+            format: "%Y-%m-%d"
+        },
+        {
+            name: "Tot",
+            type: "number"
+        }];
     if (sensor.tot) {
         schema = schemaTot;
         subcaption = sensor.name + ' tot';
@@ -44,8 +44,9 @@ $('document').ready(function () {
 
     const fusionDataStore = new FusionCharts.DataStore();
 
-    $('#sensors').on('change', function () {
-        const sensor_id = this.value;
+    $('.sensor').on('click', function () {
+        console.log("click");
+        const sensor_id = this.id;
         $.getJSON({
             url: data_py.ajax_url,
             data: {
@@ -68,6 +69,10 @@ $('document').ready(function () {
                     format = {"suffix": sensor.unit};
 
                     const fusionTable = fusionDataStore.createDataTable(response.data, schema);
+
+                    $('.active').removeClass("active");
+                    $('#' + sensor_id).parent().addClass("active");
+
 
                     $('#chart-cont').updateFusionCharts({
                         dataSource: {
