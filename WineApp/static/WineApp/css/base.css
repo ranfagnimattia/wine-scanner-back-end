@@ -17,3 +17,10 @@
 .ps .ps__rail-y:hover {
     background-color: transparent;
 }
+
+.logo{
+    display: flex;
+}
+.fa-heart{
+    color: #1d8cf8;
+}
