@@ -5,6 +5,7 @@ from django.db import models
 class Sensor(models.Model):
     name = models.CharField(max_length=50)
     unit = models.CharField(max_length=50)
+    icon = models.CharField(max_length=50)
     min = models.FloatField(default=None, blank=True, null=True)
     max = models.FloatField(default=None, blank=True, null=True)
     values = models.BooleanField(default=True)

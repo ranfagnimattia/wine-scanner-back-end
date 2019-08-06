@@ -46,7 +46,8 @@ $('document').ready(function () {
 
     $('.sensor').on('click', function () {
         console.log("click");
-        const sensor_id = this.id;
+        console.log($(this).attr('data-sensor'));
+        const sensor_id = $(this).attr('data-sensor');
         $.getJSON({
             url: data_py.ajax_url,
             data: {
@@ -71,7 +72,7 @@ $('document').ready(function () {
                     const fusionTable = fusionDataStore.createDataTable(response.data, schema);
 
                     $('.active').removeClass("active");
-                    $('#' + sensor_id).parent().addClass("active");
+                    $('#sensor_' + sensor_id).parent().addClass("active");
 
 
                     $('#chart-cont').updateFusionCharts({

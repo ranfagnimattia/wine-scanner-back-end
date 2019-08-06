@@ -13,27 +13,22 @@
               Tip 1: You can change the color of the sidebar using: data-color="blue | green | orange | red"
           -->
             <div class="sidebar-wrapper">
-                <div class="logo">
-                    <a href="#" class="simple-text logo-mini">
-                        APP
-                    </a>
-                    <a href="#" class="simple-text logo-normal">
-                        WineApp
-                    </a>
+                <div class="logo" style="display: flex">
+                    <p>Sensors</p>
                 </div>
                 <ul class="nav">
                     {% for sensor in sensors %}
                         {% if sensor.id == data_js.sensor.id %}
                             <li class="nav-item active ">
-                                <a href="#" class="sensor" id="{{ sensor.id }}">
-                                    <i class="material-icons">linked_camera</i>
+                                <a href="#" class="sensor" id="sensor_{{ sensor.id }}" data-sensor="{{ sensor.id }}">
+                                    <i class="{{ sensor.icon }}"></i>
                                     {{ sensor }}
                                 </a>
                             </li>
                         {% else %}
                             <li class="nav-item ">
-                                <a href="#" class="sensor" id="{{ sensor.id }}">
-                                    <i class="material-icons">linked_camera</i>
+                                <a href="#" class="sensor" id="sensor_{{ sensor.id }}" data-sensor="{{ sensor.id }}">
+                                    <i class=" {{ sensor.icon }}"></i>
                                     {{ sensor }}
                                 </a>
                             </li>
