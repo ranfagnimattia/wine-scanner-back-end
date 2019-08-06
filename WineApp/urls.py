@@ -15,6 +15,4 @@ urlpatterns = [
     path('<field>/decompose', views.decompose, name='decompose'),
     path('correlation', views.correlation, name='correlation'),
     path('ajax/getDailyData', views.get_daily_data, name='ajax.getDailyData'),
-
-    path('dashboard', views.dashboard, name='dashboard')
 ]
