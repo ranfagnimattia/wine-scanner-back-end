@@ -23,6 +23,7 @@ html {
     border: none !important;
 }
 
+/* Black theme*/
 .sidebar .sidebar-wrapper {
     min-height: calc(100% - 80px);
 }
@@ -35,6 +36,27 @@ html {
 
 .footer {
     padding: 24px 0 22px 250px;
+}
+
+.card-stats .info-icon {
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    background: #e14eca;
+    background-image: -webkit-gradient(linear, right top, left bottom, from(#e14eca), color-stop(#ba54f5), to(#e14eca));
+    background-image: linear-gradient(to bottom left, #e14eca, #ba54f5, #e14eca);
+    background-size: 210% 210%;
+    background-position: 100% 0;
+}
+
+.card-stats .info-icon i {
+    color: #fff;
+    font-size: 1.7em;
+    padding: 14px 13px;
+}
+
+.card-stats .numbers .card-title {
+    font-size: 23px;
 }
 
 .ps .ps__rail-x:hover, .ps .ps__rail-y:hover,
