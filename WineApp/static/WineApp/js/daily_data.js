@@ -79,7 +79,7 @@ function updateChart(sensor, data) {
                 name: "Tot",
                 type: "number"
             }];
-        subcaption = sensor.name + ' tot';
+        subcaption =' tot';
         plot = [{"value": "Tot"}];
     } else {
         schema = [
@@ -100,7 +100,7 @@ function updateChart(sensor, data) {
                 name: "Max",
                 type: "number"
             }];
-        subcaption = sensor.name + ' avg, max, min';
+        subcaption =' avg, max, min';
         plot = [{"value": "Avg"}, {"value": "Min"}, {"value": "Max"}];
     }
     let caption = sensor.name;
@@ -112,8 +112,8 @@ function updateChart(sensor, data) {
     $('.active').removeClass("active");
     $('#sensor_' + sensor.id).parent().addClass("active");
 
-    chartElem.find('.card-title').text(caption);
-    chartElem.find('.card-category').text(subcaption);
+    $('.js-sensor-category').text(subcaption);
+
     chartElem.find('.chart').insertFusionCharts({
         type: 'timeseries',
         width: '100%',
@@ -166,22 +166,17 @@ function updateOtherChart(sensor, data, id, measure = "Avg") {
                 name: measure,
                 type: "number"
             }];
-        subcaption = sensor.name + ' ' + measure;
+        subcaption =' ' + measure;
         plot = [{"value": measure}];
         chartData = getMeasure(measure, data)
     }
     let format = {"suffix": sensor.unit};
-    if (id === 'month-chart') {
-        caption = 'Ultimo Mese';
-    } else {
-        caption = 'Andamento';
-    }
+
 
     const fusionDataStore = new FusionCharts.DataStore();
     const fusionTable = fusionDataStore.createDataTable(chartData, schema);
 
-    chartElem.find('.card-title').text(caption);
-    chartElem.find('.card-category').text(subcaption);
+    chartElem.find('.js-sensor-category').text(subcaption);
     chartElem.find('.chart').insertFusionCharts({
         type: 'timeseries',
         width: '100%',
