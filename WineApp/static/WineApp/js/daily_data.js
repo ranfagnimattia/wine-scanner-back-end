@@ -5,6 +5,7 @@ $('document').ready(function () {
     let sensor = data_py.sensor;
     let monthData = lastMonthData(data_py.data);//test
 
+    updateDashboard(data_py);
     updateChart(sensor, data_py.data);
     setUpButton(sensor, 'month');
     setUpButton(sensor, 'trend');
@@ -27,6 +28,7 @@ $('document').ready(function () {
                     sensor = response.sensor;
                     monthData = lastMonthData(response.data);
 
+                    updateDashboard(response);
                     updateChart(sensor, response.data);
                     setUpButton(sensor, 'month');
                     setUpButton(sensor, 'trend');
@@ -53,6 +55,13 @@ $('document').ready(function () {
     })
 });
 
+function updateDashboard(data) {
+    $('.js-sensor').text(data.sensor.name);
+    console.log(data.last);
+    $('.js-sensor-max').text(data.last.max + data.sensor.unit);
+    $('.js-sensor-avg').text(data.last.avg + data.sensor.unit);
+    $('.js-sensor-min').text(data.last.min + data.sensor.unit);
+}
 
 function updateChart(sensor, data) {
     let plot;
@@ -123,6 +132,7 @@ function updateChart(sensor, data) {
         }
     });
 }
+
 /*Aggiorno i frafici secondari*/
 function updateOtherChart(sensor, data, id, measure = "Avg") {
     let plot;
@@ -144,7 +154,7 @@ function updateOtherChart(sensor, data, id, measure = "Avg") {
             }];
         subcaption = sensor.name + ' Tot ';
         plot = [{"value": "Tot"}];
-        chartData = getMeasure('Tot',data)
+        chartData = getMeasure('Tot', data)
     } else {
         schema = [
             {
@@ -158,7 +168,7 @@ function updateOtherChart(sensor, data, id, measure = "Avg") {
             }];
         subcaption = sensor.name + ' ' + measure;
         plot = [{"value": measure}];
-        chartData = getMeasure(measure,data)
+        chartData = getMeasure(measure, data)
     }
     let format = {"suffix": sensor.unit};
     if (id === 'month-chart') {
@@ -190,6 +200,7 @@ function updateOtherChart(sensor, data, id, measure = "Avg") {
         }
     });
 }
+
 /* Iniziallizzo i bottoni dei grafici*/
 function setUpButton(sensor, id) {
     if (sensor.tot) {
@@ -208,6 +219,7 @@ function setUpButton(sensor, id) {
         $('#' + id + '-tot').attr("disabled", "disabled")
     }
 }
+
 /*Recupero i dati relativi all'ultimo mese*/
 function lastMonthData(allData) {
     let len = allData.length;
@@ -221,15 +233,16 @@ function lastMonthData(allData) {
     console.log(monthData);
     return monthData
 }
+
 /*Recupero i dati relativi ad una singola misura max,min,tot o avg*/
-function getMeasure(measure,data) {
-    let dict = {'Avg':1,'Max':3,'Min':2,'Tot':1};
+function getMeasure(measure, data) {
+    let dict = {'Avg': 1, 'Max': 3, 'Min': 2, 'Tot': 1};
     let j = dict[measure];
     let measureData = [];
-    for(let i=0;i<data.length;i++){
-        measureData.push([data[i][0],data[i][j]])
+    for (let i = 0; i < data.length; i++) {
+        measureData.push([data[i][0], data[i][j]])
     }
-    console.log('measure data '+measure);
+    console.log('measure data ' + measure);
     console.log(measureData);
     return measureData
 }

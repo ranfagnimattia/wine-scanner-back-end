@@ -38,6 +38,16 @@ html {
     padding: 24px 0 22px 250px;
 }
 
+
+/*Card stats*/
+.card-stats .card-body {
+    padding-bottom: 0;
+}
+
+.card-stats .card-footer {
+    padding-top: 0;
+}
+
 .card-stats .info-icon {
     height: 50px;
     width: 50px;
@@ -55,8 +65,20 @@ html {
     padding: 14px 13px;
 }
 
+.card-stats .numbers {
+    text-align: right;
+}
+
 .card-stats .numbers .card-title {
+    display: inline-block;
     font-size: 23px;
+    width: 80px;
+    margin-bottom: 0;
+}
+
+.card-stats hr {
+    margin-top: 5px;
+    margin-bottom: 10px;
 }
 
 .ps .ps__rail-x:hover, .ps .ps__rail-y:hover,

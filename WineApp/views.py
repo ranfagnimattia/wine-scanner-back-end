@@ -21,27 +21,29 @@ def index(request):
 
 
 def show_data(request):
-    data, sensor = sensor_data.get_daily_data()
-
+    data, sensor, values = sensor_data.get_daily_data()
+    data_js = _daily_data_js(data, sensor, values)
+    data_js['ajax_url'] = reverse('WineApp:ajax.getDailyData')
     return render(request, 'WineApp/daily_data.html', {
         'sensors': Sensor.objects.all(),
-        'data_js': {
-            'data': data,
-            'ajax_url': reverse('WineApp:ajax.getDailyData'),
-            'sensor': {'tot': sensor.tot, 'val': sensor.values, 'id': sensor.id, 'name': sensor.name,
-                       'unit': sensor.unit}
-        }})
+        'data_js': data_js
+    })
 
 
 # Ajax
 def get_daily_data(request):
     sensor_id = request.GET.get('sensor_id', 1)
-    data, sensor = sensor_data.get_daily_data(sensor_id)
-    return JsonResponse({
+    data, sensor, values = sensor_data.get_daily_data(sensor_id)
+    return JsonResponse(_daily_data_js(data, sensor, values))
+
+
+def _daily_data_js(data, sensor, values):
+    return {
         'data': data,
+        'last': values[-1],
         'sensor': {'tot': sensor.tot, 'val': sensor.values, 'id': sensor.id, 'name': sensor.name,
                    'unit': sensor.unit}
-    })
+    }
 
 
 def update_daily_data(request):
@@ -74,4 +76,3 @@ def decompose(request, field):
 def correlation(request):
     cor.correlation()
     return render(request, 'WineApp/correlation.html')
-

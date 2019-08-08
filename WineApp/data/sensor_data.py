@@ -105,7 +105,7 @@ def update_realtime_data():
     return debug_data
 
 
-def get_daily_data(sensor_id: int = 1) -> (list, Sensor):
+def get_daily_data(sensor_id: int = 1) -> (list, Sensor, list):
     """
     Get daily data of a sensor
 
@@ -115,13 +115,13 @@ def get_daily_data(sensor_id: int = 1) -> (list, Sensor):
     sensor = Sensor.objects.get(pk=sensor_id)
     history = sensor.dailydata_set.order_by('date')
     if sensor.tot:
-        values = history.values_list('date', 'tot')
+        values = history.values('date', 'tot')
     else:
-        values = history.values_list('date', 'avg', 'min', 'max')
-    values_list = [list(elem) for elem in values]
-    for elem in values_list:
-        elem[0] = elem[0].strftime('%Y-%m-%d')
-    return values_list, sensor
+        values = history.values('date', 'avg', 'min', 'max')
+    for elem in values:
+        elem['date'] = elem['date'].strftime('%Y-%m-%d')
+    values_list = [list(elem.values()) for elem in values]
+    return values_list, sensor, list(values)
 
 
 # todo choose size of train and test set
