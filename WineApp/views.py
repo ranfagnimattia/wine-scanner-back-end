@@ -41,6 +41,7 @@ def _daily_data_js(data, sensor, values):
     return {
         'data': data,
         'last': values[-1],
+        'lastMonth': values[-30:],
         'sensor': {'tot': sensor.tot, 'val': sensor.values, 'id': sensor.id, 'name': sensor.name,
                    'unit': sensor.unit}
     }
