@@ -65,16 +65,21 @@ html {
     padding: 14px 13px;
 }
 
-.card-stats .numbers {
+.card-stats .labels > p {
     text-align: right;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 12px;
+    line-height: 27px;
 }
 
-.card-stats .numbers .card-title {
-    display: inline-block;
-    font-size: 23px;
-    width: 80px;
+.card-stats .numbers > p {
+    text-align: right;
+    color: #ffffff;
+    font-weight: 300;
+    font-size: 21px;
     margin-bottom: 0;
 }
+
 
 .card-stats hr {
     margin-top: 5px;

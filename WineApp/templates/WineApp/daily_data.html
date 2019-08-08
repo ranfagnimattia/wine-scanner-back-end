@@ -101,23 +101,22 @@
                         <div class="card-stats card">
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="col-5">
+                                    <div class="col pr-0">
                                         <div class="info-icon text-center icon-warning">
                                             <i class="fas fa-thermometer-half"></i>
                                         </div>
                                     </div>
-                                    <div class="col-7">
-                                        <div class="numbers">
-                                            <span class="card-category">Max</span>
-                                            <span class="card-title js-sensor-max">37°C</span>
+                                    <div class="col-auto row">
+                                        {#                                        <div class="col"></div>#}
+                                        <div class="col-auto labels pr-0">
+                                            <p>Max</p>
+                                            <p>Avg</p>
+                                            <p>Min</p>
                                         </div>
-                                        <div class="numbers">
-                                            <span class="card-category">Avg</span>
-                                            <span class="card-title js-sensor-avg">37°C</span>
-                                        </div>
-                                        <div class="numbers">
-                                            <span class="card-category">Min</span>
-                                            <span class="card-title js-sensor-min">371°C</span>
+                                        <div class="col-auto numbers">
+                                            <p class="js-sensor-max"></p>
+                                            <p class="js-sensor-avg"></p>
+                                            <p class="js-sensor-min"></p>
                                         </div>
                                     </div>
                                 </div>
@@ -138,7 +137,8 @@
                             <div class="card-header">
                                 <div class="row">
                                     <div class="col-sm-6 text-left">
-                                        <h5 class="card-category "><span class="js-sensor"></span><span class="js-sensor-category"></span></h5>
+                                        <h5 class="card-category "><span class="js-sensor"></span><span
+                                                class="js-sensor-category"></span></h5>
                                         <h2 class="card-title js-sensor"></h2>
                                     </div>
                                 </div>
@@ -157,7 +157,8 @@
                             <div class="card-header">
                                 <div class="row">
                                     <div class="col-sm-6 text-left">
-                                        <h5 class="card-category"><span class="js-sensor"></span><span class="js-sensor-category"></span></h5>
+                                        <h5 class="card-category"><span class="js-sensor"></span><span
+                                                class="js-sensor-category"></span></h5>
                                         <h2 class="card-title">Ultimo Mese</h2>
                                     </div>
                                     <div class="col-sm-6">
@@ -205,7 +206,8 @@
                             <div class="card-header">
                                 <div class="row">
                                     <div class="col-sm-6 text-left">
-                                        <h5 class="card-category"><span class="js-sensor"></span><span class="js-sensor-category"></span></h5>
+                                        <h5 class="card-category"><span class="js-sensor"></span><span
+                                                class="js-sensor-category"></span></h5>
                                         <h2 class="card-title">Andamento</h2>
                                     </div>
                                     <div class="col-sm-6">
