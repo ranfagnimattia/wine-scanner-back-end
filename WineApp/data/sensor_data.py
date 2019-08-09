@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 from xml.etree import ElementTree
 
 import requests
+import numpy as np
 from django.http import Http404
 from statsmodels.tsa.holtwinters import ExponentialSmoothing
 
@@ -125,53 +126,53 @@ def get_daily_data(sensor_id: int = 1) -> (list, Sensor, list):
     :return: list of lists [date, avg, min, max] or [date,tot], sensor object
     """
     sensor = Sensor.objects.get(pk=sensor_id)
-    history = sensor.dailydata_set.filter().order_by('date')
+    history = sensor.dailydata_set.filter(date__gte='2019-07-17').order_by('date')
     if sensor.tot and sensor.values:
         values = history.values('date', 'tot', 'avg', 'min', 'max')
-        # tot = _trend(values, 'tot')
-        # avg = _trend(values, 'avg')
-        # max = _trend(values, 'max')
-        # min = _trend(values, 'min')
-        # trend = []
-        # for i in range(0, len(values)):
-        #     trend.append({'date': values[i]['date'], 'tot': tot[i], 'avg': avg[i], 'min': min[i], 'max': max[i]})
+        val = list(values)
+        avg = np.mean([e['avg'] for e in (val[-31:])])
+        min = np.mean([e['min'] for e in (val[-31:])])
+        max = np.mean([e['max'] for e in (val[-31:])])
+        tot = np.mean([e['tot'] for e in (val[-31:])])
     elif sensor.tot:
         values = history.values('date', 'tot')
-        # tot = _trend(values, 'tot')
-        # trend = []
-        # for i in range(0, len(values)):
-        #     trend.append({'date': values[i]['date'], 'tot': tot[i]})
+        val = list(values)
+        avg = np.NaN
+        min = np.NaN
+        max = np.NaN
+        tot = np.mean([e['tot'] for e in (val[-31:])])
     else:
         values = history.values('date', 'avg', 'min', 'max')
-        # avg = _trend(values, 'avg')
-        # max = _trend(values, 'max')
-        # min = _trend(values, 'min')
-        # trend = []
-        # for i in range(0, len(values)):
-        #     trend.append({'date': values[i]['date'], 'avg': avg[i], 'min': min[i], 'max': max[i]})
+        val = list(values)
+        avg = np.mean([e['avg'] for e in (val[-31:])])
+        min = np.mean([e['min'] for e in (val[-31:])])
+        max = np.mean([e['max'] for e in (val[-31:])])
+        tot = np.NaN
+    print(avg, min, max, tot)
+    diff = _difference(val[-31:], avg, min, max, tot)
+    print(diff)
+    lastMonthMean = {'avg': avg, 'min': min, 'max': max, 'tot': tot}
+
     for elem in values:
         elem['date'] = elem['date'].strftime('%Y-%m-%d')
-    # for elem in trend:
-    #     elem['date'] = elem['date'].strftime('%Y-%m-%d')
 
     values_list = [list(elem.values()) for elem in values]
-    return values_list, sensor, list(values)
+    return values_list, sensor, list(values), diff, lastMonthMean
 
 
-def _trend(values, measure):
-    actual = [elem[measure] for elem in values]
-    print(actual)
-    model = ExponentialSmoothing(actual)
-    fit_model = model.fit(smoothing_level=0.10)
-    trend = fit_model.fittedvalues
-
-    # plt.figure(figsize=(12, 7), dpi=200)
-    # plt.title(measure)
-    # plt.plot(actual, '-r', label='actual')
-    # plt.plot(trend, '-b', label='fitted')
-    # plt.legend()
-    # plt.show()
-    return trend
+def _difference(values, avg, min, max, tot):
+    diff = []
+    for e in values:
+        diff.append({'date': e['date'].strftime('%Y-%m-%d')})
+        if np.isnan(avg) == False:
+            diff[-1]['avg'] = e['avg'] - avg
+        if np.isnan(tot) == False:
+            diff[-1]['tot'] = e['tot'] - tot
+        if np.isnan(min) == False:
+            diff[-1]['min'] = e['min'] - min
+        if np.isnan(max) == False:
+            diff[-1]['max'] = e['max'] - max
+    return diff
 
 
 # todo choose size of train and test set
