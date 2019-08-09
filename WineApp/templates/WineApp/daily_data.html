@@ -82,7 +82,36 @@
                                 <div class="row">
                                     <div class="col-auto pr-0">
                                         <div class="info-icon text-center icon-warning">
-                                            <i class="fas fa-thermometer-half"></i>
+                                            <i class="far fa-clock"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="row flex-nowrap">
+                                            <div class="col p-0"></div>
+                                            <div class="col-auto">
+                                                <p class="label">Ultimo aggiornamento</p>
+                                                <p class="number"><span class="js-update"></span></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <hr>
+                                <div class="stats link" id="update-now">
+                                    <i class="fas fa-redo"></i>
+                                    <span>Aggiorna ora</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-xl-3">
+                        <div class="card-stats card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-auto pr-0">
+                                        <div class="info-icon text-center icon-warning">
+                                            <i class="fas fa-calendar-day"></i>
                                         </div>
                                     </div>
                                     <div class="col">
@@ -111,7 +140,7 @@
                             <div class="card-footer">
                                 <hr>
                                 <div class="stats">
-                                    <i class="fas fa-thermometer-half"></i>
+                                    <span class="js-sensor-icon"></span>
                                     <span><span class="js-sensor"></span> oggi</span>
                                 </div>
                             </div>
@@ -123,7 +152,7 @@
                                 <div class="row">
                                     <div class="col-auto pr-0">
                                         <div class="info-icon text-center icon-warning">
-                                            <i class="fas fa-thermometer-half"></i>
+                                            <i class="fas fa-calendar-alt"></i>
                                         </div>
                                     </div>
                                     <div class="col">
@@ -152,28 +181,40 @@
                             <div class="card-footer">
                                 <hr>
                                 <div class="stats">
-                                    <i class="fas fa-thermometer-half"></i>
+                                    <span class="js-sensor-icon"></span>
                                     <span><span class="js-sensor"></span> ultimo mese</span>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card card-chart" id="sensor-chart">
-                            <div class="card-header">
+                    <div class="col-sm-6 col-xl-3">
+                        <div class="card-stats card">
+                            <div class="card-body">
                                 <div class="row">
-                                    <div class="col-sm-6 text-left">
-                                        <h5 class="card-category "><span class="js-sensor"></span><span
-                                                class="js-sensor-category"></span></h5>
-                                        <h2 class="card-title js-sensor"></h2>
+                                    <div class="col-auto pr-0">
+                                        <div class="info-icon text-center icon-warning">
+                                            <i class="fas fa-chart-line"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="row flex-nowrap">
+                                            <div class="col p-0"></div>
+                                            <div class="col-auto">
+                                                <p class="label">Rispetto a ieri</p>
+                                                <p class="number">
+                                                    <span class="js-trend"></span>
+                                                    <span class="js-trend-icon"></span>
+                                                </p>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="card-body">
-                                <div class="chart-area-big">
-                                    <div class="chart"></div>
+                            <div class="card-footer">
+                                <hr>
+                                <div class="stats">
+                                    <span class="js-sensor-icon"></span>
+                                    <span><span class="js-sensor"></span> <span class="js-main-category"></span></span>
                                 </div>
                             </div>
                         </div>
@@ -268,6 +309,27 @@
                                                 <span class="d-block d-sm-none">Min</span>
                                             </label>
                                         </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-area-big">
+                                    <div class="chart"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card card-chart" id="sensor-chart">
+                            <div class="card-header">
+                                <div class="row">
+                                    <div class="col-sm-6 text-left">
+                                        <h5 class="card-category "><span class="js-sensor"></span><span
+                                                class="js-sensor-category"></span></h5>
+                                        <h2 class="card-title"><span class="js-sensor-icon text-primary"></span>
+                                            <span class="js-sensor"></span></h2>
                                     </div>
                                 </div>
                             </div>

@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
@@ -43,8 +45,10 @@ def _daily_data_js(data, sensor, values, trend):
         'last': values[-1],
         'lastMonth': values[-31:],
         'trend': trend,
+        'update': datetime.now().strftime('Oggi %H:%M'),
+        'yesterday': values[-2],
         'sensor': {'tot': sensor.tot, 'values': sensor.values, 'id': sensor.id, 'name': sensor.name,
-                   'unit': sensor.unit}
+                   'unit': sensor.unit, 'icon': sensor.icon}
     }
 
 

@@ -43,34 +43,61 @@ $('document').ready(function () {
         const measure = $(this).attr('data-val');
         if (!$(this).hasClass("active"))
             updateOtherChart(sensor, trendData, 'trend-chart', measure)
-    })
+    });
+
+
+    $('#update-now').click(() => {
+        console.log('Update');
+    });
 });
 
 function updateDashboard(data, monthData, trendData) {
-    $('.js-sensor').text(data.sensor.name);
-    $('.js-unit').html(data.sensor.unit);
+    const sensor = data.sensor;
+    $('.js-sensor').text(sensor.name);
+    $('.js-sensor-icon').html('<i class="' + sensor.icon + '"></i>');
+    $('.js-unit').html(sensor.unit.replace('^2', '<sup>2</sup>'));
 
-    if (data.sensor.values)
+    if (sensor.values)
         $('.js-show-values').show();
     else
         $('.js-show-values').hide();
 
-    if (data.sensor.tot)
+    if (sensor.tot)
         $('.js-show-tot').show();
     else
         $('.js-show-tot').hide();
 
-    console.log(data.sensor);
+    console.log(sensor);
     console.log(data.last);
     $('.js-last-tot').text(data.last.tot);
     $('.js-last-max').text(data.last.max);
     $('.js-last-avg').text(data.last.avg);
     $('.js-last-min').text(data.last.min);
-    updateChart(data.sensor, data.data);
-    setUpButton(data.sensor);
-    updateOtherChart(data.sensor, monthData, 'month-chart');
+
+    $('.js-update').text(data.update);
+
+    let trend;
+    if (sensor.tot) {
+        trend = data.last.tot - data.yesterday.tot;
+        $('.js-main-category').text('tot');
+    } else {
+        trend = data.last.avg - data.yesterday.avg;
+        $('.js-main-category').text('avg');
+    }
+    $('.js-trend').text(trend.toFixed(2));
+    if (trend > 0)
+        $('.js-trend-icon').html('<i class="fas fa-caret-up"></i>');
+    else if (trend < 0)
+        $('.js-trend-icon').html('<i class="fas fa-caret-down"></i>');
+    else
+        $('.js-trend-icon').text('<i class="fas fa-minus"></i>');
+
+
+    updateChart(sensor, data.data);
+    setUpButton(sensor);
+    updateOtherChart(sensor, monthData, 'month-chart');
     // Passare i dati dell'andamento generale al posto di month chart
-    updateOtherChart(data.sensor, trendData, 'trend-chart');
+    updateOtherChart(sensor, trendData, 'trend-chart');
 }
 
 function updateChart(sensor, data) {
@@ -113,7 +140,6 @@ function updateChart(sensor, data) {
         subcaption = ' avg, max, min';
         plot = [{"value": "Avg"}, {"value": "Min"}, {"value": "Max"}];
     }
-    let caption = sensor.name;
     let format = {"suffix": sensor.unit};
 
     const fusionDataStore = new FusionCharts.DataStore();

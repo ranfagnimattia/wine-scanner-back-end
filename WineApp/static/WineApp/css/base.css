@@ -48,6 +48,23 @@ html {
     padding-top: 0;
 }
 
+.card-stats .card-footer .stats {
+    cursor: default;
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Chrome and Opera */
+}
+
+.card-stats .card-footer .stats:hover {
+    color: #7486b3;
+}
+
+.card-stats .card-footer .stats.link {
+    cursor: pointer;
+}
+
 .card-stats .info-icon {
     height: 50px;
     width: 50px;
@@ -73,8 +90,21 @@ html {
     line-height: 27px;
 }
 
+.card-stats .label {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 12px;
+    line-height: 27px;
+}
+
 .card-stats .numbers > p {
     text-align: right;
+    color: #ffffff;
+    font-weight: 300;
+    font-size: 21px;
+    margin-bottom: 0;
+}
+
+.card-stats .number {
     color: #ffffff;
     font-weight: 300;
     font-size: 21px;
