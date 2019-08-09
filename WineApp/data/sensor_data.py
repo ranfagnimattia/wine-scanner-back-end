@@ -128,34 +128,34 @@ def get_daily_data(sensor_id: int = 1) -> (list, Sensor, list):
     history = sensor.dailydata_set.filter().order_by('date')
     if sensor.tot and sensor.values:
         values = history.values('date', 'tot', 'avg', 'min', 'max')
-        tot = _trend(values, 'tot')
-        avg = _trend(values, 'avg')
-        max = _trend(values, 'max')
-        min = _trend(values, 'min')
-        trend = []
-        for i in range(0, len(values)):
-            trend.append({'date': values[i]['date'], 'tot': tot[i], 'avg': avg[i], 'min': min[i], 'max': max[i]})
+        # tot = _trend(values, 'tot')
+        # avg = _trend(values, 'avg')
+        # max = _trend(values, 'max')
+        # min = _trend(values, 'min')
+        # trend = []
+        # for i in range(0, len(values)):
+        #     trend.append({'date': values[i]['date'], 'tot': tot[i], 'avg': avg[i], 'min': min[i], 'max': max[i]})
     elif sensor.tot:
         values = history.values('date', 'tot')
-        tot = _trend(values, 'tot')
-        trend = []
-        for i in range(0, len(values)):
-            trend.append({'date': values[i]['date'], 'tot': tot[i]})
+        # tot = _trend(values, 'tot')
+        # trend = []
+        # for i in range(0, len(values)):
+        #     trend.append({'date': values[i]['date'], 'tot': tot[i]})
     else:
         values = history.values('date', 'avg', 'min', 'max')
-        avg = _trend(values, 'avg')
-        max = _trend(values, 'max')
-        min = _trend(values, 'min')
-        trend = []
-        for i in range(0, len(values)):
-            trend.append({'date': values[i]['date'], 'avg': avg[i], 'min': min[i], 'max': max[i]})
+        # avg = _trend(values, 'avg')
+        # max = _trend(values, 'max')
+        # min = _trend(values, 'min')
+        # trend = []
+        # for i in range(0, len(values)):
+        #     trend.append({'date': values[i]['date'], 'avg': avg[i], 'min': min[i], 'max': max[i]})
     for elem in values:
         elem['date'] = elem['date'].strftime('%Y-%m-%d')
-    for elem in trend:
-        elem['date'] = elem['date'].strftime('%Y-%m-%d')
+    # for elem in trend:
+    #     elem['date'] = elem['date'].strftime('%Y-%m-%d')
 
     values_list = [list(elem.values()) for elem in values]
-    return values_list, sensor, list(values), list(trend)
+    return values_list, sensor, list(values)
 
 
 def _trend(values, measure):

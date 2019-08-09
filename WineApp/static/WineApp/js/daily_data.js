@@ -4,10 +4,9 @@ $('document').ready(function () {
 
 
     let monthData = data_py.lastMonth;
-    let trendData = data_py.trend;
     let sensor = data_py.sensor;
 
-    updateDashboard(data_py, monthData, trendData);
+    updateDashboard(data_py, monthData);
 
     $('.sensor').on('click', function () {
         const sensor_id = $(this).attr('data-sensor');
@@ -22,10 +21,9 @@ $('document').ready(function () {
                     console.log(response);
 
                     monthData = response.lastMonth;
-                    trendData = response.trend;
                     sensor = response.sensor;
 
-                    updateDashboard(response, monthData,trendData);
+                    updateDashboard(response, monthData);
                 }
             }, error: function (response) {
                 console.error(response);
@@ -44,7 +42,7 @@ $('document').ready(function () {
         console.log("trend click");
         const measure = $(this).attr('data-val');
         if (!$(this).hasClass("active"))
-            updateOtherChart(sensor, trendData, 'trend-chart', measure)
+            updateOtherChart(sensor, monthData, 'trend-chart', measure)
     });
 
 
@@ -53,7 +51,7 @@ $('document').ready(function () {
     });
 });
 
-function updateDashboard(data, monthData, trendData) {
+function updateDashboard(data, monthData) {
     const sensor = data.sensor;
     $('.js-sensor').text(sensor.name);
     $('.js-sensor-icon').html('<i class="' + sensor.icon + '"></i>');
@@ -98,7 +96,7 @@ function updateDashboard(data, monthData, trendData) {
     setUpButton(sensor);
     updateOtherChart(sensor, monthData, 'month-chart');
     // Passare i dati dell'andamento generale al posto di month chart
-    updateOtherChart(sensor, trendData, 'trend-chart');
+    updateOtherChart(sensor, monthData, 'trend-chart');
 }
 
 function updateChart(sensor, data) {
@@ -106,7 +104,7 @@ function updateChart(sensor, data) {
     let subcaption;
     let schema;
     const chartElem = $('#sensor-chart');
-    if (sensor.tot) {
+    if (sensor.tot && sensor.values) {
         schema = [
             {
                 name: "Time",
@@ -116,15 +114,6 @@ function updateChart(sensor, data) {
             {
                 name: "Tot",
                 type: "number"
-            }];
-        subcaption = ' tot';
-        plot = [{"value": "Tot"}];
-    } else {
-        schema = [
-            {
-                name: "Time",
-                type: "date",
-                format: "%Y-%m-%d"
             },
             {
                 name: "Avg",
@@ -138,8 +127,44 @@ function updateChart(sensor, data) {
                 name: "Max",
                 type: "number"
             }];
-        subcaption = ' avg, max, min';
-        plot = [{"value": "Avg"}, {"value": "Min"}, {"value": "Max"}];
+        subcaption = ' avg, tot, max, min';
+        plot = [{"value": "Avg"}, {"value": "Tot"}, {"value": "Min"}, {"value": "Max"}];
+    } else {
+        if (sensor.tot) {
+            schema = [
+                {
+                    name: "Time",
+                    type: "date",
+                    format: "%Y-%m-%d"
+                },
+                {
+                    name: "Tot",
+                    type: "number"
+                }];
+            subcaption = ' tot';
+            plot = [{"value": "Tot"}];
+        } else {
+            schema = [
+                {
+                    name: "Time",
+                    type: "date",
+                    format: "%Y-%m-%d"
+                },
+                {
+                    name: "Avg",
+                    type: "number"
+                },
+                {
+                    name: "Min",
+                    type: "number"
+                },
+                {
+                    name: "Max",
+                    type: "number"
+                }];
+            subcaption = ' avg, max, min';
+            plot = [{"value": "Avg"}, {"value": "Min"}, {"value": "Max"}];
+        }
     }
     let format = {"suffix": sensor.unit};
 
@@ -181,21 +206,7 @@ function updateOtherChart(sensor, data, id, measure = "avg") {
     const chartElem = $('#' + id);
     console.log('monthdata');
     console.log(data);
-    if (sensor.tot) {
-        schema = [
-            {
-                name: "Time",
-                type: "date",
-                format: "%Y-%m-%d"
-            },
-            {
-                name: "Tot",
-                type: "number"
-            }];
-        subcaption = ' tot ';
-        plot = [{"value": "Tot", "type": "column"}];
-        chartData = getMeasure('tot', data)
-    } else {
+    if (sensor.tot && sensor.values) {
         schema = [
             {
                 name: "Time",
@@ -207,8 +218,38 @@ function updateOtherChart(sensor, data, id, measure = "avg") {
                 type: "number"
             }];
         subcaption = ' ' + measure;
-        plot = [{"value": measure.charAt(0).toUpperCase() + measure.slice(1)}];
+        plot = [{"value": measure.charAt(0).toUpperCase() + measure.slice(1), "type": "column"}];
         chartData = getMeasure(measure, data)
+    } else {
+        if (sensor.tot) {
+            schema = [
+                {
+                    name: "Time",
+                    type: "date",
+                    format: "%Y-%m-%d"
+                },
+                {
+                    name: "Tot",
+                    type: "number"
+                }];
+            subcaption = ' tot ';
+            plot = [{"value": "Tot", "type": "column"}];
+            chartData = getMeasure('tot', data)
+        } else {
+            schema = [
+                {
+                    name: "Time",
+                    type: "date",
+                    format: "%Y-%m-%d"
+                },
+                {
+                    name: measure.charAt(0).toUpperCase() + measure.slice(1),
+                    type: "number"
+                }];
+            subcaption = ' ' + measure;
+            plot = [{"value": measure.charAt(0).toUpperCase() + measure.slice(1)}];
+            chartData = getMeasure(measure, data)
+        }
     }
 
     const fusionDataStore = new FusionCharts.DataStore();
@@ -250,16 +291,23 @@ function updateOtherChart(sensor, data, id, measure = "avg") {
 
 /* Iniziallizzo i bottoni dei grafici*/
 function setUpButton(sensor) {
-    if (sensor.tot) {
-        let tot = $('.tot');
-        tot.removeAttr("disabled");
-        tot.addClass("active");
-        $('.values').attr("disabled", "disabled");
-    } else {
+    if (sensor.tot && sensor.values) {
         $('.values').removeAttr("disabled");
+        $('.tot').removeAttr("disabled")
         $('#trend-avg').addClass("active");
         $('#month-avg').addClass("active");
-        $('.tot').attr("disabled", "disabled");
+    } else {
+        if (sensor.tot) {
+            let tot = $('.tot');
+            tot.removeAttr("disabled");
+            tot.addClass("active");
+            $('.values').attr("disabled", "disabled");
+        } else {
+            $('.values').removeAttr("disabled");
+            $('#trend-avg').addClass("active");
+            $('#month-avg').addClass("active");
+            $('.tot').attr("disabled", "disabled");
+        }
     }
 }
 
