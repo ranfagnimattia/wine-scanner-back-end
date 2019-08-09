@@ -21,8 +21,8 @@ def index(request):
 
 
 def show_data(request):
-    data, sensor, values = sensor_data.get_daily_data()
-    data_js = _daily_data_js(data, sensor, values)
+    data, sensor, values, trend = sensor_data.get_daily_data()
+    data_js = _daily_data_js(data, sensor, values, trend)
     data_js['ajax_url'] = reverse('WineApp:ajax.getDailyData')
     return render(request, 'WineApp/daily_data.html', {
         'sensors': Sensor.objects.all(),
@@ -33,15 +33,16 @@ def show_data(request):
 # Ajax
 def get_daily_data(request):
     sensor_id = request.GET.get('sensor_id', 1)
-    data, sensor, values = sensor_data.get_daily_data(sensor_id)
-    return JsonResponse(_daily_data_js(data, sensor, values))
+    data, sensor, values, trend = sensor_data.get_daily_data(sensor_id)
+    return JsonResponse(_daily_data_js(data, sensor, values, trend))
 
 
-def _daily_data_js(data, sensor, values):
+def _daily_data_js(data, sensor, values, trend):
     return {
         'data': data,
         'last': values[-1],
-        'lastMonth': values[-30:],
+        'lastMonth': values[-31:],
+        'trend': trend,
         'sensor': {'tot': sensor.tot, 'values': sensor.values, 'id': sensor.id, 'name': sensor.name,
                    'unit': sensor.unit}
     }

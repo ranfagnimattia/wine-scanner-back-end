@@ -4,9 +4,10 @@ $('document').ready(function () {
 
 
     let monthData = data_py.lastMonth;
+    let trendData = data_py.trend;
     let sensor = data_py.sensor;
 
-    updateDashboard(data_py, monthData);
+    updateDashboard(data_py, monthData, trendData);
 
     $('.sensor').on('click', function () {
         const sensor_id = $(this).attr('data-sensor');
@@ -21,9 +22,10 @@ $('document').ready(function () {
                     console.log(response);
 
                     monthData = response.lastMonth;
+                    trendData = response.trend;
                     sensor = response.sensor;
 
-                    updateDashboard(response, monthData);
+                    updateDashboard(response, monthData,trendData);
                 }
             }
         });
@@ -40,11 +42,11 @@ $('document').ready(function () {
         console.log("trend click");
         const measure = $(this).attr('data-val');
         if (!$(this).hasClass("active"))
-            updateOtherChart(sensor, monthData, 'trend-chart', measure)
+            updateOtherChart(sensor, trendData, 'trend-chart', measure)
     })
 });
 
-function updateDashboard(data, monthData) {
+function updateDashboard(data, monthData, trendData) {
     $('.js-sensor').text(data.sensor.name);
     $('.js-unit').html(data.sensor.unit);
 
@@ -68,7 +70,7 @@ function updateDashboard(data, monthData) {
     setUpButton(data.sensor);
     updateOtherChart(data.sensor, monthData, 'month-chart');
     // Passare i dati dell'andamento generale al posto di month chart
-    updateOtherChart(data.sensor, monthData, 'trend-chart');
+    updateOtherChart(data.sensor, trendData, 'trend-chart');
 }
 
 function updateChart(sensor, data) {
