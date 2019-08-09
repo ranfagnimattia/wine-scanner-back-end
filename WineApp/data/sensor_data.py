@@ -114,7 +114,9 @@ def get_daily_data(sensor_id: int = 1) -> (list, Sensor, list):
     """
     sensor = Sensor.objects.get(pk=sensor_id)
     history = sensor.dailydata_set.order_by('date')
-    if sensor.tot:
+    if sensor.tot and sensor.values:
+        values = history.values('date', 'tot', 'avg', 'min', 'max')
+    elif sensor.tot:
         values = history.values('date', 'tot')
     else:
         values = history.values('date', 'avg', 'min', 'max')

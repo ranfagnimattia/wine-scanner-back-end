@@ -76,47 +76,34 @@
             <!-- End Navbar -->
             <div class="content">
                 <div class="row">
-                    <div class="col-lg-3 col-sm-6">
-                        <div class="card">
-                            <div class="card-header">
-                                <h5 class="card-category">Oggi</h5>
-                                <h3 class="card-title">
-                                    <i class="fas fa-thermometer-half text-primary"></i>
-                                    <span class="card-category">Max</span>
-                                    37°C
-                                </h3>
-                                <h3 class="card-title">
-                                    <i class="fas fa-thermometer-half text-primary"></i>
-                                    <span class="card-category">Avg</span>
-                                    37°C
-                                </h3>
-                            </div>
-                            <div class="card-footer">
-                                <hr>
-                                <div class="stats"><i class="fa fa-headphones"></i> Update Now</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-lg-3">
+                    <div class="col-sm-6 col-xl-3">
                         <div class="card-stats card">
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="col pr-0">
+                                    <div class="col-auto pr-0">
                                         <div class="info-icon text-center icon-warning">
                                             <i class="fas fa-thermometer-half"></i>
                                         </div>
                                     </div>
-                                    <div class="col-auto row">
-                                        {#                                        <div class="col"></div>#}
-                                        <div class="col-auto labels pr-0">
-                                            <p>Max</p>
-                                            <p>Avg</p>
-                                            <p>Min</p>
-                                        </div>
-                                        <div class="col-auto numbers">
-                                            <p class="js-sensor-max"></p>
-                                            <p class="js-sensor-avg"></p>
-                                            <p class="js-sensor-min"></p>
+                                    <div class="col">
+                                        <div class="row flex-nowrap">
+                                            <div class="col p-0"></div>
+                                            <div class="col-auto labels pr-0">
+                                                <p class="js-show-tot">Tot</p>
+                                                <p class="js-show-values">Max</p>
+                                                <p class="js-show-values">Avg</p>
+                                                <p class="js-show-values">Min</p>
+                                            </div>
+                                            <div class="col-auto numbers">
+                                                <p class="js-show-tot"><span class="js-last-tot"></span><span
+                                                        class="js-unit"></span></p>
+                                                <p class="js-show-values"><span class="js-last-max"></span><span
+                                                        class="js-unit"></span></p>
+                                                <p class="js-show-values"><span class="js-last-avg"></span><span
+                                                        class="js-unit"></span></p>
+                                                <p class="js-show-values"><span class="js-last-min"></span><span
+                                                        class="js-unit"></span></p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -126,6 +113,47 @@
                                 <div class="stats">
                                     <i class="fas fa-thermometer-half"></i>
                                     <span><span class="js-sensor"></span> oggi</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-xl-3">
+                        <div class="card-stats card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-auto pr-0">
+                                        <div class="info-icon text-center icon-warning">
+                                            <i class="fas fa-thermometer-half"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="row flex-nowrap">
+                                            <div class="col p-0"></div>
+                                            <div class="col-auto labels pr-0">
+                                                <p class="js-show-tot">Tot</p>
+                                                <p class="js-show-values">Max</p>
+                                                <p class="js-show-values">Avg</p>
+                                                <p class="js-show-values">Min</p>
+                                            </div>
+                                            <div class="col-auto numbers">
+                                                <p class="js-show-tot"><span class="js-last-tot"></span><span
+                                                        class="js-unit"></span></p>
+                                                <p class="js-show-values"><span class="js-last-max"></span><span
+                                                        class="js-unit"></span></p>
+                                                <p class="js-show-values"><span class="js-last-avg"></span><span
+                                                        class="js-unit"></span></p>
+                                                <p class="js-show-values"><span class="js-last-min"></span><span
+                                                        class="js-unit"></span></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <hr>
+                                <div class="stats">
+                                    <i class="fas fa-thermometer-half"></i>
+                                    <span><span class="js-sensor"></span> ultimo mese</span>
                                 </div>
                             </div>
                         </div>

@@ -57,6 +57,7 @@ html {
     background-image: linear-gradient(to bottom left, #e14eca, #ba54f5, #e14eca);
     background-size: 210% 210%;
     background-position: 100% 0;
+    margin-bottom: 5px;
 }
 
 .card-stats .info-icon i {
@@ -78,6 +79,13 @@ html {
     font-weight: 300;
     font-size: 21px;
     margin-bottom: 0;
+}
+
+.card-stats .numbers .js-unit {
+    color: #dfdfdf;
+    font-weight: 200;
+    font-size: 18px;
+    margin-left: 1px;
 }
 
 

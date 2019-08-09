@@ -46,11 +46,24 @@ $('document').ready(function () {
 
 function updateDashboard(data, monthData) {
     $('.js-sensor').text(data.sensor.name);
-    console.log('last day');
+    $('.js-unit').html(data.sensor.unit);
+
+    if (data.sensor.values)
+        $('.js-show-values').show();
+    else
+        $('.js-show-values').hide();
+
+    if (data.sensor.tot)
+        $('.js-show-tot').show();
+    else
+        $('.js-show-tot').hide();
+
+    console.log(data.sensor);
     console.log(data.last);
-    $('.js-sensor-max').text(data.last.max + data.sensor.unit);
-    $('.js-sensor-avg').text(data.last.avg + data.sensor.unit);
-    $('.js-sensor-min').text(data.last.min + data.sensor.unit);
+    $('.js-last-tot').text(data.last.tot);
+    $('.js-last-max').text(data.last.max);
+    $('.js-last-avg').text(data.last.avg);
+    $('.js-last-min').text(data.last.min);
     updateChart(data.sensor, data.data);
     setUpButton(data.sensor);
     updateOtherChart(data.sensor, monthData, 'month-chart');
