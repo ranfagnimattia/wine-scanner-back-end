@@ -1,10 +1,11 @@
 from datetime import datetime, timedelta
 from xml.etree import ElementTree
-import matplotlib.pyplot as plt
+
 import requests
 from django.http import Http404
-from WineApp.models import DailyData, Sensor, RealTimeData
 from statsmodels.tsa.holtwinters import ExponentialSmoothing
+
+from WineApp.models import DailyData, Sensor, RealTimeData
 
 
 def update_daily_data():
@@ -24,7 +25,9 @@ def update_daily_data():
         return 'API error: ' + root_elem.get('messaggio')
     station_elem = root_elem[0]
 
+    DailyData.objects.filter(date__gte=start_date).delete()
     debug_data = []
+    new_data = []
     n_updated = 0
     n_created = 0
     for unit_elem in station_elem.findall('unita'):
@@ -33,16 +36,23 @@ def update_daily_data():
             for sensor_elem in date_elem.findall('sensore'):
                 try:
                     sensor = Sensor.objects.get(name=sensor_elem.get('nome'))
-                    data, created = DailyData.objects.get_or_create(date=date_elem.get('data'), sensor=sensor)
+                    # data, created = DailyData.objects.get_or_create(date=date_elem.get('data'), sensor=sensor)
+                    data = DailyData(date=date_elem.get('data'), sensor=sensor)
+                    created = False
                     if sensor.values:
                         data.avg = sensor_elem.get('media')
                         data.max = sensor_elem.get('massima')
                         data.maxTime = sensor_elem.get('ora_massima')
                         data.min = sensor_elem.get('minima')
                         data.minTime = sensor_elem.get('ora_minima')
+                        if sensor.name == 'Pressione atmosferica':
+                            data.avg = round(float(data.avg) / 10, 3)
+                            data.max = round(float(data.max) / 10, 3)
+                            data.min = round(float(data.min) / 10, 3)
                     if sensor.tot:
                         data.tot = sensor_elem.get('cumulato')
-                    data.save()
+                    # data.save()
+                    new_data.append(data)
                     string += sensor_elem.get('nome') + str(created) + ' '
                     if created:
                         n_created += 1
@@ -54,6 +64,7 @@ def update_daily_data():
 
             debug_data.append(date_elem.get('data') + '  ' + string)
 
+    DailyData.objects.bulk_create(new_data)
     debug_data.append(start_date + '   ' + end_date)
     debug_data.append('Updated: ' + str(n_updated) + ', Created: ' + str(n_created))
     return debug_data
@@ -113,7 +124,7 @@ def get_daily_data(sensor_id: int = 1) -> (list, Sensor, list):
     :return: list of lists [date, avg, min, max] or [date,tot], sensor object
     """
     sensor = Sensor.objects.get(pk=sensor_id)
-    history = sensor.dailydata_set.filter(date__gte='2019-07-17').order_by('date')
+    history = sensor.dailydata_set.filter().order_by('date')
     if sensor.tot and sensor.values:
         values = history.values('date', 'tot', 'avg', 'min', 'max')
         tot = _trend(values, 'tot')

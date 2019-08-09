@@ -12,22 +12,24 @@ def import_daily_data():
     df['Date'] = pd.to_datetime(df['Date'], format='%Y-%m-%d')
     print(df.dtypes)
     print(len(df))
+    new_measures = []
     for i in range(0, len(df)):
         x = df.loc[i]
         date = x['Date']
         print(date)
-        _save_into_db(date, x['Tavg'], x['Tmax'], x['Tmin'], np.NaN, 'Temperatura aria')
-        _save_into_db(date, x['Havg'], x['Hmax'], x['Hmin'], np.NaN, 'Umidità aria')
-        _save_into_db(date, x['Dewavg'], x['Dewmax'], x['Dewmin'], np.NaN, 'Punto di rugiada')
+        _save_into_db(new_measures, date, x['Tavg'], x['Tmax'], x['Tmin'], np.NaN, 'Temperatura aria')
+        _save_into_db(new_measures, date, x['Havg'], x['Hmax'], x['Hmin'], np.NaN, 'Umidità aria')
+        _save_into_db(new_measures, date, x['Dewavg'], x['Dewmax'], x['Dewmin'], np.NaN, 'Punto di rugiada')
         bfsavg = (x['Bfsavg'] / 24) * 100
-        _save_into_db(date, bfsavg, x['Bfsmax'], x['Bfsmin'], np.NaN, 'Bagnatura fogliare sup')
+        _save_into_db(new_measures, date, bfsavg, x['Bfsmax'], x['Bfsmin'], np.NaN, 'Bagnatura fogliare sup')
         bfiavg = (x['Bfiavg'] / 24) * 100
-        _save_into_db(date, bfiavg, x['Bfimax'], x['Bfimin'], np.NaN, 'Bagnatura fogliare inf')
-        _save_into_db(date, np.NaN, np.NaN, np.NaN, x['Raintot'], 'Pioggia')
-        _save_into_db(date, x['Windavg'], x['Windmax'], x['Windmin'], np.NaN, 'Velocità vento')
+        _save_into_db(new_measures, date, bfiavg, x['Bfimax'], x['Bfimin'], np.NaN, 'Bagnatura fogliare inf')
+        _save_into_db(new_measures, date, np.NaN, np.NaN, np.NaN, x['Raintot'], 'Pioggia')
+        _save_into_db(new_measures, date, x['Windavg'], x['Windmax'], x['Windmin'], np.NaN, 'Velocità vento')
+    DailyData.objects.bulk_create(new_measures)
 
 
-def _save_into_db(date, avg, max, min, tot, sensor):
+def _save_into_db(new_measures, date, avg, max, min, tot, sensor):
     if np.isnan(avg) and np.isnan(min) and np.isnan(max) and np.isnan(tot):
         return
     else:
@@ -37,7 +39,7 @@ def _save_into_db(date, avg, max, min, tot, sensor):
         measure.min = min
         measure.max = max
         measure.tot = tot
-        measure.save()
+        new_measures.append(measure)
         return
 
 

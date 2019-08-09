@@ -27,6 +27,8 @@ $('document').ready(function () {
 
                     updateDashboard(response, monthData,trendData);
                 }
+            }, error: function (response) {
+                console.error(response);
             }
         });
     });
@@ -90,8 +92,7 @@ function updateDashboard(data, monthData, trendData) {
     else if (trend < 0)
         $('.js-trend-icon').html('<i class="fas fa-caret-down"></i>');
     else
-        $('.js-trend-icon').text('<i class="fas fa-minus"></i>');
-
+        $('.js-trend-icon').html('<i class="fas fa-minus"></i>');
 
     updateChart(sensor, data.data);
     setUpButton(sensor);

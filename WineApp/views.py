@@ -52,8 +52,14 @@ def _daily_data_js(data, sensor, values, trend):
     }
 
 
+import time
+
+
 def update_daily_data(request):
+    start = time.time()
     data = sensor_data.update_daily_data()
+    end = time.time()
+    print(end - start)
     return render(request, 'WineApp/index.html', {'list': data})
 
 
