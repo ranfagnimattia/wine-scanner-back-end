@@ -14,5 +14,6 @@ urlpatterns = [
     # es airTemperature/avg/lstm
     path('<field>/decompose', views.decompose, name='decompose'),
     path('correlation', views.correlation, name='correlation'),
-    path('ajax/getDailyData', views.get_daily_data, name='ajax.getDailyData')
+    path('ajax/getDailyData', views.get_daily_data, name='ajax.getDailyData'),
+    path('ajax/updateDailyData', views.ajax_update_daily_data, name='ajax.updateDailyData')
 ]

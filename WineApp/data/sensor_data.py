@@ -1,10 +1,9 @@
 from datetime import datetime, timedelta
 from xml.etree import ElementTree
 
-import requests
 import numpy as np
+import requests
 from django.http import Http404
-from statsmodels.tsa.holtwinters import ExponentialSmoothing
 
 from WineApp.models import DailyData, Sensor, RealTimeData
 
@@ -69,7 +68,7 @@ def update_daily_data():
     DailyData.objects.bulk_create(new_data)
     debug_data.append(start_date + '   ' + end_date)
     debug_data.append('Updated: ' + str(n_updated) + ', Created: ' + str(n_created - n_updated))
-    return debug_data
+    return {'updated': n_updated, 'created': n_created - n_updated}
 
 
 def update_realtime_data():
@@ -148,29 +147,34 @@ def get_daily_data(sensor_id: int = 1) -> (list, Sensor, list):
         min = np.mean([e['min'] for e in (val[-31:])])
         max = np.mean([e['max'] for e in (val[-31:])])
         tot = np.NaN
+    if sensor.tot:
+        week_avg = {'tot': np.mean([e['tot'] for e in (val[-7:])])}
+    else:
+        week_avg = {'avg': np.mean([e['avg'] for e in (val[-7:])])}
     print(avg, min, max, tot)
     diff = _difference(val[-31:], avg, min, max, tot)
     print(diff)
     lastMonthMean = {'avg': avg, 'min': min, 'max': max, 'tot': tot}
-
+    lastMonthMean = {k: round(v, 2) for k, v in lastMonthMean.items() if not np.isnan(v)}
+    print(lastMonthMean)
     for elem in values:
         elem['date'] = elem['date'].strftime('%Y-%m-%d')
 
     values_list = [list(elem.values()) for elem in values]
-    return values_list, sensor, list(values), diff, lastMonthMean
+    return values_list, sensor, list(values), diff, lastMonthMean, week_avg
 
 
 def _difference(values, avg, min, max, tot):
     diff = []
     for e in values:
         diff.append({'date': e['date'].strftime('%Y-%m-%d')})
-        if np.isnan(avg) == False:
+        if not np.isnan(avg):
             diff[-1]['avg'] = e['avg'] - avg
-        if np.isnan(tot) == False:
+        if not np.isnan(tot):
             diff[-1]['tot'] = e['tot'] - tot
-        if np.isnan(min) == False:
+        if not np.isnan(min):
             diff[-1]['min'] = e['min'] - min
-        if np.isnan(max) == False:
+        if not np.isnan(max):
             diff[-1]['max'] = e['max'] - max
     return diff
 

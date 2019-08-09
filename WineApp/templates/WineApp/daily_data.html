@@ -75,7 +75,7 @@
             </nav>
             <!-- End Navbar -->
             <div class="content">
-                <div class="row">
+                <div class="row card-stats-row">
                     <div class="col-sm-6 col-xl-3">
                         <div class="card-stats card">
                             <div class="card-body">
@@ -165,13 +165,13 @@
                                                 <p class="js-show-values">Min</p>
                                             </div>
                                             <div class="col-auto numbers">
-                                                <p class="js-show-tot"><span class="js-last-tot"></span><span
+                                                <p class="js-show-tot"><span class="js-monthMean-tot"></span><span
                                                         class="js-unit"></span></p>
-                                                <p class="js-show-values"><span class="js-last-max"></span><span
+                                                <p class="js-show-values"><span class="js-monthMean-max"></span><span
                                                         class="js-unit"></span></p>
-                                                <p class="js-show-values"><span class="js-last-avg"></span><span
+                                                <p class="js-show-values"><span class="js-monthMean-avg"></span><span
                                                         class="js-unit"></span></p>
-                                                <p class="js-show-values"><span class="js-last-min"></span><span
+                                                <p class="js-show-values"><span class="js-monthMean-min"></span><span
                                                         class="js-unit"></span></p>
                                             </div>
                                         </div>
@@ -199,11 +199,23 @@
                                     <div class="col">
                                         <div class="row flex-nowrap">
                                             <div class="col p-0"></div>
-                                            <div class="col-auto">
-                                                <p class="label">Rispetto a ieri</p>
-                                                <p class="number">
-                                                    <span class="js-trend"></span>
-                                                    <span class="js-trend-icon"></span>
+                                            <div class="col-auto labels pr-0">
+                                                <p>Ieri</p>
+                                                <p>Sett</p>
+                                                <p>Mese</p>
+                                            </div>
+                                            <div class="col-auto numbers">
+                                                <p class="js-trend-day">
+                                                    <span class="js-trend"></span><span class="js-unit"></span><span
+                                                        class="js-trend-icon"></span>
+                                                </p>
+                                                <p class="js-trend-week">
+                                                    <span class="js-trend"></span><span class="js-unit"></span><span
+                                                        class="js-trend-icon"></span>
+                                                </p>
+                                                <p class="js-trend-month">
+                                                    <span class="js-trend"></span><span class="js-unit"></span><span
+                                                        class="js-trend-icon"></span>
                                                 </p>
                                             </div>
                                         </div>
@@ -214,7 +226,10 @@
                                 <hr>
                                 <div class="stats">
                                     <span class="js-sensor-icon"></span>
-                                    <span><span class="js-sensor"></span> <span class="js-main-category"></span></span>
+                                    <span>
+                                        <span class="js-sensor"></span> <span class="js-main-category"></span>
+                                        <span> rispetto a:</span>
+                                    </span>
                                 </div>
                             </div>
                         </div>

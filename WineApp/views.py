@@ -1,3 +1,4 @@
+import time
 from datetime import datetime
 
 from django.http import JsonResponse
@@ -23,9 +24,10 @@ def index(request):
 
 
 def show_data(request):
-    data, sensor, values, diff, last_month_mean = sensor_data.get_daily_data()
-    data_js = _daily_data_js(data, sensor, values, diff, last_month_mean)
+    data, sensor, values, diff, last_month_mean, week_avg = sensor_data.get_daily_data()
+    data_js = _daily_data_js(data, sensor, values, diff, last_month_mean, week_avg)
     data_js['ajax_url'] = reverse('WineApp:ajax.getDailyData')
+    data_js['update_url'] = reverse('WineApp:ajax.updateDailyData')
     return render(request, 'WineApp/daily_data.html', {
         'sensors': Sensor.objects.all(),
         'data_js': data_js
@@ -33,27 +35,34 @@ def show_data(request):
 
 
 # Ajax
-def get_daily_data(request):
+def get_daily_data(request, info=None):
     sensor_id = request.GET.get('sensor_id', 1)
-    data, sensor, values, diff, last_month_mean= sensor_data.get_daily_data(sensor_id)
-    return JsonResponse(_daily_data_js(data, sensor, values, diff, last_month_mean))
+    data, sensor, values, diff, last_month_mean, week_avg = sensor_data.get_daily_data(sensor_id)
+    return JsonResponse(_daily_data_js(data, sensor, values, diff, last_month_mean, week_avg, info))
 
 
-def _daily_data_js(data, sensor, values, diff, last_month_mean):
+def _daily_data_js(data, sensor, values, diff, last_month_mean, week_avg, info=None):
     return {
         'data': data,
         'last': values[-1],
         'lastMonth': values[-31:],
         'diff': diff,
-        'lastMonthMean': last_month_mean,
+        'monthMean': last_month_mean,
+        'weekMean': week_avg,
         'update': datetime.now().strftime('Oggi %H:%M'),
         'yesterday': values[-2],
+        'info': info or '',
         'sensor': {'tot': sensor.tot, 'values': sensor.values, 'id': sensor.id, 'name': sensor.name,
                    'unit': sensor.unit, 'icon': sensor.icon}
     }
 
 
-import time
+def ajax_update_daily_data(request):
+    start = time.time()
+    info = sensor_data.update_daily_data()
+    end = time.time()
+    print(end - start)
+    return get_daily_data(request, info)
 
 
 def update_daily_data(request):

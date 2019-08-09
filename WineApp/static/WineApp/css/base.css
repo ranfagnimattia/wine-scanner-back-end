@@ -40,6 +40,10 @@ html {
 
 
 /*Card stats*/
+.card-stats {
+    height: calc(100% - 30px);
+}
+
 .card-stats .card-body {
     padding-bottom: 0;
 }
@@ -57,7 +61,7 @@ html {
     user-select: none; /* Chrome and Opera */
 }
 
-.card-stats .card-footer .stats:hover {
+.card-stats:hover .card-footer .stats {
     color: #7486b3;
 }
 
@@ -111,11 +115,15 @@ html {
     margin-bottom: 0;
 }
 
-.card-stats .numbers .js-unit {
+.card-stats .js-unit {
     color: #dfdfdf;
     font-weight: 200;
     font-size: 18px;
     margin-left: 1px;
+}
+
+.card-stats .js-trend-icon i {
+    padding-left: 5px;
 }
 
 

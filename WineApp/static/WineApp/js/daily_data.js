@@ -5,7 +5,6 @@ $('document').ready(function () {
     console.log(data_py.lastMonthMean);
 
 
-
     let monthData = data_py.lastMonth;
     let diff = data_py.diff;
     let sensor = data_py.sensor;
@@ -52,7 +51,25 @@ $('document').ready(function () {
 
 
     $('#update-now').click(() => {
-        console.log('Update');
+        $.getJSON({
+            url: data_py.update_url,
+            data: {
+                'sensor_id': sensor.id
+            },
+            success: function (response) {
+                if (response) {
+                    console.log('Info', response.info);
+
+                    monthData = response.lastMonth;
+                    diff = response.diff;
+                    sensor = response.sensor;
+
+                    updateDashboard(response, monthData, diff);
+                }
+            }, error: function (response) {
+                console.error(response);
+            }
+        });
     });
 });
 
@@ -74,34 +91,75 @@ function updateDashboard(data, monthData, diff) {
 
     console.log(sensor);
     console.log(data.last);
-    $('.js-last-tot').text(data.last.tot);
-    $('.js-last-max').text(data.last.max);
-    $('.js-last-avg').text(data.last.avg);
-    $('.js-last-min').text(data.last.min);
-
     $('.js-update').text(data.update);
 
-    let trend;
-    if (sensor.tot) {
-        trend = data.last.tot - data.yesterday.tot;
-        $('.js-main-category').text('tot');
-    } else {
-        trend = data.last.avg - data.yesterday.avg;
-        $('.js-main-category').text('avg');
-    }
-    $('.js-trend').text(trend.toFixed(2));
-    if (trend > 0)
-        $('.js-trend-icon').html('<i class="fas fa-caret-up"></i>');
-    else if (trend < 0)
-        $('.js-trend-icon').html('<i class="fas fa-caret-down"></i>');
-    else
-        $('.js-trend-icon').html('<i class="fas fa-minus"></i>');
+    // $('.js-last-tot').text(data.last.tot);
+    // $('.js-last-max').text(data.last.max);
+    // $('.js-last-avg').text(data.last.avg);
+    // $('.js-last-min').text(data.last.min);
+
+    animateValues([
+        [$('.js-last-tot'), data.last.tot],
+        [$('.js-last-max'), data.last.max],
+        [$('.js-last-avg'), data.last.avg],
+        [$('.js-last-min'), data.last.min]
+    ]);
+
+
+    $('.js-monthMean-tot').text(data.monthMean.tot);
+    $('.js-monthMean-max').text(data.monthMean.max);
+    $('.js-monthMean-avg').text(data.monthMean.avg);
+    $('.js-monthMean-min').text(data.monthMean.min);
+
+
+    setTrend($('.js-trend-day'), sensor, data.last, data.yesterday);
+    setTrend($('.js-trend-week'), sensor, data.last, data.weekMean);
+    setTrend($('.js-trend-month'), sensor, data.last, data.monthMean);
+
 
     updateChart(sensor, data.data);
     setUpButton(sensor);
     updateOtherChart(sensor, monthData, 'month-chart');
     // Passare i dati dell'andamento generale al posto di month chart
     updateOtherChart(sensor, diff, 'trend-chart');
+}
+
+
+function animateValues(valuesPair) {
+    const initValues = {};
+    const elements = {};
+    const finalValues = {};
+    valuesPair.forEach((pair, i) => {
+        initValues[i] = 0;
+        elements[i] = pair[0];
+        finalValues[i] = pair[1];
+    });
+    $(initValues).animate(finalValues, {
+        duration: 1000,
+        easing: 'easeOutCubic',
+        step: function () {
+            for (let prop in this)
+                if (this.hasOwnProperty(prop))
+                    elements[prop].text(this[prop].toFixed(2))
+        }
+    });
+}
+
+
+function setTrend(elem, sensor, last, mean) {
+    let trend;
+    if (sensor.tot)
+        trend = last.tot - mean.tot;
+    else
+        trend = last.avg - mean.avg;
+    elem.find('.js-trend').text(trend.toFixed(2));
+
+    if (trend > 0)
+        elem.find('.js-trend-icon').html('<i class="fas fa-caret-up"></i>');
+    else if (trend < 0)
+        elem.find('.js-trend-icon').html('<i class="fas fa-caret-down"></i>');
+    else
+        elem.find('.js-trend-icon').html('<i class="fas fa-minus"></i>');
 }
 
 function updateChart(sensor, data) {
@@ -223,7 +281,7 @@ function updateOtherChart(sensor, data, id, measure = "avg") {
                 type: "number"
             }];
         subcaption = ' ' + measure;
-        plot = [{"value": measure.charAt(0).toUpperCase() + measure.slice(1)}];
+        plot = {"value": measure.charAt(0).toUpperCase() + measure.slice(1)};
         chartData = getMeasure(measure, data)
     } else {
         if (sensor.tot) {
@@ -238,7 +296,7 @@ function updateOtherChart(sensor, data, id, measure = "avg") {
                     type: "number"
                 }];
             subcaption = ' tot ';
-            plot = [{"value": "Tot"}];
+            plot = {"value": "Tot"};
             chartData = getMeasure('tot', data)
         } else {
             schema = [
@@ -252,18 +310,22 @@ function updateOtherChart(sensor, data, id, measure = "avg") {
                     type: "number"
                 }];
             subcaption = ' ' + measure;
-            plot = [{"value": measure.charAt(0).toUpperCase() + measure.slice(1)}];
+            plot = {"value": measure.charAt(0).toUpperCase() + measure.slice(1)};
             chartData = getMeasure(measure, data)
         }
     }
-    if(id==="trend-chart"){
-        plot[0]["type"]="column";
+    if (id === "trend-chart") {
+        plot["type"] = "column";
+    } else {
+        plot['type'] = 'smooth-area';
     }
 
     const fusionDataStore = new FusionCharts.DataStore();
     const fusionTable = fusionDataStore.createDataTable(chartData, schema);
 
     chartElem.find('.js-sensor-category').text(subcaption);
+
+    plot['style'] = {'area': {"fill-opacity": 0.15}};
     chartElem.find('.chart').insertFusionCharts({
         type: 'timeseries',
         width: '100%',
@@ -277,7 +339,8 @@ function updateOtherChart(sensor, data, id, measure = "avg") {
 
             chart: {
                 theme: 'candy',
-                paletteColors: colors[id]
+                paletteColors: colors[id],
+                "showLegend": "0"
             },
             "extensions": {
                 "standardRangeSelector": {
