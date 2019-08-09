@@ -58,7 +58,11 @@ import time
 def update_daily_data(request):
     start = time.time()
     data = sensor_data.update_daily_data()
+    # data = []
+    # from WineApp.data.import_data import import_daily_data
+    # import_daily_data()
     end = time.time()
+    data.append('Time: ' + str(end - start))
     print(end - start)
     return render(request, 'WineApp/index.html', {'list': data})
 

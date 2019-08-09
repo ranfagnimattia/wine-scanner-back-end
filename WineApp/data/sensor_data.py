@@ -10,9 +10,13 @@ from WineApp.models import DailyData, Sensor, RealTimeData
 
 def update_daily_data():
     try:
-        start_date = DailyData.objects.latest('date').date.strftime('%Y-%m-%d')
+        start_date = DailyData.objects.latest('date').date
+        start_date = datetime.combine(start_date, datetime.min.time())
     except DailyData.DoesNotExist:
-        start_date = '2019-07-17'
+        start_date = datetime(2019, 7, 17)
+    if start_date < datetime(2019, 7, 17):
+        start_date = datetime(2019, 7, 17)
+    start_date = start_date.strftime('%Y-%m-%d')
     end_date = datetime.now().strftime('%Y-%m-%d')
     parameter = {'username': 'collosorbo', 'password': '10sorbo19', 'start_date': start_date,
                  'end_date': end_date, 'day_average': '1'}
@@ -25,10 +29,11 @@ def update_daily_data():
         return 'API error: ' + root_elem.get('messaggio')
     station_elem = root_elem[0]
 
-    DailyData.objects.filter(date__gte=start_date).delete()
+    last_day = DailyData.objects.filter(date__gte=start_date)
+    n_updated = last_day.count()
+    last_day.delete()
     debug_data = []
     new_data = []
-    n_updated = 0
     n_created = 0
     for unit_elem in station_elem.findall('unita'):
         for date_elem in unit_elem.findall('giorno'):
@@ -38,7 +43,6 @@ def update_daily_data():
                     sensor = Sensor.objects.get(name=sensor_elem.get('nome'))
                     # data, created = DailyData.objects.get_or_create(date=date_elem.get('data'), sensor=sensor)
                     data = DailyData(date=date_elem.get('data'), sensor=sensor)
-                    created = False
                     if sensor.values:
                         data.avg = sensor_elem.get('media')
                         data.max = sensor_elem.get('massima')
@@ -53,20 +57,17 @@ def update_daily_data():
                         data.tot = sensor_elem.get('cumulato')
                     # data.save()
                     new_data.append(data)
-                    string += sensor_elem.get('nome') + str(created) + ' '
-                    if created:
-                        n_created += 1
-                    else:
-                        n_updated += 1
+                    # string += sensor_elem.get('nome') + str(created) + ' '
+                    n_created += 1
                 except Sensor.DoesNotExist:
-                    string += sensor_elem.get('nome') + 'NONE '
+                    # string += sensor_elem.get('nome') + 'NONE '
                     pass
 
-            debug_data.append(date_elem.get('data') + '  ' + string)
+            # debug_data.append(date_elem.get('data') + '  ' + string)
 
     DailyData.objects.bulk_create(new_data)
     debug_data.append(start_date + '   ' + end_date)
-    debug_data.append('Updated: ' + str(n_updated) + ', Created: ' + str(n_created))
+    debug_data.append('Updated: ' + str(n_updated) + ', Created: ' + str(n_created - n_updated))
     return debug_data
 
 
