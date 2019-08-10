@@ -9,7 +9,6 @@ import WineApp.algorithms.correlation as cor
 import WineApp.algorithms.exponential_smoothing as es
 import WineApp.algorithms.lstm as ls
 import WineApp.algorithms.seasonal_decompose as sd
-
 import WineApp.data.sensor_data as sensor_data
 import WineApp.data.update_data as update_data
 from WineApp.models import Sensor
@@ -21,12 +20,13 @@ def index(request):
 
 
 def show_daily_data(request):
-    data, scheme, sensor, values, diff, last_month_mean, week_avg = sensor_data.get_daily_data()
-    data_js = _daily_data_js(data, scheme, sensor, values, diff, last_month_mean, week_avg)
+    data, categories, sensor, values, diff, last_month_mean, week_avg = sensor_data.get_daily_data()
+    data_js = _daily_data_js(data, categories, sensor, values, diff, last_month_mean, week_avg)
     return render(request, 'WineApp/daily_data.html', {
         'sensors': Sensor.objects.all(),
         'data_js': data_js
     })
+
 
 def show_real_time_data(request):
     update_data.update_realtime_data()
@@ -37,16 +37,16 @@ def show_real_time_data(request):
 # Ajax
 def ajax_get_daily_data(request, info=None):
     sensor_id = request.GET.get('sensor_id', 1)
-    data, scheme, sensor, values, diff, last_month_mean, week_avg = sensor_data.get_daily_data(sensor_id)
-    return JsonResponse(_daily_data_js(data, scheme, sensor, values, diff, last_month_mean, week_avg, info))
+    data, categories, sensor, values, diff, last_month_mean, week_avg = sensor_data.get_daily_data(sensor_id)
+    return JsonResponse(_daily_data_js(data, categories, sensor, values, diff, last_month_mean, week_avg, info))
 
 
-def _daily_data_js(data, scheme, sensor, values, diff, last_month_mean, week_avg, info=None):
+def _daily_data_js(data, categories, sensor, values, diff, last_month_mean, week_avg, info=None):
     return {
-        'getUrl':reverse('WineApp:ajax.getDailyData'),
+        'getUrl': reverse('WineApp:ajax.getDailyData'),
         'updateUrl': reverse('WineApp:ajax.updateDailyData'),
         'allData': data,
-        'scheme': scheme,
+        'categories': categories,
         'last': values[-1],
         'lastMonth': values[-31:],
         'diff': diff,

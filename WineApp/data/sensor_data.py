@@ -23,10 +23,8 @@ def get_daily_data(sensor_id: int = 1) -> (list, Sensor, list):
         min = np.mean([e['min'] for e in val])
         max = np.mean([e['max'] for e in val])
         tot = np.mean([e['tot'] for e in val])
-        scheme = [{"name": "Time", "type": "date", "format": "%Y-%m-%d"}, {"name": "Tot", "type": "number"},
-                  {"name": "Avg", "type": "number"}, {"name": "Max", "type": "number"},
-                  {"name": "Min", "type": "number"}]
         week_avg = {'tot': np.mean([e['tot'] for e in list(_get_interval(all_data, all_data.last()['date'], 7))])}
+        categories = ['Tot', 'Avg', 'Max', 'Min']
     elif sensor.tot:
         all_data = history.values('date', 'tot')
         val = list(_get_interval(all_data, all_data.last()['date'], 31))
@@ -34,8 +32,8 @@ def get_daily_data(sensor_id: int = 1) -> (list, Sensor, list):
         min = np.NaN
         max = np.NaN
         tot = np.mean([e['tot'] for e in val])
-        scheme = [{"name": "Time", "type": "date", "format": "%Y-%m-%d"}, {"name": "Tot", "type": "number"}]
         week_avg = {'tot': np.mean([e['tot'] for e in list(_get_interval(all_data, all_data.last()['date'], 7))])}
+        categories = ['Tot']
     else:
         all_data = history.values('date', 'avg', 'max', 'min')
         val = list(_get_interval(all_data, all_data.last()['date'], 31))
@@ -43,9 +41,8 @@ def get_daily_data(sensor_id: int = 1) -> (list, Sensor, list):
         min = np.mean([e['min'] for e in val])
         max = np.mean([e['max'] for e in val])
         tot = np.NaN
-        scheme = [{"name": "Time", "type": "date", "format": "%Y-%m-%d"}, {"name": "Avg", "type": "number"},
-                  {"name": "Max", "type": "number"}, {"name": "Min", "type": "number"}]
         week_avg = {'avg': np.mean([e['avg'] for e in list(_get_interval(all_data, all_data.last()['date'], 7))])}
+        categories = ['Avg', 'Max', 'Min']
     diff = _difference(val, avg, min, max, tot, np.NaN)
     last_month_stats = {'avg': avg, 'min': min, 'max': max, 'tot': tot}
     last_month_stats = {k: round(v, 2) for k, v in last_month_stats.items() if not np.isnan(v)}
@@ -55,7 +52,7 @@ def get_daily_data(sensor_id: int = 1) -> (list, Sensor, list):
 
     all_data_list = [list(elem.values()) for elem in all_data]
 
-    return all_data_list, scheme, sensor, list(all_data), diff, last_month_stats, week_avg
+    return all_data_list, categories, sensor, list(all_data), diff, last_month_stats, week_avg
 
 
 def get_real_time_data(sensor_id: int = 1):

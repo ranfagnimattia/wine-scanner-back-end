@@ -1,46 +1,48 @@
+/**
+ * @param data_py
+ * @param data_py.getUrl
+ * @param data_py.updateUrl
+ * @param data_py.allData
+ * @param data_py.categories
+ * @param data_py.last
+ * @param data_py.lastMonth
+ * @param data_py.diff
+ * @param data_py.monthMean
+ * @param data_py.weekMean
+ * @param data_py.update
+ * @param data_py.yesterday
+ * @param data_py.info
+ * @param data_py.sensor
+ */
+
 $('document').ready(function () {
-    let monthData = data_py.lastMonth;
-    let diff = data_py.diff;
-    let sensor = data_py.sensor;
+    updateDashboard();
 
-    updateDashboard(data_py, monthData, diff);
-
-    $('.sensor').on('click', function () {
-        const sensor_id = $(this).attr('data-sensor');
+    $('.sensor').click(function () {
         $.getJSON({
             url: data_py.getUrl,
             data: {
-                'sensor_id': sensor_id
+                'sensor_id': $(this).attr('data-sensor')
             },
             success: function (response) {
                 if (response) {
-                    console.log('all data response');
-                    console.log(response);
-
-                    monthData = response.lastMonth;
-                    diff = response.diff;
-                    sensor = response.sensor;
-
-                    updateDashboard(response, monthData, diff);
+                    window.data_py = response;
+                    updateDashboard();
                 }
             }, error: function (response) {
                 console.error(response);
             }
         });
     });
-    /*Gestore dell'evento click sui bottoni del grafico dell'ultimo mese*/
-    $('.month').on('click', function () {
-        console.log("month click");
-        const measure = $(this).attr('data-val');
+
+    /* Chart buttons click event */
+    $('#month-chart .btn').click(function () {
         if (!$(this).hasClass("active"))
-            updateOtherChart(sensor, monthData, 'month-chart', measure)
+            updateChart($('#month-chart'), data_py.lastMonth, $(this).data('category').toLowerCase())
     });
-    /*Gestore dell'evento click sui bottoni del grafico dell'andamento*/
-    $('.trend').on('click', function () {
-        console.log("trend click");
-        const measure = $(this).attr('data-val');
+    $('#trend-chart .btn').click(function () {
         if (!$(this).hasClass("active"))
-            updateOtherChart(sensor, diff, 'trend-chart', measure)
+            updateChart($('#trend-chart'), data_py.diff, $(this).data('category').toLowerCase())
     });
 
 
@@ -48,17 +50,12 @@ $('document').ready(function () {
         $.getJSON({
             url: data_py.updateUrl,
             data: {
-                'sensor_id': sensor.id
+                'sensor_id': data_py.sensor.id
             },
             success: function (response) {
                 if (response) {
-                    console.log('Info', response.info);
-
-                    monthData = response.lastMonth;
-                    diff = response.diff;
-                    sensor = response.sensor;
-
-                    updateDashboard(response, monthData, diff);
+                    window.data_py = response;
+                    updateDashboard();
                 }
             }, error: function (response) {
                 console.error(response);
@@ -67,72 +64,44 @@ $('document').ready(function () {
     });
 });
 
-function updateDashboard(data, monthData, diff) {
-    console.log("data", data);
-    const sensor = data.sensor;
+function updateDashboard() {
+    console.log("Data", data_py);
+
+    const sensor = data_py.sensor;
+    const firstCategory = data_py.categories[0].toLowerCase();
+
     $('.js-sensor').text(sensor.name);
     $('.js-sensor-icon').html('<i class="' + sensor.icon + '"></i>');
     $('.js-unit').html(sensor.unit.replace('^2', '<sup>2</sup>'));
 
-    if (sensor.values)
-        $('.js-show-values').show();
-    else
-        $('.js-show-values').hide();
+    $('.js-update').text(data_py.update);
 
-    if (sensor.tot)
-        $('.js-show-tot').show();
-    else
-        $('.js-show-tot').hide();
-
-    console.log(sensor);
-    console.log(data.last);
-    $('.js-update').text(data.update);
-
-    // $('.js-last-tot').text(data.last.tot);
-    // $('.js-last-max').text(data.last.max);
-    // $('.js-last-avg').text(data.last.avg);
-    // $('.js-last-min').text(data.last.min);
-    let trendSpace = setTrend($('.js-trend-space'), sensor, data.last, data.monthMean);
+    let trendSpace = setUpTrend($('.js-trend-space'), firstCategory, data_py.last, data_py.monthMean);
     trendSpace[0].text(trendSpace[1].toFixed(2) + '0');
-    if (sensor.tot) {
-        $('.js-last-space').text(data.last.tot.toFixed(2) + '0');
-        $('.js-monthMean-space').text(data.monthMean.tot.toFixed(2) + '0');
-    } else {
-        $('.js-last-space').text(data.last.max.toFixed(2) + '0');
-        $('.js-monthMean-space').text(data.monthMean.max.toFixed(2) + '0');
-    }
-    animateValues([
-        [$('.js-last-tot'), data.last.tot],
-        [$('.js-last-max'), data.last.max],
-        [$('.js-last-avg'), data.last.avg],
-        [$('.js-last-min'), data.last.min],
-        [$('.js-monthMean-tot'), data.monthMean.tot],
-        [$('.js-monthMean-max'), data.monthMean.max],
-        [$('.js-monthMean-avg'), data.monthMean.avg],
-        [$('.js-monthMean-min'), data.monthMean.min],
-        setTrend($('.js-trend-day'), sensor, data.last, data.yesterday),
-        setTrend($('.js-trend-week'), sensor, data.last, data.weekMean),
-        setTrend($('.js-trend-month'), sensor, data.last, data.monthMean)
-    ]);
+    $('.js-last-space').text(data_py.last[firstCategory].toFixed(2) + '0');
+    $('.js-monthMean-space').text(data_py.monthMean[firstCategory].toFixed(2) + '0');
 
+    const animations = [
+        setUpTrend($('.js-trend-day'), firstCategory, data_py.last, data_py.yesterday),
+        setUpTrend($('.js-trend-week'), firstCategory, data_py.last, data_py.weekMean),
+        setUpTrend($('.js-trend-month'), firstCategory, data_py.last, data_py.monthMean)
+    ];
+    $('[class*="js-show-"]').hide();
+    data_py.categories.forEach((c) => {
+        const cat = c.toLowerCase();
+        $('.js-show-' + cat).show();
+        animations.push([$('.js-last-' + cat), data_py.last[cat]]);
+        animations.push([$('.js-monthMean-' + cat), data_py.monthMean[cat]]);
+    });
 
-    // $('.js-monthMean-tot').text(data.monthMean.tot);
-    // $('.js-monthMean-max').text(data.monthMean.max);
-    // $('.js-monthMean-avg').text(data.monthMean.avg);
-    // $('.js-monthMean-min').text(data.monthMean.min);
+    animateValues(animations);
 
-
-    // setTrend($('.js-trend-day'), sensor, data.last, data.yesterday);
-    // setTrend($('.js-trend-week'), sensor, data.last, data.weekMean);
-    // setTrend($('.js-trend-month'), sensor, data.last, data.monthMean);
     $('.active').removeClass("active");
     $('#sensor_' + sensor.id).parent().addClass("active");
+    updateBigChart($('#sensor-chart'), data_py.allData);
+    setUpChart($('#month-chart'), data_py.lastMonth);
+    setUpChart($('#trend-chart'), data_py.diff);
 
-
-    updateChart(sensor, data.allData, data.scheme);
-    setUpButton(sensor);
-    updateOtherChart(sensor, monthData, 'month-chart');
-    updateOtherChart(sensor, diff, 'trend-chart');
 }
 
 
@@ -157,13 +126,8 @@ function animateValues(valuesPair) {
 }
 
 
-function setTrend(elem, sensor, last, mean) {
-    let trend;
-    if (sensor.tot)
-        trend = last.tot - mean.tot;
-    else
-        trend = last.avg - mean.avg;
-    // elem.find('.js-trend').text(trend.toFixed(2));
+function setUpTrend(elem, category, last, mean) {
+    const trend = last[category] - mean[category];
 
     if (trend > 0)
         elem.find('.js-trend-icon').html('<i class="fas fa-caret-up"></i>');
@@ -175,22 +139,22 @@ function setTrend(elem, sensor, last, mean) {
     return [elem.find('.js-trend'), trend]
 }
 
-function updateChart(sensor, data, scheme) {
-    const chartElem = $('#sensor-chart');
-    let subcaption = ' ';
-    let plot = [];
-    scheme.forEach((obj) => {
-        if (obj.type !== 'date') {
-            subcaption += obj.name + ', ';
-            plot.push({"value": obj.name});
-        }
+/* Charts */
+function updateBigChart(elem, data) {
+    let scheme = [];
+    scheme.push({
+        name: "Time",
+        type: "date",
+        format: "%Y-%m-%d"
     });
-    subcaption = subcaption.slice(0, -2);
+    data_py.categories.forEach((c) => {
+        scheme.push({name: c, type: "number"});
+    });
 
-    $('.js-sensor-category').text(subcaption);
+    $('.js-sensor-category').text(data_py.categories.join(', '));
     const fusionTable = new FusionCharts.DataStore().createDataTable(data, scheme);
 
-    chartElem.find('.chart').insertFusionCharts({
+    elem.find('.chart').insertFusionCharts({
         type: 'timeseries',
         width: '100%',
         height: '100%',
@@ -201,96 +165,57 @@ function updateChart(sensor, data, scheme) {
             },
             data: fusionTable,
             yAxis: [{
-                "plot": plot,
-                "format": {"suffix": sensor.unit},
+                "plot": data_py.categories.map((c) => ({value: c})),
+                "format": {"suffix": data_py.sensor.unit},
                 title: ''
             }]
         }
     });
 }
 
-/*Aggiorno i grafici secondari*/
-function updateOtherChart(sensor, data, id, measure = "avg") {
-    let colors = {"month-chart": themeColors.color2, "trend-chart": themeColors.color3};
-    let plot;
-    let subcaption;
-    let schema;
-    let chartData;
-    let format = {"suffix": sensor.unit};
-    const chartElem = $('#' + id);
-    console.log('monthdata');
-    console.log(data);
-    if (sensor.tot && sensor.values) {
-        schema = [
-            {
-                name: "Time",
-                type: "date",
-                format: "%Y-%m-%d"
-            },
-            {
-                name: measure.charAt(0).toUpperCase() + measure.slice(1),
-                type: "number"
-            }];
-        subcaption = ' ' + measure;
-        plot = {"value": measure.charAt(0).toUpperCase() + measure.slice(1)};
-        chartData = getMeasure(measure, data)
-    } else {
-        if (sensor.tot) {
-            schema = [
-                {
-                    name: "Time",
-                    type: "date",
-                    format: "%Y-%m-%d"
-                },
-                {
-                    name: "Tot",
-                    type: "number"
-                }];
-            subcaption = ' tot ';
-            plot = {"value": "Tot"};
-            chartData = getMeasure('tot', data)
-        } else {
-            schema = [
-                {
-                    name: "Time",
-                    type: "date",
-                    format: "%Y-%m-%d"
-                },
-                {
-                    name: measure.charAt(0).toUpperCase() + measure.slice(1),
-                    type: "number"
-                }];
-            subcaption = ' ' + measure;
-            plot = {"value": measure.charAt(0).toUpperCase() + measure.slice(1)};
-            chartData = getMeasure(measure, data)
+
+function setUpChart(elem, data) {
+    elem.find('.btn').attr("disabled", "disabled");
+    data_py.categories.forEach((c, i) => {
+        const btn = elem.find(`[data-category='${c}']`);
+        btn.removeAttr("disabled");
+        if (i === 0) {
+            btn.addClass("active");
+            updateChart(elem, data, c);
         }
-    }
-    if (id === "trend-chart") {
-        plot["type"] = "column";
-    } else {
-        plot['type'] = 'smooth-area';
-    }
+    });
+}
 
-    const fusionDataStore = new FusionCharts.DataStore();
-    const fusionTable = fusionDataStore.createDataTable(chartData, schema);
+function updateChart(elem, data, category) {
+    let id = elem.attr('id');
+    let styles = {
+        "month-chart": {color: themeColors.color2, type: 'smooth-area'},
+        "trend-chart": {color: themeColors.color3, type: 'column'}
+    };
+    let scheme = [{
+        name: "Time",
+        type: "date",
+        format: "%Y-%m-%d"
+    }, {
+        name: category,
+        type: "number"
+    }];
 
-    chartElem.find('.js-sensor-category').text(subcaption);
+    elem.find('.js-sensor-category').text(category);
+    const fusionTable = new FusionCharts.DataStore().createDataTable(getMeasure(category.toLowerCase(), data), scheme);
 
-    plot['style'] = {'area': {"fill-opacity": 0.15}};
-    chartElem.find('.chart').insertFusionCharts({
+    elem.find('.chart').insertFusionCharts({
         type: 'timeseries',
         width: '100%',
         height: '100%',
         dataFormat: 'json',
-
         dataSource: {
             navigator: {
                 enabled: 0
             },
-
             chart: {
                 theme: 'candy',
-                paletteColors: colors[id],
+                paletteColors: styles[id].color,
                 "showLegend": "0"
             },
             "extensions": {
@@ -303,44 +228,22 @@ function updateOtherChart(sensor, data, id, measure = "avg") {
             },
             data: fusionTable,
             yAxis: [{
-                "plot": plot,
-                "format": format,
+                "plot": {
+                    "value": category,
+                    type: styles[id].type,
+                    style: {'area': {"fill-opacity": 0.15}}
+                },
+                "format": {"suffix": data_py.sensor.unit},
                 title: ''
             }]
         }
     });
 }
 
-/* Iniziallizzo i bottoni dei grafici*/
-function setUpButton(sensor) {
-    if (sensor.tot && sensor.values) {
-        $('.values').removeAttr("disabled");
-        $('.tot').removeAttr("disabled");
-        $('#trend-avg').addClass("active");
-        $('#month-avg').addClass("active");
-    } else {
-        if (sensor.tot) {
-            let tot = $('.tot');
-            tot.removeAttr("disabled");
-            tot.addClass("active");
-            $('.values').attr("disabled", "disabled");
-        } else {
-            $('.values').removeAttr("disabled");
-            $('#trend-avg').addClass("active");
-            $('#month-avg').addClass("active");
-            $('.tot').attr("disabled", "disabled");
-        }
-    }
-}
-
-/*Recupero i dati relativi ad una singola misura max,min,tot o avg*/
 function getMeasure(measure, data) {
     let measureData = [];
     for (let i = 0; i < data.length; i++) {
         measureData.push([data[i]['date'], data[i][measure]])
     }
-    console.log('measure data ' + measure);
-    console.log(measureData);
-
     return measureData
 }
