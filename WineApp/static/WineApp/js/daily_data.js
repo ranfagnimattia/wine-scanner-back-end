@@ -1,10 +1,4 @@
 $('document').ready(function () {
-    console.log('all data');
-    console.log(data_py);
-
-    console.log(data_py.lastMonthMean);
-
-
     let monthData = data_py.lastMonth;
     let diff = data_py.diff;
     let sensor = data_py.sensor;
@@ -74,6 +68,7 @@ $('document').ready(function () {
 });
 
 function updateDashboard(data, monthData, diff) {
+    console.log("data", data);
     const sensor = data.sensor;
     $('.js-sensor').text(sensor.name);
     $('.js-sensor-icon').html('<i class="' + sensor.icon + '"></i>');
@@ -130,12 +125,13 @@ function updateDashboard(data, monthData, diff) {
     // setTrend($('.js-trend-day'), sensor, data.last, data.yesterday);
     // setTrend($('.js-trend-week'), sensor, data.last, data.weekMean);
     // setTrend($('.js-trend-month'), sensor, data.last, data.monthMean);
+    $('.active').removeClass("active");
+    $('#sensor_' + sensor.id).parent().addClass("active");
 
 
-    updateChart(sensor, data.data);
+    updateChart(sensor, data.allData, data.scheme);
     setUpButton(sensor);
     updateOtherChart(sensor, monthData, 'month-chart');
-    // Passare i dati dell'andamento generale al posto di month chart
     updateOtherChart(sensor, diff, 'trend-chart');
 }
 
@@ -179,82 +175,20 @@ function setTrend(elem, sensor, last, mean) {
     return [elem.find('.js-trend'), trend]
 }
 
-function updateChart(sensor, data) {
-    let plot;
-    let subcaption;
-    let schema;
+function updateChart(sensor, data, scheme) {
     const chartElem = $('#sensor-chart');
-    if (sensor.tot && sensor.values) {
-        schema = [
-            {
-                name: "Time",
-                type: "date",
-                format: "%Y-%m-%d"
-            },
-            {
-                name: "Tot",
-                type: "number"
-            },
-            {
-                name: "Avg",
-                type: "number"
-            },
-            {
-                name: "Min",
-                type: "number"
-            },
-            {
-                name: "Max",
-                type: "number"
-            }];
-        subcaption = ' avg, tot, max, min';
-        plot = [{"value": "Tot"}, {"value": "Avg"}, {"value": "Max"}, {"value": "Min"}];
-    } else {
-        if (sensor.tot) {
-            schema = [
-                {
-                    name: "Time",
-                    type: "date",
-                    format: "%Y-%m-%d"
-                },
-                {
-                    name: "Tot",
-                    type: "number"
-                }];
-            subcaption = ' tot';
-            plot = [{"value": "Tot"}];
-        } else {
-            schema = [
-                {
-                    name: "Time",
-                    type: "date",
-                    format: "%Y-%m-%d"
-                },
-                {
-                    name: "Avg",
-                    type: "number"
-                },
-                {
-                    name: "Min",
-                    type: "number"
-                },
-                {
-                    name: "Max",
-                    type: "number"
-                }];
-            subcaption = ' avg, max, min';
-            plot = [{"value": "Avg"}, {"value": "Max"}, {"value": "Min"}];
+    let subcaption = ' ';
+    let plot = [];
+    scheme.forEach((obj) => {
+        if (obj.type !== 'date') {
+            subcaption += obj.name + ', ';
+            plot.push({"value": obj.name});
         }
-    }
-    let format = {"suffix": sensor.unit};
-
-    const fusionDataStore = new FusionCharts.DataStore();
-    const fusionTable = fusionDataStore.createDataTable(data, schema);
-
-    $('.active').removeClass("active");
-    $('#sensor_' + sensor.id).parent().addClass("active");
+    });
+    subcaption = subcaption.slice(0, -2);
 
     $('.js-sensor-category').text(subcaption);
+    const fusionTable = new FusionCharts.DataStore().createDataTable(data, scheme);
 
     chartElem.find('.chart').insertFusionCharts({
         type: 'timeseries',
@@ -268,7 +202,7 @@ function updateChart(sensor, data) {
             data: fusionTable,
             yAxis: [{
                 "plot": plot,
-                "format": format,
+                "format": {"suffix": sensor.unit},
                 title: ''
             }]
         }
