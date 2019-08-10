@@ -6,6 +6,13 @@
     user-select: none; /* Chrome and Opera */
 }
 
+:root {
+    --color1: #1d8cf8;
+    --color2: #2dce89;
+    --color3: #ff893d;
+    --color4: #f5365c;
+}
+
 .card-chart .chart-area-big, .card-chart .chart-area-big .chart {
     height: 500px;
 }
@@ -43,6 +50,32 @@ html {
 }
 
 
+/* Colors */
+.btn-primary.btn-simple {
+    color: #fff;
+    border: none !important;
+    background: var(--color2) !important;
+}
+
+.btn-primary.btn-simple.active {
+    color: #fff;
+    border: none !important;
+    background: var(--color2) !important;
+}
+
+
+.btn-success.btn-simple {
+    color: #fff;
+    border: none !important;
+    background: var(--color3) !important;
+}
+
+.btn-success.btn-simple.active {
+    color: #fff;
+    border: none !important;
+    background: var(--color3) !important;
+}
+
 /*Card stats*/
 .card-stats {
     height: calc(100% - 30px);
@@ -77,12 +110,12 @@ html {
     height: 50px;
     width: 50px;
     border-radius: 50%;
-    background: #e14eca;
     background-image: -webkit-gradient(linear, right top, left bottom, from(#e14eca), color-stop(#ba54f5), to(#e14eca));
     background-image: linear-gradient(to bottom left, #e14eca, #ba54f5, #e14eca);
     background-size: 210% 210%;
     background-position: 100% 0;
     margin-bottom: 5px;
+    background: var(--color4);
 }
 
 .card-stats .info-icon i {
@@ -141,6 +174,11 @@ html {
     margin-bottom: 10px;
 }
 
+.big-icon i {
+    color: var(--color1);
+    font-size: 25px !important;
+}
+
 .ps .ps__rail-x:hover, .ps .ps__rail-y:hover,
 .ps .ps__rail-x:focus, .ps .ps__rail-y:focus,
 .ps .ps__rail-x.ps--clicking, .ps .ps__rail-y.ps--clicking {
@@ -152,7 +190,7 @@ html {
 }
 
 .fa-heart {
-    color: #1d8cf8;
+    color: var(--color1);
 }
 
 .trasparent {

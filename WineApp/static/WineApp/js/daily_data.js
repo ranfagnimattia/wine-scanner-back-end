@@ -208,7 +208,7 @@ function updateChart(sensor, data) {
                 type: "number"
             }];
         subcaption = ' avg, tot, max, min';
-        plot = [{"value": "Avg"}, {"value": "Tot"}, {"value": "Min"}, {"value": "Max"}];
+        plot = [{"value": "Tot"}, {"value": "Avg"}, {"value": "Max"}, {"value": "Min"}];
     } else {
         if (sensor.tot) {
             schema = [
@@ -243,7 +243,7 @@ function updateChart(sensor, data) {
                     type: "number"
                 }];
             subcaption = ' avg, max, min';
-            plot = [{"value": "Avg"}, {"value": "Min"}, {"value": "Max"}];
+            plot = [{"value": "Avg"}, {"value": "Max"}, {"value": "Min"}];
         }
     }
     let format = {"suffix": sensor.unit};
@@ -277,7 +277,7 @@ function updateChart(sensor, data) {
 
 /*Aggiorno i grafici secondari*/
 function updateOtherChart(sensor, data, id, measure = "avg") {
-    let colors = {"month-chart": "#e14eca", "trend-chart": "#00f2c3"};
+    let colors = {"month-chart": themeColors.color2, "trend-chart": themeColors.color3};
     let plot;
     let subcaption;
     let schema;

@@ -1,19 +1,24 @@
 const themeColors = {
     background: "#1e1e2f",
     card: "#27293d",
-    primary: "#1d8cf8",
     caption: "#ffffff",
     subCaption: "#dfdfdf",
     text: "#9a9a9a",
     subText: "#4B4B4B",
-    tooltip: "#e9e9eb"
+    tooltip: "#e9e9eb",
+    // color1: "#1d8cf8",
+    // color2: "#40a34e",
+    // color3: "#ff893d",
+    // color4: "#dc3545"
+    color1: "#1d8cf8",
+    color2: "#2dce89",
+    color3: "#ff893d",
+    color4: "#f5365c"
 };
 
 const themeBlackTimeseries = {
     chart: {
-        paletteColors: [themeColors.primary, "#e14eca", "#00f2c3", "#6E80CA",
-            "#E09653", "#F0DC46", "#E1D7AD", "#61C8C8",
-            "#EBE4F4", "#E64141"].join(', '),
+        paletteColors: [themeColors.color1, themeColors.color2, themeColors.color3, themeColors.color4].join(', '),
         multiCanvasTooltip: 1,
         baseFont: "Poppins, sans-serif",
         style: {
@@ -97,7 +102,7 @@ const themeBlackTimeseries = {
                 },
                 "button-apply": {
                     color: themeColors.subCaption,
-                    "background-color": themeColors.primary,
+                    "background-color": themeColors.color1,
                     border: "none"
                 },
                 "button-apply:hover": {color: themeColors.caption},
@@ -107,7 +112,7 @@ const themeBlackTimeseries = {
                     border: "none"
                 },
                 "button-cancel:hover": {color: themeColors.caption},
-                "cal-header": {"font-family": "Poppins, sans-serif", "background-color": themeColors.primary},
+                "cal-header": {"font-family": "Poppins, sans-serif", "background-color": themeColors.color1},
                 "cal-navprev": {"font-family": "Poppins, sans-serif", "font-size": "12px"},
                 "cal-navnext": {"font-family": "Poppins, sans-serif", "font-size": "12px"},
                 "cal-weekend": {"background-color": themeColors.background},
@@ -136,7 +141,7 @@ const themeBlackTimeseries = {
                     border: "none"
                 },
                 "cal-selecteddate": {
-                    "background-color": themeColors.primary,
+                    "background-color": themeColors.color1,
                     color: themeColors.caption,
                     "font-family": "Poppins, sans-serif"
                 }
