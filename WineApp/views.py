@@ -9,23 +9,20 @@ import WineApp.algorithms.correlation as cor
 import WineApp.algorithms.exponential_smoothing as es
 import WineApp.algorithms.lstm as ls
 import WineApp.algorithms.seasonal_decompose as sd
+
 import WineApp.data.sensor_data as sensor_data
+import WineApp.data.update_data as update_data
 from WineApp.models import Sensor
 
 
 def index(request):
     history = []
-    # wine = Wine.objects.get(pk=2)
-    # history = list(wine.weatherhistory_set.all()[:10])
-    # history.append('...')
-    # history += list(wine.weatherhistory_set.all().order_by('-pk')[:10])[::-1]
-    # history = import_history()
     return render(request, 'WineApp/index.html', {'list': history})
 
 
-def show_data(request):
-    data, sensor, values, diff, last_month_mean, week_avg = sensor_data.get_daily_data()
-    data_js = _daily_data_js(data, sensor, values, diff, last_month_mean, week_avg)
+def show_daily_data(request):
+    data, scheme, sensor, values, diff, last_month_mean, week_avg = sensor_data.get_daily_data()
+    data_js = _daily_data_js(data, scheme, sensor, values, diff, last_month_mean, week_avg)
     data_js['ajax_url'] = reverse('WineApp:ajax.getDailyData')
     data_js['update_url'] = reverse('WineApp:ajax.updateDailyData')
     return render(request, 'WineApp/daily_data.html', {
@@ -35,15 +32,16 @@ def show_data(request):
 
 
 # Ajax
-def get_daily_data(request, info=None):
+def ajax_get_daily_data(request, info=None):
     sensor_id = request.GET.get('sensor_id', 1)
-    data, sensor, values, diff, last_month_mean, week_avg = sensor_data.get_daily_data(sensor_id)
-    return JsonResponse(_daily_data_js(data, sensor, values, diff, last_month_mean, week_avg, info))
+    data, scheme, sensor, values, diff, last_month_mean, week_avg = sensor_data.get_daily_data(sensor_id)
+    return JsonResponse(_daily_data_js(data, scheme, sensor, values, diff, last_month_mean, week_avg, info))
 
 
-def _daily_data_js(data, sensor, values, diff, last_month_mean, week_avg, info=None):
+def _daily_data_js(data, scheme, sensor, values, diff, last_month_mean, week_avg, info=None):
     return {
-        'data': data,
+        'allData': data,
+        'scheme': scheme,
         'last': values[-1],
         'lastMonth': values[-31:],
         'diff': diff,
@@ -59,18 +57,16 @@ def _daily_data_js(data, sensor, values, diff, last_month_mean, week_avg, info=N
 
 def ajax_update_daily_data(request):
     start = time.time()
-    info = sensor_data.update_daily_data()
+    info = update_data.update_daily_data()
     end = time.time()
     print(end - start)
-    return get_daily_data(request, info)
+    return ajax_get_daily_data(request, info)
 
 
+# Update Data
 def update_daily_data(request):
     start = time.time()
-    data = sensor_data.update_daily_data()
-    # data = []
-    # from WineApp.data.import_data import import_daily_data
-    # import_daily_data()
+    data = update_data.update_daily_data()
     end = time.time()
     data.append('Time: ' + str(end - start))
     print(end - start)
@@ -78,10 +74,11 @@ def update_daily_data(request):
 
 
 def update_realtime_data(request):
-    data = sensor_data.update_realtime_data()
+    data = update_data.update_realtime_data()
     return render(request, 'WineApp/index.html', {'list': data})
 
 
+# Algorithms
 def expsmoothing(request, field, measure):
     pred, actual, dates = es.exponential_smoothing(field, measure)
     data = {'prediction': pred, 'actual': actual, 'dates': dates}
