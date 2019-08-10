@@ -9,6 +9,7 @@
 .card-chart .chart-area-big, .card-chart .chart-area-big .chart {
     height: 500px;
 }
+
 .card-chart .chart-area, .card-chart .chart-area .chart {
     height: 300px;
 }
@@ -130,6 +131,11 @@ html {
 }
 
 
+.card-stats .values-space {
+    height: 0;
+    overflow: hidden;
+}
+
 .card-stats hr {
     margin-top: 5px;
     margin-bottom: 10px;
@@ -149,6 +155,6 @@ html {
     color: #1d8cf8;
 }
 
-.trasparent{
+.trasparent {
     opacity: 0;
 }

@@ -97,24 +97,39 @@ function updateDashboard(data, monthData, diff) {
     // $('.js-last-max').text(data.last.max);
     // $('.js-last-avg').text(data.last.avg);
     // $('.js-last-min').text(data.last.min);
-
+    let trendSpace = setTrend($('.js-trend-space'), sensor, data.last, data.monthMean);
+    trendSpace[0].text(trendSpace[1].toFixed(2) + '0');
+    if (sensor.tot) {
+        $('.js-last-space').text(data.last.tot.toFixed(2) + '0');
+        $('.js-monthMean-space').text(data.monthMean.tot.toFixed(2) + '0');
+    } else {
+        $('.js-last-space').text(data.last.max.toFixed(2) + '0');
+        $('.js-monthMean-space').text(data.monthMean.max.toFixed(2) + '0');
+    }
     animateValues([
         [$('.js-last-tot'), data.last.tot],
         [$('.js-last-max'), data.last.max],
         [$('.js-last-avg'), data.last.avg],
-        [$('.js-last-min'), data.last.min]
+        [$('.js-last-min'), data.last.min],
+        [$('.js-monthMean-tot'), data.monthMean.tot],
+        [$('.js-monthMean-max'), data.monthMean.max],
+        [$('.js-monthMean-avg'), data.monthMean.avg],
+        [$('.js-monthMean-min'), data.monthMean.min],
+        setTrend($('.js-trend-day'), sensor, data.last, data.yesterday),
+        setTrend($('.js-trend-week'), sensor, data.last, data.weekMean),
+        setTrend($('.js-trend-month'), sensor, data.last, data.monthMean)
     ]);
 
 
-    $('.js-monthMean-tot').text(data.monthMean.tot);
-    $('.js-monthMean-max').text(data.monthMean.max);
-    $('.js-monthMean-avg').text(data.monthMean.avg);
-    $('.js-monthMean-min').text(data.monthMean.min);
+    // $('.js-monthMean-tot').text(data.monthMean.tot);
+    // $('.js-monthMean-max').text(data.monthMean.max);
+    // $('.js-monthMean-avg').text(data.monthMean.avg);
+    // $('.js-monthMean-min').text(data.monthMean.min);
 
 
-    setTrend($('.js-trend-day'), sensor, data.last, data.yesterday);
-    setTrend($('.js-trend-week'), sensor, data.last, data.weekMean);
-    setTrend($('.js-trend-month'), sensor, data.last, data.monthMean);
+    // setTrend($('.js-trend-day'), sensor, data.last, data.yesterday);
+    // setTrend($('.js-trend-week'), sensor, data.last, data.weekMean);
+    // setTrend($('.js-trend-month'), sensor, data.last, data.monthMean);
 
 
     updateChart(sensor, data.data);
@@ -136,7 +151,7 @@ function animateValues(valuesPair) {
     });
     $(initValues).animate(finalValues, {
         duration: 1000,
-        easing: 'easeOutCubic',
+        easing: 'easeOutQuart',
         step: function () {
             for (let prop in this)
                 if (this.hasOwnProperty(prop))
@@ -152,7 +167,7 @@ function setTrend(elem, sensor, last, mean) {
         trend = last.tot - mean.tot;
     else
         trend = last.avg - mean.avg;
-    elem.find('.js-trend').text(trend.toFixed(2));
+    // elem.find('.js-trend').text(trend.toFixed(2));
 
     if (trend > 0)
         elem.find('.js-trend-icon').html('<i class="fas fa-caret-up"></i>');
@@ -160,6 +175,8 @@ function setTrend(elem, sensor, last, mean) {
         elem.find('.js-trend-icon').html('<i class="fas fa-caret-down"></i>');
     else
         elem.find('.js-trend-icon').html('<i class="fas fa-minus"></i>');
+
+    return [elem.find('.js-trend'), trend]
 }
 
 function updateChart(sensor, data) {
