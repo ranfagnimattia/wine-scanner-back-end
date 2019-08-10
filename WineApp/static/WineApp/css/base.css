@@ -9,6 +9,9 @@
 .card-chart .chart-area-big, .card-chart .chart-area-big .chart {
     height: 500px;
 }
+.card-chart .chart-area, .card-chart .chart-area .chart {
+    height: 300px;
+}
 
 .scroll-y {
     overflow: hidden !important;
@@ -144,4 +147,8 @@ html {
 
 .fa-heart {
     color: #1d8cf8;
+}
+
+.trasparent{
+    opacity: 0;
 }
