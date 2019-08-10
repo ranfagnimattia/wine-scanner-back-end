@@ -1,9 +1,6 @@
 import time
-from datetime import datetime
-
 from django.http import JsonResponse
 from django.shortcuts import render
-from django.urls import reverse
 
 import WineApp.algorithms.correlation as cor
 import WineApp.algorithms.exponential_smoothing as es
@@ -20,8 +17,8 @@ def index(request):
 
 
 def show_daily_data(request):
-    data, categories, sensor, values, diff, last_month_mean, week_avg = sensor_data.get_daily_data()
-    data_js = _daily_data_js(data, categories, sensor, values, diff, last_month_mean, week_avg)
+    # data, categories, sensor, values, diff, last_month_mean, week_avg = sensor_data.get_daily_data()
+    data_js = sensor_data.get_daily_data()
     return render(request, 'WineApp/daily_data.html', {
         'sensors': Sensor.objects.all(),
         'data_js': data_js
@@ -37,27 +34,27 @@ def show_real_time_data(request):
 # Ajax
 def ajax_get_daily_data(request, info=None):
     sensor_id = request.GET.get('sensor_id', 1)
-    data, categories, sensor, values, diff, last_month_mean, week_avg = sensor_data.get_daily_data(sensor_id)
-    return JsonResponse(_daily_data_js(data, categories, sensor, values, diff, last_month_mean, week_avg, info))
+    # data, categories, sensor, values, diff, last_month_mean, week_avg = sensor_data.get_daily_data(sensor_id)
+    return JsonResponse(sensor_data.get_daily_data(sensor_id))
 
 
-def _daily_data_js(data, categories, sensor, values, diff, last_month_mean, week_avg, info=None):
-    return {
-        'getUrl': reverse('WineApp:ajax.getDailyData'),
-        'updateUrl': reverse('WineApp:ajax.updateDailyData'),
-        'allData': data,
-        'categories': categories,
-        'last': values[-1],
-        'lastMonth': values[-31:],
-        'diff': diff,
-        'monthMean': last_month_mean,
-        'weekMean': week_avg,
-        'update': datetime.now().strftime('Oggi %H:%M'),
-        'yesterday': values[-2],
-        'info': info or '',
-        'sensor': {'tot': sensor.tot, 'values': sensor.values, 'id': sensor.id, 'name': sensor.name,
-                   'unit': sensor.unit, 'icon': sensor.icon}
-    }
+# def _daily_data_js(data, categories, sensor, values, diff, last_month_mean, week_avg, info=None):
+#     return {
+#         'getUrl': reverse('WineApp:ajax.getDailyData'),
+#         'updateUrl': reverse('WineApp:ajax.updateDailyData'),
+#         'allData': data,
+#         'categories': categories,
+#         'last': values[-1],
+#         'lastMonth': values[-31:],
+#         'diff': diff,
+#         'monthMean': last_month_mean,
+#         'weekMean': week_avg,
+#         'update': datetime.now().strftime('Oggi %H:%M'),
+#         'yesterday': values[-2],
+#         'info': info or '',
+#         'sensor': {'tot': sensor.tot, 'values': sensor.values, 'id': sensor.id, 'name': sensor.name,
+#                    'unit': sensor.unit, 'icon': sensor.icon}
+#     }
 
 
 def ajax_update_daily_data(request):
