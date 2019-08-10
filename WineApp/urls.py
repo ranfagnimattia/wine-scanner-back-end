@@ -7,6 +7,7 @@ urlpatterns = [
     path('', views.index, name='index'),
     # Data from db
     path('dailyData', views.show_daily_data, name='show.dailyData'),
+    path('realTimeData', views.show_real_time_data, name='show.realTimeData'),
 
     path('update/daily', views.update_daily_data, name='update.daily'),
     path('update/realtime', views.update_realtime_data, name='update.realtime'),

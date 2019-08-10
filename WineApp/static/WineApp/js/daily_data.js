@@ -8,7 +8,7 @@ $('document').ready(function () {
     $('.sensor').on('click', function () {
         const sensor_id = $(this).attr('data-sensor');
         $.getJSON({
-            url: data_py.ajax_url,
+            url: data_py.getUrl,
             data: {
                 'sensor_id': sensor_id
             },
@@ -46,7 +46,7 @@ $('document').ready(function () {
 
     $('#update-now').click(() => {
         $.getJSON({
-            url: data_py.update_url,
+            url: data_py.updateUrl,
             data: {
                 'sensor_id': sensor.id
             },

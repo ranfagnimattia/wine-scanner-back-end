@@ -23,12 +23,15 @@ def index(request):
 def show_daily_data(request):
     data, scheme, sensor, values, diff, last_month_mean, week_avg = sensor_data.get_daily_data()
     data_js = _daily_data_js(data, scheme, sensor, values, diff, last_month_mean, week_avg)
-    data_js['ajax_url'] = reverse('WineApp:ajax.getDailyData')
-    data_js['update_url'] = reverse('WineApp:ajax.updateDailyData')
     return render(request, 'WineApp/daily_data.html', {
         'sensors': Sensor.objects.all(),
         'data_js': data_js
     })
+
+def show_real_time_data(request):
+    update_data.update_realtime_data()
+    sensor_data.get_real_time_data()
+    return render(request, 'WineApp/real_time_data.html')
 
 
 # Ajax
@@ -40,6 +43,8 @@ def ajax_get_daily_data(request, info=None):
 
 def _daily_data_js(data, scheme, sensor, values, diff, last_month_mean, week_avg, info=None):
     return {
+        'getUrl':reverse('WineApp:ajax.getDailyData'),
+        'updateUrl': reverse('WineApp:ajax.updateDailyData'),
         'allData': data,
         'scheme': scheme,
         'last': values[-1],

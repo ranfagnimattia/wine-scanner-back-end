@@ -1,10 +1,9 @@
-from datetime import timedelta
-from xml.etree import ElementTree
+from datetime import timedelta, datetime
 
 import numpy as np
 from django.http import Http404
 
-from WineApp.models import DailyData, Sensor, RealTimeData
+from WineApp.models import DailyData, Sensor
 
 
 def get_daily_data(sensor_id: int = 1) -> (list, Sensor, list):
@@ -18,113 +17,113 @@ def get_daily_data(sensor_id: int = 1) -> (list, Sensor, list):
     history = sensor.dailydata_set.filter(date__gte='2019-07-17').order_by('date')
 
     if sensor.tot and sensor.values:
-        values = history.values('date', 'tot', 'avg', 'max', 'min')
-        val = list(_get_interval(values, values.last()['date'], 31))
+        all_data = history.values('date', 'tot', 'avg', 'max', 'min')
+        val = list(_get_interval(all_data, all_data.last()['date'], 31))
         avg = np.mean([e['avg'] for e in val])
         min = np.mean([e['min'] for e in val])
         max = np.mean([e['max'] for e in val])
         tot = np.mean([e['tot'] for e in val])
-        scheme = [
-            {
-                "name": "Time",
-                "type": "date",
-                "format": "%Y-%m-%d"
-            },
-            {
-                "name": "Tot",
-                "type": "number"
-            },
-            {
-                "name": "Avg",
-                "type": "number"
-            },
-            {
-                "name": "Max",
-                "type": "number"
-            },
-            {
-                "name": "Min",
-                "type": "number"
-            }]
+        scheme = [{"name": "Time", "type": "date", "format": "%Y-%m-%d"}, {"name": "Tot", "type": "number"},
+                  {"name": "Avg", "type": "number"}, {"name": "Max", "type": "number"},
+                  {"name": "Min", "type": "number"}]
+        week_avg = {'tot': np.mean([e['tot'] for e in list(_get_interval(all_data, all_data.last()['date'], 7))])}
     elif sensor.tot:
-        values = history.values('date', 'tot')
-        val = list(_get_interval(values, values.last()['date'], 31))
+        all_data = history.values('date', 'tot')
+        val = list(_get_interval(all_data, all_data.last()['date'], 31))
         avg = np.NaN
         min = np.NaN
         max = np.NaN
         tot = np.mean([e['tot'] for e in val])
-        scheme = [
-            {
-                "name": "Time",
-                "type": "date",
-                "format": "%Y-%m-%d"
-            },
-            {
-                "name": "Tot",
-                "type": "number"
-            }]
+        scheme = [{"name": "Time", "type": "date", "format": "%Y-%m-%d"}, {"name": "Tot", "type": "number"}]
+        week_avg = {'tot': np.mean([e['tot'] for e in list(_get_interval(all_data, all_data.last()['date'], 7))])}
     else:
-        values = history.values('date', 'avg', 'max', 'min')
-        val = list(_get_interval(values, values.last()['date'], 31))
+        all_data = history.values('date', 'avg', 'max', 'min')
+        val = list(_get_interval(all_data, all_data.last()['date'], 31))
         avg = np.mean([e['avg'] for e in val])
         min = np.mean([e['min'] for e in val])
         max = np.mean([e['max'] for e in val])
         tot = np.NaN
-        scheme = [
-            {
-                "name": "Time",
-                "type": "date",
-                "format": "%Y-%m-%d"
-            },
-            {
-                "name": "Avg",
-                "type": "number"
-            },
-            {
-                "name": "Max",
-                "type": "number"
-            },
-            {
-                "name": "Min",
-                "type": "number"
-            }]
-    if sensor.tot:
-        week_avg = {'tot': np.mean([e['tot'] for e in list(_get_interval(values, values.last()['date'], 7))])}
-    else:
-        week_avg = {'avg': np.mean([e['avg'] for e in list(_get_interval(values, values.last()['date'], 7))])}
-
+        scheme = [{"name": "Time", "type": "date", "format": "%Y-%m-%d"}, {"name": "Avg", "type": "number"},
+                  {"name": "Max", "type": "number"}, {"name": "Min", "type": "number"}]
+        week_avg = {'avg': np.mean([e['avg'] for e in list(_get_interval(all_data, all_data.last()['date'], 7))])}
     diff = _difference(val, avg, min, max, tot, np.NaN)
-    last_month_mean = {'avg': avg, 'min': min, 'max': max, 'tot': tot}
-    last_month_mean = {k: round(v, 2) for k, v in last_month_mean.items() if not np.isnan(v)}
+    last_month_stats = {'avg': avg, 'min': min, 'max': max, 'tot': tot}
+    last_month_stats = {k: round(v, 2) for k, v in last_month_stats.items() if not np.isnan(v)}
 
-    for elem in values:
+    for elem in all_data:
         elem['date'] = elem['date'].strftime('%Y-%m-%d')
 
-    values_list = [list(elem.values()) for elem in values]
+    all_data_list = [list(elem.values()) for elem in all_data]
 
-    return values_list, scheme, sensor, list(values), diff, last_month_mean, week_avg
+    return all_data_list, scheme, sensor, list(all_data), diff, last_month_stats, week_avg
 
 
-def _get_interval(values, date, param):
-    start = date - timedelta(days=param)
-    val = values.filter(date__gte=start)
+def get_real_time_data(sensor_id: int = 1):
+    sensor = Sensor.objects.get(pk=sensor_id)
+    history = sensor.realtimedata_set.order_by('time')
+    all_data = history.values('time', 'value')
+
+    today = datetime.today()
+
+    last24h = _get_interval(all_data, today, 1, True)
+    for elem in last24h:
+        elem['time'] = elem['time'].strftime('%Y-%m-%d %H:%M:%S')
+    avg24h = np.mean([e['value'] for e in last24h])
+
+    today = today.date()
+
+    today_values = _get_interval(all_data, today, 0, True)
+    ordered = today_values.order_by('value')
+    today_stats = {'min_time': ordered.first()['time'].strftime('%H:%M:%S'), 'min_value': ordered.first()['value'],
+                  'max_time': ordered.last()['time'].strftime('%H:%M:%S'),
+                  'max_value': ordered.last()['value']}
+
+    for elem in today_values:
+        elem['time'] = elem['time'].strftime('%Y-%m-%d %H:%M:%S')
+    today_avg = np.mean([e['value'] for e in today_values])
+
+    yesterday_values = _get_interval(all_data, today, 1, True)
+    for elem in yesterday_values:
+        elem['time'] = elem['time'].strftime('%Y-%m-%d %H:%M:%S')
+    yesterday_avg = np.mean([e['value'] for e in yesterday_values])
+
+    # Per il grafico a colonne
+    diff = _difference(last24h, np.NaN, np.NaN, np.NaN, np.NaN, avg24h)
+
+    # Per il grafico finale
+    for elem in all_data:
+        elem['time'] = elem['time'].strftime('%Y-%m-%d %H:%M:%S')
+    all_data_list = [list(elem.values()) for elem in all_data]
+
+    return all_data_list, diff, yesterday_avg, today_avg, last24h, today_stats
+
+
+def _get_interval(values, date, lookback, flag=False):
+    start = date - timedelta(days=lookback)
+    if not flag:
+        val = values.filter(date__gte=start)
+    else:
+        end = date + timedelta(days=1 - lookback)
+        val = values.filter(time__gte=start, time__lte=end)
     return val
 
 
 def _difference(values, avg, min, max, tot, val):
     diff = []
     for e in values:
-        diff.append({'date': e['date'].strftime('%Y-%m-%d')})
-        if not np.isnan(avg):
-            diff[-1]['avg'] = e['avg'] - avg
-        if not np.isnan(tot):
-            diff[-1]['tot'] = e['tot'] - tot
-        if not np.isnan(min):
-            diff[-1]['min'] = e['min'] - min
-        if not np.isnan(max):
-            diff[-1]['max'] = e['max'] - max
         if not np.isnan(val):
-            diff[-1]['values'] = e['value'] - val
+            diff.append({'date': e['time']})
+            diff[-1]['value'] = e['value'] - val
+        else:
+            diff.append({'date': e['date'].strftime('%Y-%m-%d')})
+            if not np.isnan(avg):
+                diff[-1]['avg'] = e['avg'] - avg
+            if not np.isnan(tot):
+                diff[-1]['tot'] = e['tot'] - tot
+            if not np.isnan(min):
+                diff[-1]['min'] = e['min'] - min
+            if not np.isnan(max):
+                diff[-1]['max'] = e['max'] - max
     return diff
 
 
