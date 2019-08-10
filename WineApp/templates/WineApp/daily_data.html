@@ -1,384 +1,293 @@
-{% extends 'WineApp/base.html' %}
+{% extends 'WineApp/dashboard.html' %}
 {% load static %}
 {% block stylesheet %}
 {% endblock %}
 {% block content %}
-    <div class="wrapper">
-        <div class="sidebar" data="blue">
-            <!--
-              Tip 1: You can change the color of the sidebar using: data-color="blue | green | orange | red"
-          -->
-            <div class="d-flex sidebar-wrapper flex-column">
-                <div class="logo">
-                    <p>Sensori</p>
+    <div class="row card-stats-row">
+        <div class="col-sm-6 col-xl-3">
+            <div class="card-stats card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-auto pr-0">
+                            <div class="info-icon text-center icon-warning">
+                                <i class="far fa-clock"></i>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="row flex-nowrap">
+                                <div class="col p-0"></div>
+                                <div class="col-auto">
+                                    <p class="label">Ultimo aggiornamento</p>
+                                    <p class="number"><span class="js-update"></span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="scroll-y">
-                    <ul class="nav">
-                        {% for sensor in sensors %}
-                            {% if sensor.id == data_js.sensor.id %}
-                                <li class="nav-item active ">
-                                    <a href="#" class="sensor" id="sensor_{{ sensor.id }}"
-                                       data-sensor="{{ sensor.id }}">
-                                        <i class="{{ sensor.icon }}"></i>
-                                        {{ sensor }}
-                                    </a>
-                                </li>
-                            {% else %}
-                                <li class="nav-item ">
-                                    <a href="#" class="sensor" id="sensor_{{ sensor.id }}"
-                                       data-sensor="{{ sensor.id }}">
-                                        <i class=" {{ sensor.icon }}"></i>
-                                        {{ sensor }}
-                                    </a>
-                                </li>
-                            {% endif %}
-                        {% endfor %}
-                    </ul>
+                <div class="card-footer">
+                    <hr>
+                    <div class="stats link" id="update-now">
+                        <i class="fas fa-redo"></i>
+                        <span>Aggiorna ora</span>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="main-panel" data="blue">
-            <!-- Navbar -->
-            <nav class="navbar navbar-expand-lg navbar-absolute navbar-transparent">
-                <div class="container-fluid">
-                    <div class="navbar-wrapper">
-                        <div class="navbar-toggle d-inline">
-                            <button type="button" class="navbar-toggler">
-                                <span class="navbar-toggler-bar bar1"></span>
-                                <span class="navbar-toggler-bar bar2"></span>
-                                <span class="navbar-toggler-bar bar3"></span>
-                            </button>
-                        </div>
-                        <a class="navbar-brand" href="#"><h3>WINEAPP</h3></a>
-                    </div>
-                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation"
-                            aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-bar navbar-kebab"></span>
-                        <span class="navbar-toggler-bar navbar-kebab"></span>
-                        <span class="navbar-toggler-bar navbar-kebab"></span>
-                    </button>
-
-                    <div class="collapse navbar-collapse" id="navigation">
-                        <ul class="navbar-nav ml-auto">
-                            <li class="dropdown nav-item">
-                                <h3>
-                                    <a class="nav-link" href="#"> Home
-                                    </a>
-                                </h3>
-                            </li>
-                            <li class="dropdown nav-item">
-                                <h3>
-                                    <a class="nav-link" href="#"> RealTime
-                                    </a>
-                                </h3>
-                            </li>
-                            <li class="separator d-lg-none"></li>
-                        </ul>
-                    </div>
-                </div>
-            </nav>
-            <!-- End Navbar -->
-            <div class="content">
-                <div class="row card-stats-row">
-                    <div class="col-sm-6 col-xl-3">
-                        <div class="card-stats card">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-auto pr-0">
-                                        <div class="info-icon text-center icon-warning">
-                                            <i class="far fa-clock"></i>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="row flex-nowrap">
-                                            <div class="col p-0"></div>
-                                            <div class="col-auto">
-                                                <p class="label">Ultimo aggiornamento</p>
-                                                <p class="number"><span class="js-update"></span></p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-footer">
-                                <hr>
-                                <div class="stats link" id="update-now">
-                                    <i class="fas fa-redo"></i>
-                                    <span>Aggiorna ora</span>
-                                </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="card-stats card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-auto pr-0">
+                            <div class="info-icon text-center icon-warning">
+                                <i class="fas fa-calendar-day"></i>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-sm-6 col-xl-3">
-                        <div class="card-stats card">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-auto pr-0">
-                                        <div class="info-icon text-center icon-warning">
-                                            <i class="fas fa-calendar-day"></i>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="row flex-nowrap">
-                                            <div class="col p-0"></div>
-                                            <div class="col-auto labels pr-0">
-                                                <p class="js-show-tot">Tot</p>
-                                                <p class="js-show-avg">Avg</p>
-                                                <p class="js-show-max">Max</p>
-                                                <p class="js-show-min">Min</p>
-                                            </div>
-                                            <div class="col-auto numbers">
-                                                <p class="js-show-tot"><span class="js-last-tot"></span><span
-                                                        class="js-unit"></span></p>
-                                                <p class="js-show-avg"><span class="js-last-avg"></span><span
-                                                        class="js-unit"></span></p>
-                                                <p class="js-show-max"><span class="js-last-max"></span><span
-                                                        class="js-unit"></span></p>
-                                                <p class="js-show-min"><span class="js-last-min"></span><span
-                                                        class="js-unit"></span></p>
-                                                <p class="values-space"><span class="js-last-space"></span><span
-                                                        class="js-unit"></span></p>
-                                            </div>
-                                        </div>
-                                    </div>
+                        <div class="col">
+                            <div class="row flex-nowrap">
+                                <div class="col p-0"></div>
+                                <div class="col-auto labels pr-0">
+                                    <p class="js-show-tot">Tot</p>
+                                    <p class="js-show-avg">Avg</p>
+                                    <p class="js-show-max">Max</p>
+                                    <p class="js-show-min">Min</p>
                                 </div>
-                            </div>
-                            <div class="card-footer">
-                                <hr>
-                                <div class="stats">
-                                    <span class="js-sensor-icon"></span>
-                                    <span><span class="js-sensor"></span> oggi</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-xl-3">
-                        <div class="card-stats card">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-auto pr-0">
-                                        <div class="info-icon text-center icon-warning">
-                                            <i class="fas fa-calendar-alt"></i>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="row flex-nowrap">
-                                            <div class="col p-0"></div>
-                                            <div class="col-auto labels pr-0">
-                                                <p class="js-show-tot">Tot</p>
-                                                <p class="js-show-avg">Avg</p>
-                                                <p class="js-show-max">Max</p>
-                                                <p class="js-show-min">Min</p>
-                                            </div>
-                                            <div class="col-auto numbers">
-                                                <p class="js-show-tot"><span class="js-monthMean-tot"></span><span
-                                                        class="js-unit"></span></p>
-                                                <p class="js-show-avg"><span class="js-monthMean-avg"></span><span
-                                                        class="js-unit"></span></p>
-                                                <p class="js-show-max"><span class="js-monthMean-max"></span><span
-                                                        class="js-unit"></span></p>
-                                                <p class="js-show-min"><span class="js-monthMean-min"></span><span
-                                                        class="js-unit"></span></p>
-                                                <p class="values-space"><span class="js-monthMean-space"></span><span
-                                                        class="js-unit"></span></p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-footer">
-                                <hr>
-                                <div class="stats">
-                                    <span class="js-sensor-icon"></span>
-                                    <span><span class="js-sensor"></span> ultimo mese</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-xl-3">
-                        <div class="card-stats card">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-auto pr-0">
-                                        <div class="info-icon text-center icon-warning">
-                                            <i class="fas fa-chart-line"></i>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="row flex-nowrap">
-                                            <div class="col p-0"></div>
-                                            <div class="col-auto labels pr-0">
-                                                <p>Ieri</p>
-                                                <p>Sett</p>
-                                                <p>Mese</p>
-                                            </div>
-                                            <div class="col-auto numbers">
-                                                <p class="js-trend-day">
-                                                    <span class="js-trend"></span><span class="js-unit"></span><span
-                                                        class="js-trend-icon"></span>
-                                                </p>
-                                                <p class="js-trend-week">
-                                                    <span class="js-trend"></span><span class="js-unit"></span><span
-                                                        class="js-trend-icon"></span>
-                                                </p>
-                                                <p class="js-trend-month">
-                                                    <span class="js-trend"></span><span class="js-unit"></span><span
-                                                        class="js-trend-icon"></span>
-                                                </p>
-                                                <p class="values-space js-trend-space">
-                                                    <span class="js-trend"></span><span class="js-unit"></span><span
-                                                        class="js-trend-icon"></span>
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-footer">
-                                <hr>
-                                <div class="stats">
-                                    <span class="js-sensor-icon"></span>
-                                    <span>
-                                        <span class="js-sensor"></span> <span class="js-main-category"></span>
-                                        <span> rispetto a:</span>
-                                    </span>
+                                <div class="col-auto numbers">
+                                    <p class="js-show-tot"><span class="js-last-tot"></span><span
+                                            class="js-unit"></span></p>
+                                    <p class="js-show-avg"><span class="js-last-avg"></span><span
+                                            class="js-unit"></span></p>
+                                    <p class="js-show-max"><span class="js-last-max"></span><span
+                                            class="js-unit"></span></p>
+                                    <p class="js-show-min"><span class="js-last-min"></span><span
+                                            class="js-unit"></span></p>
+                                    <p class="values-space"><span class="js-last-space"></span><span
+                                            class="js-unit"></span></p>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-12 col-xl-6">
-                        <div class="card card-chart card-stats" id="month-chart">
-                            <div class="card-header">
-                                <div class="row">
-                                    <div class="col-sm-6 text-left">
-                                        <h5 class="card-category"><span class="js-sensor"></span> <span
-                                                class="js-sensor-category"></span><span class="trasparent"> rispetto alla media mensile</span>
-                                        </h5>
-                                        <h2 class="card-title">Ultimo Mese</h2>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <div class="btn-group btn-group-toggle float-right" data-toggle="buttons">
-                                            <label class="btn btn-sm btn-primary btn-simple" data-category="Tot">
-                                                <input type="radio" class="d-none d-sm-none" name="options" checked="">
-                                                <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Tot</span>
-                                                <span class="d-block d-sm-none">Tot</span>
-                                            </label>
-                                            <label class="btn btn-sm btn-primary btn-simple" data-category="Avg">
-                                                <input type="radio" class="d-none d-sm-none"
-                                                       name="options">
-                                                <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Avg</span>
-                                                <span class="d-block d-sm-none">Avg</span>
-                                            </label>
-                                            <label class="btn btn-sm btn-primary btn-simple" data-category="Max">
-                                                <input type="radio" class="d-none d-sm-none"
-                                                       name="options">
-                                                <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Max</span>
-                                                <span class="d-block d-sm-none">Max</span>
-                                            </label>
-                                            <label class="btn btn-sm btn-primary btn-simple" data-category="Min">
-                                                <input type="radio" class="d-none d-sm-none"
-                                                       name="options">
-                                                <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Min</span>
-                                                <span class="d-block d-sm-none">Min</span>
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <div class="chart-area">
-                                    <div class="chart"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-xl-6">
-                        <div class="card card-chart card-stats" id="trend-chart">
-                            <div class="card-header">
-                                <div class="row">
-                                    <div class="col-sm-6 text-left">
-                                        <h5 class="card-category"><span class="js-sensor"></span><span
-                                                class="js-sensor-category"></span><span> rispetto alla media mensile</span>
-                                        </h5>
-                                        <h2 class="card-title">Differenza</h2>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <div class="btn-group btn-group-toggle float-right" data-toggle="buttons">
-                                            <label class="btn btn-sm btn-success btn-simple" data-category="Tot">
-                                                <input type="radio" class="d-none d-sm-none" name="options" checked="">
-                                                <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Tot</span>
-                                                <span class="d-block d-sm-none">Tot</span>
-                                            </label>
-                                            <label class="btn btn-sm btn-success btn-simple" data-category="Avg">
-                                                <input type="radio" class="d-none d-sm-none"
-                                                       name="options">
-                                                <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Avg</span>
-                                                <span class="d-block d-sm-none">Avg</span>
-                                            </label>
-                                            <label class="btn btn-sm btn-success btn-simple" data-category="Max">
-                                                <input type="radio" class="d-none d-sm-none"
-                                                       name="options">
-                                                <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Max</span>
-                                                <span class="d-block d-sm-none">Max</span>
-                                            </label>
-                                            <label class="btn btn-sm btn-success btn-simple" data-category="Min">
-                                                <input type="radio" class="d-none d-sm-none"
-                                                       name="options">
-                                                <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Min</span>
-                                                <span class="d-block d-sm-none">Min</span>
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <div class="chart-area">
-                                    <div class="chart"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card card-chart" id="sensor-chart">
-                            <div class="card-header">
-                                <div class="row">
-                                    <div class="col-sm-6 text-left">
-                                        <h5 class="card-category "><span class="js-sensor"></span> <span
-                                                class="js-sensor-category"></span></h5>
-                                        <h2 class="card-title"><span class="js-sensor-icon big-icon"></span>
-                                            <span class="js-sensor"></span></h2>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <div class="chart-area-big">
-                                    <div class="chart"></div>
-                                </div>
-                            </div>
-                        </div>
+                <div class="card-footer">
+                    <hr>
+                    <div class="stats">
+                        <span class="js-sensor-icon"></span>
+                        <span><span class="js-sensor"></span> oggi</span>
                     </div>
                 </div>
             </div>
-            <footer class="footer">
-                <div class="container-fluid">
-                    <div class="copyright float-right">
-                        &copy;
-                        <script>
-                            document.write(new Date().getFullYear())
-                        </script>
-                        , made with <i class="far fa-heart"></i> by
-                        Lorenzo and Andrea for a better wine.
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="card-stats card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-auto pr-0">
+                            <div class="info-icon text-center icon-warning">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="row flex-nowrap">
+                                <div class="col p-0"></div>
+                                <div class="col-auto labels pr-0">
+                                    <p class="js-show-tot">Tot</p>
+                                    <p class="js-show-avg">Avg</p>
+                                    <p class="js-show-max">Max</p>
+                                    <p class="js-show-min">Min</p>
+                                </div>
+                                <div class="col-auto numbers">
+                                    <p class="js-show-tot"><span class="js-monthMean-tot"></span><span
+                                            class="js-unit"></span></p>
+                                    <p class="js-show-avg"><span class="js-monthMean-avg"></span><span
+                                            class="js-unit"></span></p>
+                                    <p class="js-show-max"><span class="js-monthMean-max"></span><span
+                                            class="js-unit"></span></p>
+                                    <p class="js-show-min"><span class="js-monthMean-min"></span><span
+                                            class="js-unit"></span></p>
+                                    <p class="values-space"><span class="js-monthMean-space"></span><span
+                                            class="js-unit"></span></p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <!-- your footer here -->
                 </div>
-            </footer>
+                <div class="card-footer">
+                    <hr>
+                    <div class="stats">
+                        <span class="js-sensor-icon"></span>
+                        <span><span class="js-sensor"></span> ultimo mese</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="card-stats card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-auto pr-0">
+                            <div class="info-icon text-center icon-warning">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="row flex-nowrap">
+                                <div class="col p-0"></div>
+                                <div class="col-auto labels pr-0">
+                                    <p>Ieri</p>
+                                    <p>Sett</p>
+                                    <p>Mese</p>
+                                </div>
+                                <div class="col-auto numbers">
+                                    <p class="js-trend-day">
+                                        <span class="js-trend"></span><span class="js-unit"></span><span
+                                            class="js-trend-icon"></span>
+                                    </p>
+                                    <p class="js-trend-week">
+                                        <span class="js-trend"></span><span class="js-unit"></span><span
+                                            class="js-trend-icon"></span>
+                                    </p>
+                                    <p class="js-trend-month">
+                                        <span class="js-trend"></span><span class="js-unit"></span><span
+                                            class="js-trend-icon"></span>
+                                    </p>
+                                    <p class="values-space js-trend-space">
+                                        <span class="js-trend"></span><span class="js-unit"></span><span
+                                            class="js-trend-icon"></span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <hr>
+                    <div class="stats">
+                        <span class="js-sensor-icon"></span>
+                        <span>
+                                        <span class="js-sensor"></span> <span class="js-main-category"></span>
+                                        <span> rispetto a:</span>
+                                    </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-xl-6">
+            <div class="card card-chart card-stats" id="month-chart">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-sm-6 text-left">
+                            <h5 class="card-category"><span class="js-sensor"></span> <span
+                                    class="js-sensor-category"></span><span class="trasparent"> rispetto alla media mensile</span>
+                            </h5>
+                            <h2 class="card-title">Ultimo Mese</h2>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="btn-group btn-group-toggle float-right" data-toggle="buttons">
+                                <label class="btn btn-sm btn-primary btn-simple" data-category="Tot">
+                                    <input type="radio" class="d-none d-sm-none" name="options" checked="">
+                                    <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Tot</span>
+                                    <span class="d-block d-sm-none">Tot</span>
+                                </label>
+                                <label class="btn btn-sm btn-primary btn-simple" data-category="Avg">
+                                    <input type="radio" class="d-none d-sm-none"
+                                           name="options">
+                                    <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Avg</span>
+                                    <span class="d-block d-sm-none">Avg</span>
+                                </label>
+                                <label class="btn btn-sm btn-primary btn-simple" data-category="Max">
+                                    <input type="radio" class="d-none d-sm-none"
+                                           name="options">
+                                    <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Max</span>
+                                    <span class="d-block d-sm-none">Max</span>
+                                </label>
+                                <label class="btn btn-sm btn-primary btn-simple" data-category="Min">
+                                    <input type="radio" class="d-none d-sm-none"
+                                           name="options">
+                                    <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Min</span>
+                                    <span class="d-block d-sm-none">Min</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="chart-area">
+                        <div class="chart"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-xl-6">
+            <div class="card card-chart card-stats" id="trend-chart">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-sm-6 text-left">
+                            <h5 class="card-category"><span class="js-sensor"></span><span
+                                    class="js-sensor-category"></span><span> rispetto alla media mensile</span>
+                            </h5>
+                            <h2 class="card-title">Differenza</h2>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="btn-group btn-group-toggle float-right" data-toggle="buttons">
+                                <label class="btn btn-sm btn-success btn-simple" data-category="Tot">
+                                    <input type="radio" class="d-none d-sm-none" name="options" checked="">
+                                    <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Tot</span>
+                                    <span class="d-block d-sm-none">Tot</span>
+                                </label>
+                                <label class="btn btn-sm btn-success btn-simple" data-category="Avg">
+                                    <input type="radio" class="d-none d-sm-none"
+                                           name="options">
+                                    <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Avg</span>
+                                    <span class="d-block d-sm-none">Avg</span>
+                                </label>
+                                <label class="btn btn-sm btn-success btn-simple" data-category="Max">
+                                    <input type="radio" class="d-none d-sm-none"
+                                           name="options">
+                                    <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Max</span>
+                                    <span class="d-block d-sm-none">Max</span>
+                                </label>
+                                <label class="btn btn-sm btn-success btn-simple" data-category="Min">
+                                    <input type="radio" class="d-none d-sm-none"
+                                           name="options">
+                                    <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Min</span>
+                                    <span class="d-block d-sm-none">Min</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="chart-area">
+                        <div class="chart"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card card-chart" id="sensor-chart">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-sm-6 text-left">
+                            <h5 class="card-category "><span class="js-sensor"></span> <span
+                                    class="js-sensor-category"></span></h5>
+                            <h2 class="card-title"><span class="js-sensor-icon big-icon"></span>
+                                <span class="js-sensor"></span></h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="chart-area-big">
+                        <div class="chart"></div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}
 {% block javascript %}
+    {{ block.super }}
     <script src="{% static 'WineApp/js/daily_data.js' %}"></script>
 {% endblock %}

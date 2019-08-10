@@ -1,0 +1,96 @@
+{% extends 'WineApp/base.html' %}
+{% load static %}
+{% block stylesheet %}
+{% endblock %}
+{% block main %}
+    <div class="wrapper">
+        <div class="sidebar" data="blue">
+            <div class="d-flex sidebar-wrapper flex-column">
+                <div class="logo">
+                    <p>Sensori</p>
+                </div>
+                <div class="scroll-y">
+                    <ul class="nav">
+                        {% for sensor in sensors %}
+                            {% if sensor.id == data_js.sensor.id %}
+                                <li class="nav-item active ">
+                                    <a href="#" class="sensor" id="sensor_{{ sensor.id }}"
+                                       data-sensor="{{ sensor.id }}">
+                                        <i class="{{ sensor.icon }}"></i>
+                                        {{ sensor }}
+                                    </a>
+                                </li>
+                            {% else %}
+                                <li class="nav-item ">
+                                    <a href="#" class="sensor" id="sensor_{{ sensor.id }}"
+                                       data-sensor="{{ sensor.id }}">
+                                        <i class=" {{ sensor.icon }}"></i>
+                                        {{ sensor }}
+                                    </a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="main-panel" data="blue">
+            <!-- Navbar -->
+            <nav class="navbar navbar-expand-lg navbar-absolute navbar-transparent">
+                <div class="container-fluid">
+                    <div class="navbar-wrapper">
+                        <div class="navbar-toggle d-inline">
+                            <button type="button" class="navbar-toggler">
+                                <span class="navbar-toggler-bar bar1"></span>
+                                <span class="navbar-toggler-bar bar2"></span>
+                                <span class="navbar-toggler-bar bar3"></span>
+                            </button>
+                        </div>
+                        <a class="navbar-brand" href="#"><h3>WINEAPP</h3></a>
+                    </div>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation"
+                            aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-bar navbar-kebab"></span>
+                        <span class="navbar-toggler-bar navbar-kebab"></span>
+                        <span class="navbar-toggler-bar navbar-kebab"></span>
+                    </button>
+
+                    <div class="collapse navbar-collapse" id="navigation">
+                        <ul class="navbar-nav ml-auto">
+                            <li class="dropdown nav-item">
+                                <h3>
+                                    <a class="nav-link" href="#"> Home
+                                    </a>
+                                </h3>
+                            </li>
+                            <li class="dropdown nav-item">
+                                <h3>
+                                    <a class="nav-link" href="#"> RealTime
+                                    </a>
+                                </h3>
+                            </li>
+                            <li class="separator d-lg-none"></li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+            <!-- End Navbar -->
+            <div class="content">
+                {% block content %}
+                {% endblock %}
+            </div>
+            <footer class="footer">
+                <div class="container-fluid">
+                    <div class="copyright float-right">
+                        &copy; {% now "Y" %}, made with <i class="far fa-heart"></i> by
+                        Lorenzo and Andrea for a better wine.
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+{% endblock %}
+{% block javascript %}
+    {{ block.super }}
+    <script src="{% static 'WineApp/js/dashboard.js' %}"></script>
+{% endblock %}
