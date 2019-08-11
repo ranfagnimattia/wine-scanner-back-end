@@ -12,23 +12,12 @@
                 <div class="scroll-y">
                     <ul class="nav">
                         {% for sensor in sensors %}
-                            {% if sensor.id == data_js.sensor.id %}
-                                <li class="nav-item active ">
-                                    <a href="#" class="sensor" id="sensor_{{ sensor.id }}"
-                                       data-sensor="{{ sensor.id }}">
-                                        <i class="{{ sensor.icon }}"></i>
-                                        {{ sensor }}
-                                    </a>
-                                </li>
-                            {% else %}
-                                <li class="nav-item ">
-                                    <a href="#" class="sensor" id="sensor_{{ sensor.id }}"
-                                       data-sensor="{{ sensor.id }}">
-                                        <i class=" {{ sensor.icon }}"></i>
-                                        {{ sensor }}
-                                    </a>
-                                </li>
-                            {% endif %}
+                            <li class="nav-item">
+                                <a href="#" class="sensor" data-id="{{ sensor.id }}">
+                                    <i class=" {{ sensor.icon }}"></i>
+                                    {{ sensor }}
+                                </a>
+                            </li>
                         {% endfor %}
                     </ul>
                 </div>

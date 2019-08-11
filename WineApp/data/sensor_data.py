@@ -7,7 +7,7 @@ from django.urls import reverse
 from WineApp.models import DailyData, Sensor
 
 
-def get_daily_data(sensor_id: int = 1) -> object:
+def get_daily_data(sensor_id: int = 1) -> dict:
     """
     Get daily data of a sensor
 
@@ -45,7 +45,8 @@ def get_daily_data(sensor_id: int = 1) -> object:
         week_avg = {'avg': np.mean([e['avg'] for e in list(_get_interval(all_data, all_data.last()['date'], 7))])}
         categories = ['Avg', 'Max', 'Min']
     diff = _difference(val, avg, avg_min, avg_max, tot, np.NaN)
-    last_month_stats = {'avg': avg, 'min': np.min([e['min'] for e in val]), 'max': np.max([e['max'] for e in val]),
+    last_month_stats = {'avg': avg, 'min': np.min([e['min'] if 'min' in e else np.NaN for e in val]),
+                        'max': np.max([e['max'] if 'max' in e else np.NaN for e in val]),
                         'tot': tot}
     last_month_stats = {k: round(v, 2) for k, v in last_month_stats.items() if not np.isnan(v)}
 
@@ -65,9 +66,7 @@ def get_daily_data(sensor_id: int = 1) -> object:
         'diff': diff,
         'monthMean': last_month_stats,
         'weekMean': week_avg,
-        'update': datetime.now().strftime('Oggi %H:%M'),
         'yesterday': list(all_data)[-2],
-        'info': None or '',
         'sensor': {'tot': sensor.tot, 'values': sensor.values, 'id': sensor.id, 'name': sensor.name,
                    'unit': sensor.unit, 'icon': sensor.icon}
     }

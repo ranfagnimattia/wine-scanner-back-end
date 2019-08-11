@@ -1,7 +1,9 @@
 from datetime import datetime, timedelta
 from xml.etree import ElementTree
-from WineApp.models import DailyData, Sensor, RealTimeData
+
 import requests
+
+from WineApp.models import DailyData, Sensor, RealTimeData
 
 
 def update_daily_data():
@@ -19,25 +21,18 @@ def update_daily_data():
     response = requests.post('https://live.netsens.it/export/xml_export_1A.php', data=parameter)
 
     if response.status_code != requests.codes.ok:
-        return 'Request error'
+        return {'error': 'Errore connessione'}
     root_elem = ElementTree.fromstring(response.content)
     if root_elem.get('errore') != '0':
-        return 'API error: ' + root_elem.get('messaggio')
+        return {'error': 'Errore API: ' + root_elem.get('messaggio')}
     station_elem = root_elem[0]
 
-    last_day = DailyData.objects.filter(date__gte=start_date)
-    n_updated = last_day.count()
-    last_day.delete()
-    debug_data = []
     new_data = []
-    n_created = 0
     for unit_elem in station_elem.findall('unita'):
         for date_elem in unit_elem.findall('giorno'):
-            string = ''
             for sensor_elem in date_elem.findall('sensore'):
                 try:
                     sensor = Sensor.objects.get(name=sensor_elem.get('nome'))
-                    # data, created = DailyData.objects.get_or_create(date=date_elem.get('data'), sensor=sensor)
                     data = DailyData(date=date_elem.get('data'), sensor=sensor)
                     if sensor.values:
                         data.avg = sensor_elem.get('media')
@@ -51,20 +46,15 @@ def update_daily_data():
                             data.min = round(float(data.min) / 10, 3)
                     if sensor.tot:
                         data.tot = sensor_elem.get('cumulato')
-                    # data.save()
                     new_data.append(data)
-                    # string += sensor_elem.get('nome') + str(created) + ' '
-                    n_created += 1
                 except Sensor.DoesNotExist:
-                    # string += sensor_elem.get('nome') + 'NONE '
                     pass
 
-            # debug_data.append(date_elem.get('data') + '  ' + string)
-
+    last_day = DailyData.objects.filter(date__gte=start_date)
+    n_updated = last_day.count()
+    last_day.delete()
     DailyData.objects.bulk_create(new_data)
-    debug_data.append(start_date + '   ' + end_date)
-    debug_data.append('Updated: ' + str(n_updated) + ', Created: ' + str(n_created - n_updated))
-    return {'updated': n_updated, 'created': n_created - n_updated}
+    return {'updated': n_updated, 'created': len(new_data) - n_updated}
 
 
 def update_realtime_data():

@@ -9,10 +9,11 @@
  * @param data_py.diff
  * @param data_py.monthMean
  * @param data_py.weekMean
- * @param data_py.update
  * @param data_py.yesterday
- * @param data_py.info
  * @param data_py.sensor
+ *
+ * @param response.updated
+ * @param response.created
  */
 
 $('document').ready(function () {
@@ -22,7 +23,7 @@ $('document').ready(function () {
         $.getJSON({
             url: data_py.getUrl,
             data: {
-                'sensor_id': $(this).attr('data-sensor')
+                'sensor_id': $(this).data('id')
             },
             success: function (response) {
                 if (response) {
@@ -45,27 +46,62 @@ $('document').ready(function () {
             updateChart($('#trend-chart'), data_py.diff, $(this).data('category').toLowerCase())
     });
 
-
-    $('#update-now').click(() => {
-        $.getJSON({
-            url: data_py.updateUrl,
-            data: {
-                'sensor_id': data_py.sensor.id
-            },
-            success: function (response) {
-                if (response) {
-                    window.data_py = response;
-                    updateDashboard();
-                }
-            }, error: function (response) {
-                console.error(response);
-            }
-        });
-    });
+    updateData();
 });
+
+function updateData() {
+    const elem = $('#refresh');
+    elem.html('<i class="fas fa-redo fa-spin"></i> <span>Aggiornamento...</span>').removeClass('link').off('click');
+    let now = new Date();
+    let hr = now.getHours();
+    if (hr < 10)
+        hr = "0" + hr;
+    let min = now.getMinutes();
+    if (min < 10)
+        min = "0" + min;
+    $('.js-last-update').text('Oggi ' + hr + ':' + min);
+
+    $.getJSON({
+        url: data_py.updateUrl,
+        success: function (response) {
+            if (!response || response.error) {
+                elem.html('<i class="fas fa-times"></i><span>' +
+                    (!response ? 'Errore server' : response.error) + '</span>');
+                return;
+            }
+            if (!response.updated && !response.created) {
+                elem.html('<i class="fas fa-check"></i> <span>Tutti i dati sono aggiornati</span>');
+                return;
+            }
+            let msg = 'Ricarica ora ';
+            if (response.updated > 0)
+                msg += response.updated + ' dati aggiornati';
+            if (response.created > 0) {
+                if (response.updated > 0)
+                    msg += ' e ';
+                msg += response.created + ' nuovi dati';
+            }
+            elem.html('<i class="fas fa-redo"></i> <span>' + msg + '</span>').addClass('link').click(() => {
+                elem.html('<i class="fas fa-check"></i> <span>Tutti i dati sono aggiornati</span>')
+                    .removeClass('link').off('click');
+
+                $(`.sensor[data-id='${data_py.sensor.id}']`).click();
+            });
+
+        }, error: function (response) {
+            console.error(response);
+        }
+    });
+}
 
 function updateDashboard() {
     console.log("Data", data_py);
+
+    const refreshElem = $('#refresh');
+    if (refreshElem.hasClass('link')) {
+        refreshElem.html('<i class="fas fa-check"></i> <span>Tutti i dati sono aggiornati</span>')
+            .removeClass('link').off('click');
+    }
 
     const sensor = data_py.sensor;
     const firstCategory = data_py.categories[0].toLowerCase();
@@ -73,8 +109,6 @@ function updateDashboard() {
     $('.js-sensor').text(sensor.name);
     $('.js-sensor-icon').html('<i class="' + sensor.icon + '"></i>');
     $('.js-unit').html(sensor.unit.replace('^2', '<sup>2</sup>'));
-
-    $('.js-update').text(data_py.update);
 
     let trendSpace = setUpTrend($('.js-trend-space'), firstCategory, data_py.last, data_py.monthMean);
     trendSpace[0].text(trendSpace[1].toFixed(2) + '0');
@@ -97,7 +131,7 @@ function updateDashboard() {
     animateValues(animations);
 
     $('.active').removeClass("active");
-    $('#sensor_' + sensor.id).parent().addClass("active");
+    $(`.sensor[data-id='${sensor.id}']`).parent().addClass("active");
     updateBigChart($('#sensor-chart'), data_py.allData);
     setUpChart($('#month-chart'), data_py.lastMonth);
     setUpChart($('#trend-chart'), data_py.diff);

@@ -90,7 +90,6 @@ html {
 }
 
 .card-stats .card-footer .stats {
-    cursor: default;
     -webkit-touch-callout: none; /* iOS Safari */
     -webkit-user-select: none; /* Safari */
     -moz-user-select: none; /* Firefox */
@@ -104,6 +103,10 @@ html {
 
 .card-stats .card-footer .stats.link {
     cursor: pointer;
+}
+
+.card-stats .card-footer .stats.link:hover {
+    color: #91a7df;
 }
 
 .card-stats .info-icon {
