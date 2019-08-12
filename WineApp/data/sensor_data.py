@@ -1,10 +1,9 @@
 from datetime import timedelta, datetime
 
 import numpy as np
-from django.http import Http404
 from django.urls import reverse
 
-from WineApp.models import DailyData, Sensor
+from WineApp.models import Sensor
 
 
 def get_daily_data(sensor_id: int = 1) -> dict:
@@ -148,7 +147,6 @@ def get_series(sensor, measure: str):
     date = list(test_set.values_list('date', flat=True))
     test_set = list(test_set.values_list(measure, flat=True))
     train_set = list(train_set.values_list(measure, flat=True))
-
 
     return test_set, train_set, date
     # fields = {'airTemperature': 'Temperatura aria', 'rain': 'Pioggia', 'windSpeed': 'Velocità vento',
