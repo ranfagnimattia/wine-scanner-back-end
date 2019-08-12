@@ -10,7 +10,7 @@ class Sensor(models.Model):
     max = models.FloatField(default=None, blank=True, null=True)
     values = models.BooleanField(default=True)
     tot = models.BooleanField(default=False)
-    activeFrom = models.DateField()
+    startTestSet = models.DateField(default=None, blank=True, null=True)
 
     # predictionFrom = models.DateField(default=None, blank=True, null=True)
 
