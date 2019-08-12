@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-def detect_anomalies(error, prediction):
+def detect_anomalies(error, actual):
     absolute_error = [abs(error[i]) for i in range(0, len(error))]
     anomaly1 = []
     anomaly2 = []
@@ -21,7 +21,7 @@ def detect_anomalies(error, prediction):
     for i in range(0, len(error)):
         std1.append(k * std)
         if abs(error[i]) > k * std:
-            anomaly1.append(prediction[i])
+            anomaly1.append(actual[i])
         else:
             anomaly1.append(np.NaN)
     print(std)
@@ -34,7 +34,7 @@ def detect_anomalies(error, prediction):
         new_mean, new_var = update(mean, var, error[i], count + 1)
         std = math.sqrt(new_var / count)
         if abs(error[i]) > k * std:
-            anomaly2.append(prediction[i])
+            anomaly2.append(actual[i])
             std2.append(std2[i - 1])
         else:
             anomaly2.append(np.NaN)
@@ -52,7 +52,7 @@ def detect_anomalies(error, prediction):
         std = math.sqrt(var / i)
         std3.append(k * std)
         if abs(error[i]) > k * std:
-            anomaly3.append(prediction[i])
+            anomaly3.append(actual[i])
         else:
             anomaly3.append(np.NaN)
     print(std)
