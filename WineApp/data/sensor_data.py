@@ -141,15 +141,23 @@ def _difference(values, avg, minimum, maximum, tot, val):
     return diff
 
 
-# todo choose size of train and test set
-def get_series(field: str, measure: str):
-    fields = {'airTemperature': 'Temperatura aria', 'rain': 'Pioggia', 'windSpeed': 'Velocità vento',
-              'dewPoint': 'Punto di rugiada'}
-    if field not in fields.keys():
-        raise Http404("Field does not exist")
-    sensor = Sensor.objects.get(name=fields[field])
-    train_set = DailyData.objects.filter(sensor=sensor, date__lte='2018-12-31').order_by('date')
-    train_list = list(train_set.values_list(measure, flat=True))
-    test_set = DailyData.objects.filter(sensor=sensor, date__gte='2019-01-01').order_by('date')
-    test_list = list(test_set.values_list(measure, flat=True))
-    return train_list, test_list, field in fields.keys(), test_set.values_list('date', flat=True)
+def get_series(sensor, measure: str):
+    train_set = sensor.dailydata_set.filter(date__lt=sensor.startTestSet).order_by('date')
+    test_set = sensor.dailydata_set.filter(date__gte=sensor.startTestSet).order_by('date')
+
+    date = list(test_set.values_list('date', flat=True))
+    test_set = list(test_set.values_list(measure, flat=True))
+    train_set = list(train_set.values_list(measure, flat=True))
+
+
+    return test_set, train_set, date
+    # fields = {'airTemperature': 'Temperatura aria', 'rain': 'Pioggia', 'windSpeed': 'Velocità vento',
+    #           'dewPoint': 'Punto di rugiada'}
+    # if field not in fields.keys():
+    #     raise Http404("Field does not exist")
+    # sensor = Sensor.objects.get(name=fields[field])
+    # train_set = DailyData.objects.filter(sensor=sensor, date__lte='2018-12-31').order_by('date')
+    # train_list = list(train_set.values_list(measure, flat=True))
+    # test_set = DailyData.objects.filter(sensor=sensor, date__gte='2019-01-01').order_by('date')
+    # test_list = list(test_set.values_list(measure, flat=True))
+    # return train_list, test_list, field in fields.keys(), test_set.values_list('date', flat=True)
