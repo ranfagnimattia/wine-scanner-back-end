@@ -5,7 +5,7 @@
 {% block main %}
     <div class="wrapper">
         <div class="sidebar" data="blue">
-            <div class="d-flex sidebar-wrapper flex-column">
+            <div class="d-flex sidebar-wrapper flex-column no-select">
                 <div class="logo">
                     <p>Sensori</p>
                 </div>
@@ -14,7 +14,8 @@
                         {% for sensor in sensors %}
                             <li class="nav-item">
                                 {% if multilevel %}
-                                    <a class="nav-sensor-toggle" data-id="{{ sensor.id }}">
+                                    <a class="nav-sensor-toggle" {% if sensor.disabled %} disabled {% endif %}
+                                       data-id="{{ sensor.id }}">
                                         <i class=" {{ sensor.icon }}"></i>
                                         {{ sensor }}
                                         <i class="caret-icon fas fa-caret-down"></i>
@@ -32,7 +33,8 @@
                                         </ul>
                                     </div>
                                 {% else %}
-                                    <a class="nav-sensor" data-id="{{ sensor.id }}">
+                                    <a class="nav-sensor" {% if sensor.disabled %} disabled {% endif %}
+                                       data-id="{{ sensor.id }}">
                                         <i class=" {{ sensor.icon }}"></i>
                                         {{ sensor }}
                                     </a>

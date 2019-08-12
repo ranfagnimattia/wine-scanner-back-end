@@ -105,7 +105,16 @@ def get_real_time_data(sensor_id: int = 1):
         elem['time'] = elem['time'].strftime('%Y-%m-%d %H:%M:%S')
     all_data_list = [list(elem.values()) for elem in all_data]
 
-    return all_data_list, diff, yesterday_avg, today_avg, last24h, today_stats
+    return {
+        'allData': all_data_list,
+        'last24h': [list(elem.values()) for elem in last24h],
+        'diff': [list(elem.values()) for elem in diff],
+        'yesterdayAvg': yesterday_avg,
+        'todayAvg': today_avg,
+        'todayStats': today_stats,
+        'sensor': {'tot': sensor.tot, 'values': sensor.values, 'id': sensor.id, 'name': sensor.name,
+                   'unit': sensor.unit, 'icon': sensor.icon}
+    }
 
 
 def _get_interval(values, date, lookback, flag=False):

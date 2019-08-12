@@ -18,6 +18,7 @@ def index(request):
     return render(request, 'WineApp/index.html', {'list': history})
 
 
+# Daily Dashboard
 def show_daily_data(request):
     data_js = sensor_data.get_daily_data()
     data_js.update({
@@ -30,12 +31,45 @@ def show_daily_data(request):
     })
 
 
+def ajax_get_daily_data(request):
+    sensor_id = request.GET.get('sensorId', 1)
+    return JsonResponse(sensor_data.get_daily_data(sensor_id))
+
+
+def ajax_update_daily_data(request):
+    # time.sleep(3)
+    return JsonResponse(update_data.update_daily_data())
+
+
+# RealTime Dashboard
 def show_real_time_data(request):
-    update_data.update_realtime_data()
-    sensor_data.get_real_time_data()
-    return render(request, 'WineApp/real_time_data.html')
+    data_js = sensor_data.get_real_time_data()
+    data_js.update({
+        'getUrl': reverse('WineApp:ajax.getRealTimeData'),
+        'updateUrl': reverse('WineApp:ajax.updateRealTimeData')
+    })
+    sensors = Sensor.objects.all()
+    for sensor in sensors:
+        sensor.disabled = not sensor.values
+    return render(request, 'WineApp/real_time_data.html', {
+        'sensors': sensors,
+        'data_js': data_js
+    })
 
 
+def ajax_get_real_time_data(request):
+    sensor_id = request.GET.get('sensorId', 1)
+    return JsonResponse(sensor_data.get_real_time_data(sensor_id))
+
+
+def ajax_update_real_time_data(request):
+    # time.sleep(3)
+    # update_data.update_realtime_data()
+    # return JsonResponse(update_data.update_daily_data())
+    return None
+
+
+# Anomalies Dashboard
 def show_anomalies(request):
     data_js = sensor_data.get_daily_data()
     data_js.update({
@@ -50,17 +84,6 @@ def show_anomalies(request):
     })
 
 
-# Ajax
-def ajax_get_daily_data(request):
-    sensor_id = request.GET.get('sensorId', 1)
-    return JsonResponse(sensor_data.get_daily_data(sensor_id))
-
-
-def ajax_update_daily_data(request):
-    # time.sleep(3)
-    return JsonResponse(update_data.update_daily_data())
-
-
 def ajax_get_anomalies(request):
     sensor_id = request.GET.get('sensorId', 1)
     measure = request.GET.get('measure')
@@ -69,6 +92,10 @@ def ajax_get_anomalies(request):
         'measure': measure
     })
     return JsonResponse(data_js)
+
+
+def ajax_update_anomalies(request):
+    return None
 
 
 # Update Data

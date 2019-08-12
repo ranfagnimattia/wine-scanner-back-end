@@ -44,7 +44,12 @@ html {
 }
 
 .sidebar .nav li:not(.active) > a {
-    color: #ffffffcc
+    color: #ffffffcc;
+}
+
+.sidebar .nav li:not(.active) > a[disabled], .sidebar .nav li:not(.active) > a[disabled] > i {
+    color: #ffffff60;
+    cursor: default;
 }
 
 .sidebar .nav-measures {

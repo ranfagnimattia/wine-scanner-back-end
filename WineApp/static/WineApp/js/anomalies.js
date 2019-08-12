@@ -38,7 +38,7 @@ class Dashboard {
         // ], $('.js-trend-space'));
         // animation.animate();
         //
-        // this.updateCharts();
+        this.updateCharts();
     }
 
     setEvents() {
@@ -57,24 +57,99 @@ class Dashboard {
     /* Charts */
     updateCharts() {
         this.updateBigChart($('#sensor-chart'), this.allData);
-        this.setUpChart($('#month-chart'), this.lastMonth);
-        this.setUpChart($('#trend-chart'), this.diff);
+        // this.setUpChart($('#month-chart'), this.lastMonth);
+        // this.setUpChart($('#trend-chart'), this.diff);
     }
 
     updateBigChart(elem, data) {
+
+        data = [
+            [
+                "1901 Jan",
+                "Assam",
+                127.1,
+                150,
+                27.1
+            ],
+            [
+                "1901 Feb",
+                "Assam",
+                119.5,
+                150,
+                19.5
+            ],
+            [
+                "1901 Mar",
+                "Assam",
+                130.6,
+                150,
+                30.6
+            ],
+            [
+                "1901 Apr",
+                "Assam",
+                1223,
+                150,
+                223
+            ],
+            [
+                "1901 May",
+                "Assam",
+                1207,
+                150,
+                223
+            ],
+            [
+                "1901 Jun",
+                "Assam",
+                1524.9,
+                150,
+                524.9
+            ]];
         let scheme = [];
         scheme.push({
             name: "Time",
             type: "date",
             format: "%Y-%m-%d"
-        });
-        this.measures.forEach((m) => {
-            scheme.push({name: m, type: "number"});
-        });
+        }, {name: 'Min', type: "number"}, {name: 'Max', type: "number"});
+        // this.measures.forEach((m) => {
+        //     scheme.push({name: m, type: "number"});
+        // });
+        scheme = [{
+            "name": "Time",
+            "type": "date",
+            "format": "%Y %b"
+        },
+            {
+                "name": "State",
+                "type": "string"
+            },
+            {
+                "name": "Rainfall",
+                "type": "number"
+            },
+            {
+                "name": "Andrea",
+                "type": "number"
+            },
+            {
+                "name": "Altro",
+                "type": "number"
+            },
+        ];
 
-        $('.js-sensor-measure').text(this.measures.join(', '));
+        // $('.js-sensor-measure').text(this.measures.join(', '));
         const fusionTable = new FusionCharts.DataStore().createDataTable(data, scheme);
 
+        // [{
+        //                 "value": 'Min',
+        //                 type: 'area',
+        //                 style: {'area': {"fill-opacity": 0}}
+        //             }, {
+        //                 "value": 'Max',
+        //                 type: 'area',
+        //                 style: {'area': {"fill-opacity": 0.15}}
+        //             }]
         elem.find('.chart').insertFusionCharts({
             type: 'timeseries',
             width: '100%',
@@ -83,10 +158,53 @@ class Dashboard {
             dataSource: {
                 chart: {
                     theme: 'candy',
+                    paletteColors: '#ffffff, #27293d, #ff293d',
                 },
+                // series: "State",
                 data: fusionTable,
                 yAxis: [{
-                    "plot": this.measures.map((m) => ({value: m})),
+                    "plot": [{
+                        value: "Rainfall",
+                        type: "area",
+                        style: {
+                            plot: {
+                                "fill-opacity": "0.2"
+                            }, "line": {
+                                "opacity": 0
+                            }
+                        }
+                    }, {
+                        value: "Altro",
+                        type: "area",
+                        style: {
+                            plot: {
+                                "fill-opacity": "1"
+                            }, "line": {
+                                "opacity": 0
+                            }
+                        }
+                    }, {
+                        value: "Andrea",
+                        type: "line",
+                        style: {
+                            plot: {
+                                "fill-opacity": "1",
+                                "color": "#00ff00",
+                                "fill": "#00ff00",
+                                "fill-color": "#00ff00",
+                                stroke: "#003840"
+                            }, "line": {
+                                "color": "#00ff00",
+                                "fill": "#00ff00",
+                                "fill-color": "#00ff00",
+                                "opacity": 1
+                            },
+                            stroke: "#003840",
+                            "color": "#00ff00",
+                            "fill": "#00ff00",
+                            "fill-color": "#00ff00",
+                        }
+                    }],
                     "format": {"suffix": this.sensor.unit},
                     title: ''
                 }]

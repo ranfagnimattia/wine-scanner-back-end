@@ -69,7 +69,7 @@ $('document').ready(function () {
     _updateDashboard(data_py);
 
     // Sidebar
-    $('.nav-sensor').click(function () {
+    $('.nav-sensor:not([disabled])').click(function () {
         if (data_py.getUrl)
             $.getJSON({
                 url: data_py.getUrl,
@@ -104,7 +104,7 @@ $('document').ready(function () {
             });
     });
 
-    $('.nav-sensor-toggle').click(function () {
+    $('.nav-sensor-toggle:not([disabled])').click(function () {
         $(this).find('.caret-icon').toggleClass('fa-rotate-180');
         $(this).next('.nav-measures').slideToggle();
     });
