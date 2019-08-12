@@ -43,6 +43,10 @@ html {
     padding: 0 0 0 70px;
 }
 
+.sidebar .nav li:not(.active) > a {
+    color: #ffffffcc
+}
+
 .sidebar .nav-measures {
     display: none;
 }
@@ -54,6 +58,16 @@ html {
     margin-right: 0;
     font-size: 13px;
 }
+
+.sidebar .nav li.active > a.nav-sensor-toggle:before {
+    background-color: #ffffff99;
+}
+
+.sidebar .nav li.active > a.nav-measure:before {
+    top: 9px;
+    left: 40px;
+}
+
 
 @media screen and (max-width: 991px) {
     .sidebar .sidebar-wrapper {

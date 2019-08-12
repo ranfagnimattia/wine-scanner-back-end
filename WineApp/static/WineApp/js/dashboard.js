@@ -92,7 +92,7 @@ $('document').ready(function () {
                 url: data_py.getUrl,
                 data: {
                     'sensorId': $(this).parents('.nav-measures').prev('.nav-sensor-toggle').data('id'),
-                    'sensorMeasure': $(this).data('measure')
+                    'measure': $(this).data('measure')
                 },
                 success: function (response) {
                     if (response) {
@@ -148,7 +148,8 @@ function _updateData() {
                 elem.html('<i class="fas fa-check"></i> <span>Tutti i dati sono aggiornati</span>')
                     .removeClass('link').off('click');
 
-                $(`.nav-sensor[data-id='${data_py.sensor.id}']`).click();
+                $('.nav-item.active .nav-sensor').click();
+                $('.nav-item.active .nav-measures li.active .nav-measure').click();
             });
 
         }, error: function (response) {
@@ -160,6 +161,9 @@ function _updateData() {
 function _updateDashboard(data) {
     $('.active').removeClass("active");
     $(`.nav-sensor[data-id='${data.sensor.id}']`).parent().addClass("active");
+    const sensorToggle = $(`.nav-sensor-toggle[data-id='${data.sensor.id}']`);
+    sensorToggle.next('.nav-measures').find(`.nav-measure[data-measure='${data.measure}']`).parent().addClass("active");
+    sensorToggle.parent().addClass("active");
 
     const refreshElem = $('#refresh');
     if (refreshElem.hasClass('link')) {
@@ -167,9 +171,12 @@ function _updateDashboard(data) {
             .removeClass('link').off('click');
     }
 
+    // Common classes
     $('.js-sensor').text(data.sensor.name);
     $('.js-sensor-icon').html('<i class="' + data.sensor.icon + '"></i>');
     $('.js-unit').html(data.sensor.unit.replace('^2', '<sup>2</sup>'));
+
+    $('.js-measure').text(data.measure);
 
     new Dashboard(data).update();
 }

@@ -26,7 +26,6 @@ def show_daily_data(request):
     })
     return render(request, 'WineApp/daily_data.html', {
         'sensors': Sensor.objects.all(),
-        # 'multilevel': True,
         'data_js': data_js
     })
 
@@ -35,6 +34,20 @@ def show_real_time_data(request):
     update_data.update_realtime_data()
     sensor_data.get_real_time_data()
     return render(request, 'WineApp/real_time_data.html')
+
+
+def show_anomalies(request):
+    data_js = sensor_data.get_daily_data()
+    data_js.update({
+        'measure': 'max',
+        'getUrl': reverse('WineApp:ajax.getAnomalies'),
+        'updateUrl': reverse('WineApp:ajax.updateDailyData')
+    })
+    return render(request, 'WineApp/anomalies.html', {
+        'sensors': Sensor.objects.all(),
+        'multilevel': True,
+        'data_js': data_js
+    })
 
 
 # Ajax
@@ -46,6 +59,16 @@ def ajax_get_daily_data(request):
 def ajax_update_daily_data(request):
     # time.sleep(3)
     return JsonResponse(update_data.update_daily_data())
+
+
+def ajax_get_anomalies(request):
+    sensor_id = request.GET.get('sensorId', 1)
+    measure = request.GET.get('measure')
+    data_js = sensor_data.get_daily_data(sensor_id)
+    data_js.update({
+        'measure': measure
+    })
+    return JsonResponse(data_js)
 
 
 # Update Data

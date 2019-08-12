@@ -8,6 +8,7 @@ urlpatterns = [
     # Data from db
     path('dailyData', views.show_daily_data, name='show.dailyData'),
     path('realTimeData', views.show_real_time_data, name='show.realTimeData'),
+    path('anomalies', views.show_anomalies, name='show.anomalies'),
 
     path('update/daily', views.update_daily_data, name='update.daily'),
     path('update/realtime', views.update_realtime_data, name='update.realtime'),
@@ -22,5 +23,6 @@ urlpatterns = [
 
     # Ajax
     path('ajax/getDailyData', views.ajax_get_daily_data, name='ajax.getDailyData'),
-    path('ajax/updateDailyData', views.ajax_update_daily_data, name='ajax.updateDailyData')
+    path('ajax/updateDailyData', views.ajax_update_daily_data, name='ajax.updateDailyData'),
+    path('ajax/getAnomalies', views.ajax_get_anomalies, name='ajax.getAnomalies')
 ]
