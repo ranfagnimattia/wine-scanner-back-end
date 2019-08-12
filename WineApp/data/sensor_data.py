@@ -1,7 +1,6 @@
 from datetime import timedelta, datetime
 
 import numpy as np
-from django.urls import reverse
 
 from WineApp.models import Sensor
 
@@ -24,7 +23,7 @@ def get_daily_data(sensor_id: int = 1) -> dict:
         avg_max = np.mean([e['max'] for e in val])
         tot = np.mean([e['tot'] for e in val])
         week_avg = {'tot': np.mean([e['tot'] for e in list(_get_interval(all_data, all_data.last()['date'], 7))])}
-        categories = ['Tot', 'Avg', 'Max', 'Min']
+        measures = ['Tot', 'Avg', 'Max', 'Min']
     elif sensor.tot:
         all_data = history.values('date', 'tot')
         val = list(_get_interval(all_data, all_data.last()['date'], 31))
@@ -33,7 +32,7 @@ def get_daily_data(sensor_id: int = 1) -> dict:
         avg_max = np.NaN
         tot = np.mean([e['tot'] for e in val])
         week_avg = {'tot': np.mean([e['tot'] for e in list(_get_interval(all_data, all_data.last()['date'], 7))])}
-        categories = ['Tot']
+        measures = ['Tot']
     else:
         all_data = history.values('date', 'avg', 'max', 'min')
         val = list(_get_interval(all_data, all_data.last()['date'], 31))
@@ -42,7 +41,7 @@ def get_daily_data(sensor_id: int = 1) -> dict:
         avg_max = np.mean([e['max'] for e in val])
         tot = np.NaN
         week_avg = {'avg': np.mean([e['avg'] for e in list(_get_interval(all_data, all_data.last()['date'], 7))])}
-        categories = ['Avg', 'Max', 'Min']
+        measures = ['Avg', 'Max', 'Min']
     diff = _difference(val, avg, avg_min, avg_max, tot, np.NaN)
     last_month_stats = {'avg': avg, 'min': np.min([e['min'] if 'min' in e else np.NaN for e in val]),
                         'max': np.max([e['max'] if 'max' in e else np.NaN for e in val]),
@@ -56,10 +55,8 @@ def get_daily_data(sensor_id: int = 1) -> dict:
 
     # return all_data_list, categories, sensor, list(all_data), diff, last_month_stats, week_avg
     return {
-        'getUrl': reverse('WineApp:ajax.getDailyData'),
-        'updateUrl': reverse('WineApp:ajax.updateDailyData'),
         'allData': all_data_list,
-        'categories': categories,
+        'measures': measures,
         'last': list(all_data)[-1],
         'lastMonth': list(all_data)[-31:],
         'diff': diff,

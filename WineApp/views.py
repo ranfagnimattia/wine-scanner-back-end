@@ -2,6 +2,7 @@ import time
 
 from django.http import JsonResponse
 from django.shortcuts import render
+from django.urls import reverse
 
 import WineApp.algorithms.correlation as cor
 import WineApp.algorithms.exponential_smoothing as es
@@ -19,6 +20,10 @@ def index(request):
 
 def show_daily_data(request):
     data_js = sensor_data.get_daily_data()
+    data_js.update({
+        'getUrl': reverse('WineApp:ajax.getDailyData'),
+        'updateUrl': reverse('WineApp:ajax.updateDailyData')
+    })
     return render(request, 'WineApp/daily_data.html', {
         'sensors': Sensor.objects.all(),
         # 'multilevel': True,
@@ -34,7 +39,7 @@ def show_real_time_data(request):
 
 # Ajax
 def ajax_get_daily_data(request):
-    sensor_id = request.GET.get('sensor_id', 1)
+    sensor_id = request.GET.get('sensorId', 1)
     return JsonResponse(sensor_data.get_daily_data(sensor_id))
 
 

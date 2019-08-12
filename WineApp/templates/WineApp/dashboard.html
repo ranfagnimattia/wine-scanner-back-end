@@ -14,7 +14,7 @@
                         {% for sensor in sensors %}
                             <li class="nav-item">
                                 {% if multilevel %}
-                                    <a class="sensor-toggle" data-id="{{ sensor.id }}">
+                                    <a class="nav-sensor-toggle" data-id="{{ sensor.id }}">
                                         <i class=" {{ sensor.icon }}"></i>
                                         {{ sensor }}
                                         <i class="caret-icon fas fa-caret-down"></i>
@@ -22,17 +22,17 @@
                                     <div class="nav-measures">
                                         <ul class="nav">
                                             {% if sensor.tot %}
-                                                <li><a class="measure">Tot</a></li>
+                                                <li><a class="nav-measure" data-measure="tot">Tot</a></li>
                                             {% endif %}
                                             {% if sensor.values %}
-                                                <li><a class="measure">Avg</a></li>
-                                                <li><a class="measure">Max</a></li>
-                                                <li><a class="measure">Min</a></li>
+                                                <li><a class="nav-measure" data-measure="avg">Avg</a></li>
+                                                <li><a class="nav-measure" data-measure="max">Max</a></li>
+                                                <li><a class="nav-measure" data-measure="min">Min</a></li>
                                             {% endif %}
                                         </ul>
                                     </div>
                                 {% else %}
-                                    <a class="sensor" data-id="{{ sensor.id }}">
+                                    <a class="nav-sensor" data-id="{{ sensor.id }}">
                                         <i class=" {{ sensor.icon }}"></i>
                                         {{ sensor }}
                                     </a>
@@ -85,6 +85,7 @@
             </nav>
             <!-- End Navbar -->
             <div class="content">
+                <span id="js-ruler"></span>
                 {% block content %}
                 {% endblock %}
             </div>

@@ -39,7 +39,7 @@ html {
     min-height: calc(100% - 80px);
 }
 
-.sidebar .nav li > a + div .nav li > a.measure {
+.sidebar .nav li > a + div .nav li > a.nav-measure {
     padding: 0 0 0 70px;
 }
 
@@ -47,7 +47,7 @@ html {
     display: none;
 }
 
-.sidebar .sensor-toggle .caret-icon {
+.sidebar .nav-sensor-toggle .caret-icon {
     top: 7px;
     position: absolute;
     right: 0;

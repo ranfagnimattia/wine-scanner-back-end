@@ -146,9 +146,9 @@
                                         <span class="js-trend"></span><span class="js-unit"></span><span
                                             class="js-trend-icon"></span>
                                     </p>
-                                    <p class="values-space js-trend-space">
-                                        <span class="js-trend"></span><span class="js-unit"></span><span
-                                            class="js-trend-icon"></span>
+                                    <p class="values-space">
+                                        <span class="js-trend-space"></span><span class="js-unit"></span><span>
+                                        <i class="fas fa-caret-down"></i></span>
                                     </p>
                                 </div>
                             </div>
@@ -160,7 +160,7 @@
                     <div class="stats">
                         <span class="js-sensor-icon"></span>
                         <span>
-                            <span class="js-sensor"></span> <span class="js-main-category"></span>
+                            <span class="js-sensor"></span> <span class="js-main-measure"></span>
                             <span> rispetto a:</span>
                         </span>
                     </div>
@@ -175,30 +175,30 @@
                     <div class="row">
                         <div class="col-sm-6 text-left">
                             <h5 class="card-category"><span class="js-sensor"></span> <span
-                                    class="js-sensor-category"></span><span class="trasparent"> rispetto alla media mensile</span>
+                                    class="js-sensor-measure"></span><span class="trasparent"> rispetto alla media mensile</span>
                             </h5>
                             <h2 class="card-title">Ultimo Mese</h2>
                         </div>
                         <div class="col-sm-6">
                             <div class="btn-group btn-group-toggle float-right" data-toggle="buttons">
-                                <label class="btn btn-sm btn-primary btn-simple" data-category="Tot">
+                                <label class="btn btn-sm btn-primary btn-simple" data-measure="Tot">
                                     <input type="radio" class="d-none d-sm-none" name="options" checked="">
                                     <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Tot</span>
                                     <span class="d-block d-sm-none">Tot</span>
                                 </label>
-                                <label class="btn btn-sm btn-primary btn-simple" data-category="Avg">
+                                <label class="btn btn-sm btn-primary btn-simple" data-measure="Avg">
                                     <input type="radio" class="d-none d-sm-none"
                                            name="options">
                                     <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Avg</span>
                                     <span class="d-block d-sm-none">Avg</span>
                                 </label>
-                                <label class="btn btn-sm btn-primary btn-simple" data-category="Max">
+                                <label class="btn btn-sm btn-primary btn-simple" data-measure="Max">
                                     <input type="radio" class="d-none d-sm-none"
                                            name="options">
                                     <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Max</span>
                                     <span class="d-block d-sm-none">Max</span>
                                 </label>
-                                <label class="btn btn-sm btn-primary btn-simple" data-category="Min">
+                                <label class="btn btn-sm btn-primary btn-simple" data-measure="Min">
                                     <input type="radio" class="d-none d-sm-none"
                                            name="options">
                                     <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Min</span>
@@ -221,30 +221,30 @@
                     <div class="row">
                         <div class="col-sm-6 text-left">
                             <h5 class="card-category"><span class="js-sensor"></span> <span
-                                    class="js-sensor-category"></span><span> rispetto alla media mensile</span>
+                                    class="js-sensor-measure"></span><span> rispetto alla media mensile</span>
                             </h5>
                             <h2 class="card-title">Differenza</h2>
                         </div>
                         <div class="col-sm-6">
                             <div class="btn-group btn-group-toggle float-right" data-toggle="buttons">
-                                <label class="btn btn-sm btn-success btn-simple" data-category="Tot">
+                                <label class="btn btn-sm btn-success btn-simple" data-measure="Tot">
                                     <input type="radio" class="d-none d-sm-none" name="options" checked="">
                                     <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Tot</span>
                                     <span class="d-block d-sm-none">Tot</span>
                                 </label>
-                                <label class="btn btn-sm btn-success btn-simple" data-category="Avg">
+                                <label class="btn btn-sm btn-success btn-simple" data-measure="Avg">
                                     <input type="radio" class="d-none d-sm-none"
                                            name="options">
                                     <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Avg</span>
                                     <span class="d-block d-sm-none">Avg</span>
                                 </label>
-                                <label class="btn btn-sm btn-success btn-simple" data-category="Max">
+                                <label class="btn btn-sm btn-success btn-simple" data-measure="Max">
                                     <input type="radio" class="d-none d-sm-none"
                                            name="options">
                                     <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Max</span>
                                     <span class="d-block d-sm-none">Max</span>
                                 </label>
-                                <label class="btn btn-sm btn-success btn-simple" data-category="Min">
+                                <label class="btn btn-sm btn-success btn-simple" data-measure="Min">
                                     <input type="radio" class="d-none d-sm-none"
                                            name="options">
                                     <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Min</span>
@@ -269,7 +269,7 @@
                     <div class="row">
                         <div class="col-sm-6 text-left">
                             <h5 class="card-category "><span class="js-sensor"></span> <span
-                                    class="js-sensor-category"></span></h5>
+                                    class="js-sensor-measure"></span></h5>
                             <h2 class="card-title"><span class="js-sensor-icon big-icon"></span>
                                 <span class="js-sensor"></span></h2>
                         </div>
@@ -285,6 +285,6 @@
     </div>
 {% endblock %}
 {% block javascript %}
-    {{ block.super }}
     <script src="{% static 'WineApp/js/daily_data.js' %}"></script>
+    {{ block.super }}
 {% endblock %}
