@@ -36,6 +36,11 @@ $('document').ready(function () {
         });
     });
 
+    $('.sensor-toggle').click(function () {
+        $(this).find('.caret-icon').toggleClass('fa-rotate-180');
+        $(this).next('.nav-measures').slideToggle();
+    });
+
     /* Chart buttons click event */
     $('#month-chart .btn').click(function () {
         if (!$(this).hasClass("active"))

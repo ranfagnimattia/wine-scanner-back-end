@@ -39,6 +39,22 @@ html {
     min-height: calc(100% - 80px);
 }
 
+.sidebar .nav li > a + div .nav li > a.measure {
+    padding: 0 0 0 70px;
+}
+
+.sidebar .nav-measures {
+    display: none;
+}
+
+.sidebar .sensor-toggle .caret-icon {
+    top: 7px;
+    position: absolute;
+    right: 0;
+    margin-right: 0;
+    font-size: 13px;
+}
+
 @media screen and (max-width: 991px) {
     .sidebar .sidebar-wrapper {
         min-height: 100%;

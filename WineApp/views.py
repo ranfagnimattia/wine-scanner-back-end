@@ -21,6 +21,7 @@ def show_daily_data(request):
     data_js = sensor_data.get_daily_data()
     return render(request, 'WineApp/daily_data.html', {
         'sensors': Sensor.objects.all(),
+        # 'multilevel': True,
         'data_js': data_js
     })
 

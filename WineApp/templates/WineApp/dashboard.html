@@ -13,10 +13,30 @@
                     <ul class="nav">
                         {% for sensor in sensors %}
                             <li class="nav-item">
-                                <a href="#" class="sensor" data-id="{{ sensor.id }}">
-                                    <i class=" {{ sensor.icon }}"></i>
-                                    {{ sensor }}
-                                </a>
+                                {% if multilevel %}
+                                    <a class="sensor-toggle" data-id="{{ sensor.id }}">
+                                        <i class=" {{ sensor.icon }}"></i>
+                                        {{ sensor }}
+                                        <i class="caret-icon fas fa-caret-down"></i>
+                                    </a>
+                                    <div class="nav-measures">
+                                        <ul class="nav">
+                                            {% if sensor.tot %}
+                                                <li><a class="measure">Tot</a></li>
+                                            {% endif %}
+                                            {% if sensor.values %}
+                                                <li><a class="measure">Avg</a></li>
+                                                <li><a class="measure">Max</a></li>
+                                                <li><a class="measure">Min</a></li>
+                                            {% endif %}
+                                        </ul>
+                                    </div>
+                                {% else %}
+                                    <a class="sensor" data-id="{{ sensor.id }}">
+                                        <i class=" {{ sensor.icon }}"></i>
+                                        {{ sensor }}
+                                    </a>
+                                {% endif %}
                             </li>
                         {% endfor %}
                     </ul>
