@@ -12,7 +12,9 @@ class Sensor(models.Model):
     tot = models.BooleanField(default=False)
     startTestSet = models.DateField(default=None, blank=True, null=True)
 
-    # predictionFrom = models.DateField(default=None, blank=True, null=True)
+    def to_js(self):
+        return {'id': self.id, 'name': self.name, 'unit': self.unit, 'icon': self.icon,
+                'values': self.values, 'tot': self.tot}
 
     def __str__(self):
         return self.name
@@ -102,3 +104,11 @@ class WeatherHistory(models.Model):
 
     def __str__(self):
         return self.date.strftime('%d/%m/%Y')
+
+
+class LastUpdate(models.Model):
+    type = models.CharField(primary_key=True, max_length=10)
+    time = models.DateTimeField()
+
+    def __str__(self):
+        return self.type + '-' + self.time.strftime('%d/%m/%Y %H:%M')

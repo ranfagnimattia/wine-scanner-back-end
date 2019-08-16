@@ -1,6 +1,8 @@
 /**
  * @param data_py.getUrl
  * @param data_py.updateUrl
+ * @param data_py.lastUpdate
+ * @param data_py.autoUpdate
  *
  * @param response.updated
  * @param response.created
@@ -10,41 +12,53 @@
 class Animation {
     animations = [];
 
-    static _getTextWidth(elem, text) {
-        return elem.text(text).width()
-    }
-
     setValues(valuesPair, spaceElem) {
-        const widths = valuesPair.map((pair) => Animation._getTextWidth(spaceElem, pair[1].toFixed(2)));
+        function getTextWidth(elem, text) {
+            return elem.text(text).width()
+        }
+
+        const widths = valuesPair.map((pair) => pair[2] !== true ?
+            getTextWidth(spaceElem, pair[1].toFixed(2)) : 0);
         spaceElem.text(valuesPair[widths.indexOf(Math.max(...widths))][1].toFixed(2) + '0');
         this.animations = this.animations.concat(valuesPair);
     }
 
     animate() {
+        function formatTime(t) {
+            return (t < 10) ? '0' + t : t;
+        }
+
         const initValues = {};
         const elements = {};
+        const timeValues = {};
         const finalValues = {};
         this.animations.forEach((pair, i) => {
             initValues[i] = 0;
             elements[i] = pair[0];
-            finalValues[i] = pair[1];
+            timeValues[i] = pair[2] === true;
+            finalValues[i] = pair[2] === true ? pair[1].replace(/:/g, "") : pair[1];
         });
         $(initValues).animate(finalValues, {
             duration: 1000,
             easing: 'easeOutQuart',
             step: function () {
                 for (let prop in this)
-                    if (this.hasOwnProperty(prop))
-                        elements[prop].text(this[prop].toFixed(2))
+                    if (this.hasOwnProperty(prop)) {
+                        if (timeValues[prop]) {
+                            const h = Math.floor(this[prop] / 10000);
+                            const m = Math.floor((this[prop] - h * 10000) / 100);
+                            const s = Math.floor(this[prop] - h * 10000 - m * 100);
+                            elements[prop].text(formatTime(h) + ':' + formatTime(m) + ':' + formatTime(s));
+                        } else
+                            elements[prop].text(this[prop].toFixed(2));
+                    }
             }
         });
     }
 }
 
 
-function setUpTrend(elem, category, last, mean) {
-    const trend = last[category] - mean[category];
-
+function setUpTrend(elem, trend) {
     if (trend > 0)
         elem.find('.js-trend-icon').html('<i class="fas fa-caret-up"></i>');
     else if (trend < 0)
@@ -110,19 +124,15 @@ $('document').ready(function () {
     });
 
     _updateData();
+    if (data_py.autoUpdate)
+        setInterval(_updateData, 60000);
 });
+
+let created = 0;
 
 function _updateData() {
     const elem = $('#refresh');
     elem.html('<i class="fas fa-redo fa-spin"></i> <span>Aggiornamento...</span>').removeClass('link').off('click');
-    let now = new Date();
-    let hr = now.getHours();
-    if (hr < 10)
-        hr = "0" + hr;
-    let min = now.getMinutes();
-    if (min < 10)
-        min = "0" + min;
-    $('.js-last-update').text('Oggi ' + hr + ':' + min);
 
     $.getJSON({
         url: data_py.updateUrl,
@@ -132,46 +142,49 @@ function _updateData() {
                     (!response ? 'Errore server' : response.error) + '</span>');
                 return;
             }
-            if (!response.updated && !response.created) {
+            created += response.created ? response.created : 0;
+            if (!response.updated && created === 0) {
                 elem.html('<i class="fas fa-check"></i> <span>Tutti i dati sono aggiornati</span>');
                 return;
             }
             let msg = 'Ricarica ora ';
             if (response.updated > 0)
                 msg += response.updated + ' dati aggiornati';
-            if (response.created > 0) {
+            if (created > 0) {
                 if (response.updated > 0)
                     msg += ' e ';
-                msg += response.created + ' nuovi dati';
+                msg += created + ' nuovi dati';
             }
             elem.html('<i class="fas fa-redo"></i> <span>' + msg + '</span>').addClass('link').click(() => {
-                elem.html('<i class="fas fa-check"></i> <span>Tutti i dati sono aggiornati</span>')
-                    .removeClass('link').off('click');
-
                 $('.nav-item.active .nav-sensor').click();
                 $('.nav-item.active .nav-measures li.active .nav-measure').click();
             });
 
         }, error: function (response) {
             console.error(response);
+            elem.html('<i class="fas fa-times"></i><span>Errore connessione</span>');
         }
     });
 }
 
 function _updateDashboard(data) {
-    $('.active').removeClass("active");
-    $(`.nav-sensor[data-id='${data.sensor.id}']`).parent().addClass("active");
+    $('.active').removeClass('active');
+    $(`.nav-sensor[data-id='${data.sensor.id}']`).parent().addClass('active');
     const sensorToggle = $(`.nav-sensor-toggle[data-id='${data.sensor.id}']`);
-    sensorToggle.next('.nav-measures').find(`.nav-measure[data-measure='${data.measure}']`).parent().addClass("active");
-    sensorToggle.parent().addClass("active");
+    sensorToggle.next('.nav-measures').find(`.nav-measure[data-measure='${data.measure}']`).parent().addClass('active');
+    sensorToggle.parent().addClass('active');
 
     const refreshElem = $('#refresh');
     if (refreshElem.hasClass('link')) {
+        created = 0;
         refreshElem.html('<i class="fas fa-check"></i> <span>Tutti i dati sono aggiornati</span>')
             .removeClass('link').off('click');
     }
 
     // Common classes
+    $('.js-last-update').text(data.lastUpdate.date + ' alle ' + data.lastUpdate.time);
+    $('.js-last-date').text(data.lastUpdate.date);
+
     $('.js-sensor').text(data.sensor.name);
     $('.js-sensor-icon').html('<i class="' + data.sensor.icon + '"></i>');
     $('.js-unit').html(data.sensor.unit.replace('^2', '<sup>2</sup>'));

@@ -3,10 +3,10 @@ from xml.etree import ElementTree
 
 import requests
 
-from WineApp.models import DailyData, Sensor, RealTimeData
+from WineApp.models import DailyData, Sensor, RealTimeData, LastUpdate
 
 
-def update_daily_data():
+def update_daily_data() -> dict:
     try:
         start_date = DailyData.objects.latest('date').date
         start_date = datetime.combine(start_date, datetime.min.time())
@@ -15,10 +15,13 @@ def update_daily_data():
     if start_date < datetime(2019, 7, 17):
         start_date = datetime(2019, 7, 17)
     start_date = start_date.strftime('%Y-%m-%d')
-    end_date = datetime.now().strftime('%Y-%m-%d')
-    parameter = {'username': 'collosorbo', 'password': '10sorbo19', 'start_date': start_date,
-                 'end_date': end_date, 'day_average': '1'}
-    response = requests.post('https://live.netsens.it/export/xml_export_1A.php', data=parameter)
+    end_date = datetime.now()
+    try:
+        parameter = {'username': 'collosorbo', 'password': '10sorbo19', 'start_date': start_date,
+                     'end_date': end_date.strftime('%Y-%m-%d'), 'day_average': '1'}
+        response = requests.post('https://live.netsens.it/export/xml_export_1A.php', data=parameter)
+    except ConnectionError:
+        return {'error': 'Errore connessione'}
 
     if response.status_code != requests.codes.ok:
         return {'error': 'Errore connessione'}
@@ -54,33 +57,35 @@ def update_daily_data():
     n_updated = last_day.count()
     last_day.delete()
     DailyData.objects.bulk_create(new_data)
+    LastUpdate.objects.update_or_create(type='daily', defaults={'time': end_date})
     return {'updated': n_updated, 'created': len(new_data) - n_updated}
 
 
-def update_realtime_data():
+def update_realtime_data() -> dict:
     try:
         start_date = RealTimeData.objects.latest('time').time
     except RealTimeData.DoesNotExist:
         start_date = datetime(2019, 7, 17)
     end_date = datetime.now()
 
-    debug_data = []
     new_data = []
-    n_created = 0
     while start_date < end_date:
         start_str = start_date.strftime('%Y-%m-%d %H:%M:%S')
         start_date += timedelta(days=6)
         end_str = start_date.strftime('%Y-%m-%d %H:%M:%S')
 
-        parameter = {'username': 'collosorbo', 'password': '10sorbo19', 'start_date': start_str,
-                     'end_date': end_str}
-        response = requests.post('https://live.netsens.it/export/xml_export_1A.php', data=parameter)
+        try:
+            parameter = {'username': 'collosorbo', 'password': '10sorbo19', 'start_date': start_str,
+                         'end_date': end_str}
+            response = requests.post('https://live.netsens.it/export/xml_export_1A.php', data=parameter)
+        except ConnectionError:
+            return {'error': 'Errore connessione'}
 
         if response.status_code != requests.codes.ok:
-            return 'Request error'
+            return {'error': 'Errore connessione'}
         root_elem = ElementTree.fromstring(response.content)
         if root_elem.get('errore') != '0':
-            return 'API error: ' + root_elem.get('messaggio')
+            return {'error': 'Errore API: ' + root_elem.get('messaggio')}
         station_elem = root_elem[0]
 
         for unit_elem in station_elem.findall('unita'):
@@ -90,14 +95,15 @@ def update_realtime_data():
                     for measure_elem in sensor_elem.findall('misura'):
                         if not RealTimeData.objects.filter(time=measure_elem.get('data_ora'),
                                                            sensor=sensor).exists():
+                            if sensor.name == 'Pressione atmosferica':
+                                value = round(float(measure_elem.get('valore')) / 10, 3)
+                            else:
+                                value = measure_elem.get('valore')
                             new_data.append(RealTimeData(time=measure_elem.get('data_ora'),
-                                                         sensor=sensor, value=measure_elem.get('valore')))
-                            n_created += 1
+                                                         sensor=sensor, value=value))
                 except Sensor.DoesNotExist:
-                    debug_data.append(sensor_elem.get('nome') + '  NONE')
                     pass
 
-        debug_data.append(start_str + '   ' + end_str)
-        debug_data.append('Created: ' + str(n_created))
     RealTimeData.objects.bulk_create(new_data)
-    return debug_data
+    LastUpdate.objects.update_or_create(type='realtime', defaults={'time': end_date})
+    return {'created': len(new_data)}

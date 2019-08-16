@@ -42,31 +42,30 @@ def ajax_update_daily_data(request):
 
 
 # RealTime Dashboard
-def show_real_time_data(request):
-    data_js = sensor_data.get_real_time_data()
+def show_realtime_data(request):
+    data_js = sensor_data.get_realtime_data()
     data_js.update({
+        'autoUpdate': True,
         'getUrl': reverse('WineApp:ajax.getRealTimeData'),
         'updateUrl': reverse('WineApp:ajax.updateRealTimeData')
     })
     sensors = Sensor.objects.all()
     for sensor in sensors:
         sensor.disabled = not sensor.values
-    return render(request, 'WineApp/real_time_data.html', {
+    return render(request, 'WineApp/realtime_data.html', {
         'sensors': sensors,
         'data_js': data_js
     })
 
 
-def ajax_get_real_time_data(request):
+def ajax_get_realtime_data(request):
     sensor_id = request.GET.get('sensorId', 1)
-    return JsonResponse(sensor_data.get_real_time_data(sensor_id))
+    return JsonResponse(sensor_data.get_realtime_data(sensor_id))
 
 
-def ajax_update_real_time_data(request):
+def ajax_update_realtime_data(request):
     # time.sleep(3)
-    # update_data.update_realtime_data()
-    # return JsonResponse(update_data.update_daily_data())
-    return None
+    return JsonResponse(update_data.update_realtime_data())
 
 
 # Anomalies Dashboard
@@ -103,7 +102,7 @@ def update_daily_data(request):
     start = time.time()
     data = update_data.update_daily_data()
     end = time.time()
-    data.append('Time: ' + str(end - start))
+    # data.append('Time: ' + str(end - start))
     print(end - start)
     return render(request, 'WineApp/index.html', {'list': data})
 

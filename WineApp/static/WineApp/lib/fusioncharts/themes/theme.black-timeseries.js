@@ -160,7 +160,7 @@ const themeBlackTimeseries = {
             }
         }
     },
-    xaxis: {
+    xAxis: {
         style: {
             title: {"font-size": 14, "font-family": "Poppins, sans-serif", fill: themeColors.text},
             "grid-line": {stroke: themeColors.subText, "stroke-width": .55},

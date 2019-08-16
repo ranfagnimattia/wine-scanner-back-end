@@ -48,7 +48,7 @@ class Dashboard {
         });
         $('#trend-chart .btn').off('click').click(function () {
             if (!$(this).hasClass("active"))
-                $this($('#trend-chart'), $this.diff, $(this).data('measure').toLowerCase())
+                $this.updateChart($('#trend-chart'), $this.diff, $(this).data('measure').toLowerCase())
         });
     }
 

@@ -1,0 +1,237 @@
+{% extends 'WineApp/dashboard.html' %}
+{% load static %}
+{% block stylesheet %}
+{% endblock %}
+{% block content %}
+    <div class="row card-stats-row">
+        <div class="col-sm-6 col-xl-3">
+            <div class="card-stats card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-auto pr-0">
+                            <div class="info-icon text-center icon-warning">
+                                <i class="far fa-clock"></i>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="row flex-nowrap">
+                                <div class="col p-0"></div>
+                                <div class="col-auto">
+                                    <p class="label">Ultimo aggiornamento</p>
+                                    <p class="number capitalize"><span class="js-last-update"></span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <hr>
+                    <span class="stats link" id="refresh"></span>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="card-stats card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-auto pr-0">
+                            <div class="info-icon text-center icon-warning">
+                                <i class="fas fa-calendar-day"></i>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="row flex-nowrap">
+                                <div class="col p-0"></div>
+                                <div class="col-auto labels pr-0">
+                                    <p>Valore</p>
+                                    <p>Ora max</p>
+                                    <p class="js-main-measure capitalize"></p>
+                                </div>
+                                <div class="col-auto numbers">
+                                    <p><span class="js-last-value"></span><span
+                                            class="js-unit"></span></p>
+                                    <p><span class="js-last-time"></span></p>
+                                    <p><span class="js-lastDay-mainMeasure"></span><span
+                                            class="js-unit"></span></p>
+                                    <p class="values-space"><span class="js-last-space"></span><span
+                                            class="js-unit"></span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <hr>
+                    <div class="stats">
+                        <span class="js-sensor-icon"></span>
+                        <span><span class="js-sensor"></span> <span class="js-last-date"></span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="card-stats card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-auto pr-0">
+                            <div class="info-icon text-center icon-warning">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="row flex-nowrap">
+                                <div class="col p-0"></div>
+                                <div class="col-auto labels pr-0">
+                                    <p>Max</p>
+                                    <p>Ora max</p>
+                                    <p>Min</p>
+                                    <p>Ora min</p>
+                                </div>
+                                <div class="col-auto numbers">
+                                    <p><span class="js-lastDay-max"></span><span
+                                            class="js-unit"></span></p>
+                                    <p><span class="time js-lastDay-maxTime"></span></p>
+                                    <p><span class="js-lastDay-min"></span><span
+                                            class="js-unit"></span></p>
+                                    <p><span class="time js-lastDay-minTime"></span></p>
+                                    <p class="values-space"><span class="js-lastDay-space"></span><span
+                                            class="js-unit"></span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <hr>
+                    <div class="stats">
+                        <span class="js-sensor-icon"></span>
+                        <span><span class="js-sensor"></span> <span class="js-last-date"></span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="card-stats card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-auto pr-0">
+                            <div class="info-icon text-center icon-warning">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="row flex-nowrap">
+                                <div class="col p-0"></div>
+                                <div class="col-auto labels pr-0">
+                                    <p>Precedente</p>
+                                    <p>Avg giorno</p>
+                                </div>
+                                <div class="col-auto numbers">
+                                    <p class="js-trend-previous">
+                                        <span class="js-trend"></span><span class="js-unit"></span><span
+                                            class="js-trend-icon"></span>
+                                    </p>
+                                    <p class="js-trend-lastDay">
+                                        <span class="js-trend"></span><span class="js-unit"></span><span
+                                            class="js-trend-icon"></span>
+                                    </p>
+                                    <p class="values-space">
+                                        <span class="js-trend-space"></span><span class="js-unit"></span><span>
+                                        <i class="fas fa-caret-down"></i></span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <hr>
+                    <div class="stats">
+                        <span class="js-sensor-icon"></span>
+                        <span>
+                            Valore <span class="js-sensor lowercase"></span>
+                            <span> rispetto a:</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-xl-6">
+            <div class="card card-chart card-stats" id="last24h-chart">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-sm-6 text-left">
+                            <h5 class="card-category"><span class="js-sensor"></span> <span
+                                    class="js-sensor-measure"></span><span class="trasparent"> rispetto alla media mensile</span>
+                            </h5>
+                            <h2 class="card-title">Ultime 24 ore</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="chart-area">
+                        <div class="chart"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-xl-6">
+            <div class="card card-chart card-stats" id="diff-chart">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-sm-6 text-left">
+                            <h5 class="card-category"></h5>
+                            <h2 class="card-title"></h2>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="btn-group btn-group-toggle float-right" data-toggle="buttons">
+                                <label class="btn btn-sm btn-success btn-simple" data-type="avg">
+                                    <input type="radio" class="d-none d-sm-none" name="options" checked="">
+                                    <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Avg</span>
+                                    <span class="d-block d-sm-none">Avg</span>
+                                </label>
+                                <label class="btn btn-sm btn-success btn-simple" data-type="diff">
+                                    <input type="radio" class="d-none d-sm-none"
+                                           name="options">
+                                    <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Diff</span>
+                                    <span class="d-block d-sm-none">Diff</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="chart-area">
+                        <div class="chart"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card card-chart" id="sensor-chart">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-sm-6 text-left">
+                            <h5 class="card-category ">Storico <span class="js-sensor"></span></h5>
+                            <h2 class="card-title"><span class="js-sensor-icon big-icon"></span>
+                                <span class="js-sensor"></span></h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="chart-area-big">
+                        <div class="chart"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascript %}
+    <script src="{% static 'WineApp/js/realtime_data.js' %}"></script>
+    {{ block.super }}
+{% endblock %}

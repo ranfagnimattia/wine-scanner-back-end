@@ -1,9 +1,9 @@
-from datetime import timedelta
+from datetime import timedelta, datetime
 from itertools import chain, groupby
 
 import numpy as np
 
-from WineApp.models import Sensor
+from WineApp.models import Sensor, LastUpdate
 
 
 def get_daily_data(sensor_id: int = 1) -> dict:
@@ -56,6 +56,7 @@ def get_daily_data(sensor_id: int = 1) -> dict:
 
     # return all_data_list, categories, sensor, list(all_data), diff, last_month_stats, week_avg
     return {
+        'lastUpdate': _get_last_update('daily'),
         'allData': all_data_list,
         'measures': measures,
         'last': list(all_data)[-1],
@@ -64,52 +65,20 @@ def get_daily_data(sensor_id: int = 1) -> dict:
         'monthMean': last_month_stats,
         'weekMean': week_avg,
         'yesterday': list(all_data)[-2],
-        'sensor': {'tot': sensor.tot, 'values': sensor.values, 'id': sensor.id, 'name': sensor.name,
-                   'unit': sensor.unit, 'icon': sensor.icon}
+        'sensor': sensor.to_js()
     }
 
 
-'''
-import WineApp.data.sensor_data as sensor_data
-from django.db.models.functions import (
-ExtractDay, ExtractHour, ExtractMinute, ExtractMonth,
-ExtractQuarter, ExtractSecond, ExtractWeek, ExtractWeekDay,
-ExtractYear,
-)
-from django.db.models import Avg
-obj = sensor_data.get_real_time_data()
-prova=obj['prova']
-prova2=prova.annotate(
-year=ExtractYear('time'),
-month=ExtractMonth('time'),
-day=ExtractDay('time'),
-hour=ExtractHour('time'))
-prova3=prova2.values('year', 'month', 'day', 'hour').annotate(c=Avg('value')).order_by()
-'''
-
-'''
-import WineApp.data.sensor_data as sensor_data
-obj = sensor_data.get_real_time_data()
-prova=obj['prova']
-
-'''
-
-
-def get_real_time_data(sensor_id: int = 1) -> dict:
-    """
-
-    :param sensor_id: int
-    :return: charts data: [[time, value]]
-    """
+def get_realtime_data(sensor_id: int = 1) -> dict:
     sensor = Sensor.objects.get(pk=sensor_id)
     all_data = sensor.realtimedata_set.order_by('time').values('time', 'value')
     # Data
+    last_value = all_data.last()['value']
     last_time = all_data.last()['time']
     last24h = _get_interval(all_data, last_time, 1, True)
-    previous24h = _get_interval(all_data, last_time, 2, True)
 
-    # Previous week
-    # previous24h = all_data.filter(time__gte=last_time - timedelta(days=8), time__lte=last_time - timedelta(days=1))
+    # previous24h = _get_interval(all_data, last_time, 2, True)
+    previous_week = all_data.filter(time__gte=last_time - timedelta(days=8), time__lte=last_time - timedelta(days=1))
 
     # Cards
     last_day_values = _get_interval(all_data, last_time.date(), 0, True).order_by('value')
@@ -118,75 +87,65 @@ def get_real_time_data(sensor_id: int = 1) -> dict:
         'max': last_day_values.last()['value'],
         'min': last_day_values.first()['value'],
         'maxTime': last_day_values.last()['time'].strftime('%H:%M:%S'),
-        'minTime': last_day_values.first()['time'].strftime('%H:%M:%S'),
-        'last': last24h.last()['value'],
-        'lastTime': last24h.last()['time'].strftime('%H:%M:%S')
+        'minTime': last_day_values.first()['time'].strftime('%H:%M:%S')
     }
+    if sensor.tot:
+        last_day_stats['tot'] = np.sum([e['value'] for e in last_day_values])
 
-    # yesterday_values = _get_interval(all_data, last_day, 1, True)
-    # for elem in yesterday_values:
-    #     elem['time'] = elem['time'].strftime('%Y-%m-%d %H:%M:%S')
-    # yesterday_avg = np.mean([e['value'] for e in yesterday_values])
+    trend = {
+        'previous': last_value - all_data.reverse()[1]['value'],
+        'lastDay': last_value - last_day_stats['avg']
+    }
 
     # Charts
     last24h_aggr = [[key, np.mean([e['value'] for e in group])] for key, group in
                     groupby(last24h, key=lambda x: x['time'].strftime('%Y-%m-%d %H'))]
 
-    previous24h_aggr = [[key, np.mean([e['value'] for e in group])] for key, group in
-                        groupby(previous24h, key=lambda x: x['time'].strftime('%H'))]
+    previous_week_aggr = [[key, np.mean([e['value'] for e in group])] for key, group in
+                          groupby(previous_week, key=lambda x: x['time'].strftime('%H'))]
 
-    diff_aggr = [[last[0], last[1] - prev[1]] for last, prev in zip(last24h_aggr, previous24h_aggr)]
-
-    # diff_aggr = [[last[0], prev[1]] for last, prev in zip(last24h_aggr, previous24h_aggr)]
+    chart_diff = {
+        'avg': [[last[0], prev[1]] for last, prev in zip(last24h_aggr, previous_week_aggr)],
+        'diff': [[last[0], last[1] - prev[1]] for last, prev in zip(last24h_aggr, previous_week_aggr)]
+    }
 
     for elem in chain(all_data, last24h):
         elem['time'] = elem['time'].strftime('%Y-%m-%d %H:%M:%S')
 
     return {
-        # 'prova': list(previous24h),
-        'lastDay': last_time.date().strftime('%Y-%m-%d'),
+        'sensor': sensor.to_js(),
+        'lastUpdate': _get_last_update('realtime'),
         'chartAll': [list(elem.values()) for elem in all_data],
         'chartLast24h': [list(elem.values()) for elem in last24h],
-        'chartDiff': diff_aggr,
-        # 'yesterdayAvg': yesterday_avg,
-        # 'todayAvg': today_avg,
+        'chartDiff': chart_diff,
+        'mainMeasure': 'tot' if sensor.tot else 'avg',
+        'last': last_value,
+        'lastTime': last_time.strftime('%H:%M:%S'),
         'lastDayStats': last_day_stats,
-        'sensor': {'tot': sensor.tot, 'values': sensor.values, 'id': sensor.id, 'name': sensor.name,
-                   'unit': sensor.unit, 'icon': sensor.icon}
+        'trend': trend
     }
 
-    # return {
-    #     'chartAll': all_data_list,
-    #     'chartLast24h': [list(elem.values()) for elem in last24h],
-    #     'chartDiff': [list(elem.values()) for elem in diff],
-    #     'yesterdayAvg': yesterday_avg,
-    #     'todayAvg': today_avg,
-    #     'todayStats': today_stats,
-    #     'sensor': {'tot': sensor.tot, 'values': sensor.values, 'id': sensor.id, 'name': sensor.name,
-    #                'unit': sensor.unit, 'icon': sensor.icon}
-    # }
+
+def _get_last_update(update_type):
+    try:
+        last_datetime = LastUpdate.objects.get(type=update_type).time
+        return {'date': _relative_date(last_datetime), 'time': last_datetime.strftime('%H:%M')}
+    except LastUpdate.DoesNotExist:
+        return {'date': '', 'time': ''}
 
 
-# def _pretty_date(d):
-#     diff = datetime.today() - d
-#     if diff.days > 7 or diff.days < 0:
-#         return d.strftime('%d-%m-%Y')
-#     elif diff.days == 1:
-#         return 'ieri'
-#     elif diff.days > 1:
-#         return '{} days ago'.format(diff.days)
-#     elif s <= 1:
-#         return 'just now'
-#     elif s < 60:
-#         return '{} seconds ago'.format(s)
-#     elif s < 120:
-#         return '1 minute ago'
-#     elif s < 3600:
-#         return '{} minutes ago'.format(s/60)
-#     elif s < 7200:
-#         return '1 hour ago'
-#     else:
-#         return '{} hours ago'.format(s/3600)
+def _relative_date(date: datetime):
+    diff = datetime.today() - date
+    if diff.days == 0:
+        return 'oggi'
+    elif diff.days == 1:
+        return 'ieri'
+    elif diff.days <= 10:
+        return '{} giorni fa'.format(diff.days)
+    elif diff.days <= 300:
+        return 'il ' + date.strftime('%d/%m')
+    else:
+        return 'il ' + date.strftime('%d/%m/%Y')
 
 
 def _get_interval(values, date, look_back, flag=False):

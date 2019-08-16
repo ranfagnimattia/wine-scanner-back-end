@@ -34,6 +34,14 @@ html {
     border: none !important;
 }
 
+.capitalize::first-letter {
+    text-transform: uppercase;
+}
+
+.lowercase {
+    text-transform: lowercase;
+}
+
 /* Black theme*/
 .sidebar .sidebar-wrapper {
     min-height: calc(100% - 80px);
@@ -162,6 +170,10 @@ html {
     padding: 14px 13px;
 }
 
+.card-stats .labels {
+    width: max-content;
+}
+
 .card-stats .labels > p {
     text-align: right;
     color: rgba(255, 255, 255, 0.6);
@@ -176,6 +188,7 @@ html {
 }
 
 .card-stats .numbers > p {
+    font-family: 'Varela Round', sans-serif;
     text-align: right;
     color: #ffffff;
     font-weight: 300;
@@ -184,6 +197,7 @@ html {
 }
 
 .card-stats .number {
+    font-family: 'Varela Round', sans-serif;
     color: #ffffff;
     font-weight: 300;
     font-size: 21px;

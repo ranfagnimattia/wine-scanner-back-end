@@ -12,9 +12,9 @@ urlpatterns = [
     path('ajax/updateDailyData', views.ajax_update_daily_data, name='ajax.updateDailyData'),
 
     # RealTime Dashboard
-    path('realTimeData', views.show_real_time_data, name='show.realTimeData'),
-    path('ajax/getRealTimeData', views.ajax_get_real_time_data, name='ajax.getRealTimeData'),
-    path('ajax/updateRealTimeData', views.ajax_update_real_time_data, name='ajax.updateRealTimeData'),
+    path('realTimeData', views.show_realtime_data, name='show.realTimeData'),
+    path('ajax/getRealTimeData', views.ajax_get_realtime_data, name='ajax.getRealTimeData'),
+    path('ajax/updateRealTimeData', views.ajax_update_realtime_data, name='ajax.updateRealTimeData'),
 
     # Anomalies Dashboard
     path('anomalies', views.show_anomalies, name='show.anomalies'),
