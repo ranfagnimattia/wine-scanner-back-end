@@ -94,30 +94,36 @@ html {
 
 
 /* Colors */
-.btn-primary.btn-simple {
+.btn-color2.btn-simple, .btn-color2.btn-simple:hover, .btn-color2.btn-simple:focus,
+.btn-color2.btn-simple:active, .btn-color2.btn-simple:not(:disabled):not(.disabled):active {
+    border: 1px solid var(--color2);
+    color: var(--color2);
+    background: transparent;
+}
+
+.btn-color2.btn-simple.active, .btn-color2.btn-simple.active:hover,
+.btn-color2.btn-simple.active:focus, .btn-color2.btn-simple.active:active,
+.btn-color2.btn-simple.active:not(:disabled):not(.disabled):active {
     color: #fff;
     border: none !important;
     background: var(--color2) !important;
 }
 
-.btn-primary.btn-simple.active {
-    color: #fff;
-    border: none !important;
-    background: var(--color2) !important;
+.btn-color3.btn-simple, .btn-color3.btn-simple:hover, .btn-color3.btn-simple:focus,
+.btn-color3.btn-simple:active, .btn-color3.btn-simple:not(:disabled):not(.disabled):active {
+    border: 1px solid var(--color3);
+    color: var(--color3);
+    background: transparent;
 }
 
-
-.btn-success.btn-simple {
-    color: #fff;
-    border: none !important;
-    background: var(--color3) !important;
-}
-
-.btn-success.btn-simple.active {
+.btn-color3.btn-simple.active, .btn-color3.btn-simple.active:hover,
+.btn-color3.btn-simple.active:focus, .btn-color3.btn-simple.active:active,
+.btn-color3.btn-simple.active:not(:disabled):not(.disabled):active {
     color: #fff;
     border: none !important;
     background: var(--color3) !important;
 }
+
 
 /*Card stats*/
 .card-stats {
@@ -156,12 +162,8 @@ html {
     height: 50px;
     width: 50px;
     border-radius: 50%;
-    background-image: -webkit-gradient(linear, right top, left bottom, from(#e14eca), color-stop(#ba54f5), to(#e14eca));
-    background-image: linear-gradient(to bottom left, #e14eca, #ba54f5, #e14eca);
-    background-size: 210% 210%;
-    background-position: 100% 0;
-    margin-bottom: 5px;
     background: var(--color4);
+    margin-bottom: 5px;
 }
 
 .card-stats .info-icon i {

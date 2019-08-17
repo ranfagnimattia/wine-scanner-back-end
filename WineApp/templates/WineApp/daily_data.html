@@ -18,7 +18,7 @@
                                 <div class="col p-0"></div>
                                 <div class="col-auto">
                                     <p class="label">Ultimo aggiornamento</p>
-                                    <p class="number"><span class="js-last-update"></span></p>
+                                    <p class="number capitalize"><span class="js-last-update"></span></p>
                                 </div>
                             </div>
                         </div>
@@ -92,15 +92,15 @@
                                     <p class="js-show-min">Min</p>
                                 </div>
                                 <div class="col-auto numbers">
-                                    <p class="js-show-tot"><span class="js-monthMean-tot"></span><span
+                                    <p class="js-show-tot"><span class="js-lastMonthStats-tot"></span><span
                                             class="js-unit"></span></p>
-                                    <p class="js-show-avg"><span class="js-monthMean-avg"></span><span
+                                    <p class="js-show-avg"><span class="js-lastMonthStats-avg"></span><span
                                             class="js-unit"></span></p>
-                                    <p class="js-show-max"><span class="js-monthMean-max"></span><span
+                                    <p class="js-show-max"><span class="js-lastMonthStats-max"></span><span
                                             class="js-unit"></span></p>
-                                    <p class="js-show-min"><span class="js-monthMean-min"></span><span
+                                    <p class="js-show-min"><span class="js-lastMonthStats-min"></span><span
                                             class="js-unit"></span></p>
-                                    <p class="values-space"><span class="js-monthMean-space"></span><span
+                                    <p class="values-space"><span class="js-lastMonthStats-space"></span><span
                                             class="js-unit"></span></p>
                                 </div>
                             </div>
@@ -181,24 +181,24 @@
                         </div>
                         <div class="col-sm-6">
                             <div class="btn-group btn-group-toggle float-right" data-toggle="buttons">
-                                <label class="btn btn-sm btn-primary btn-simple" data-measure="Tot">
+                                <label class="btn btn-sm btn-color2 btn-simple" data-measure="tot">
                                     <input type="radio" class="d-none d-sm-none" name="options" checked="">
                                     <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Tot</span>
                                     <span class="d-block d-sm-none">Tot</span>
                                 </label>
-                                <label class="btn btn-sm btn-primary btn-simple" data-measure="Avg">
+                                <label class="btn btn-sm btn-color2 btn-simple" data-measure="avg">
                                     <input type="radio" class="d-none d-sm-none"
                                            name="options">
                                     <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Avg</span>
                                     <span class="d-block d-sm-none">Avg</span>
                                 </label>
-                                <label class="btn btn-sm btn-primary btn-simple" data-measure="Max">
+                                <label class="btn btn-sm btn-color2 btn-simple" data-measure="max">
                                     <input type="radio" class="d-none d-sm-none"
                                            name="options">
                                     <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Max</span>
                                     <span class="d-block d-sm-none">Max</span>
                                 </label>
-                                <label class="btn btn-sm btn-primary btn-simple" data-measure="Min">
+                                <label class="btn btn-sm btn-color2 btn-simple" data-measure="min">
                                     <input type="radio" class="d-none d-sm-none"
                                            name="options">
                                     <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Min</span>
@@ -216,7 +216,7 @@
             </div>
         </div>
         <div class="col-12 col-xl-6">
-            <div class="card card-chart card-stats" id="trend-chart">
+            <div class="card card-chart card-stats" id="diff-chart">
                 <div class="card-header">
                     <div class="row">
                         <div class="col-sm-6 text-left">
@@ -227,24 +227,24 @@
                         </div>
                         <div class="col-sm-6">
                             <div class="btn-group btn-group-toggle float-right" data-toggle="buttons">
-                                <label class="btn btn-sm btn-success btn-simple" data-measure="Tot">
+                                <label class="btn btn-sm btn-color3 btn-simple" data-measure="tot">
                                     <input type="radio" class="d-none d-sm-none" name="options" checked="">
                                     <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Tot</span>
                                     <span class="d-block d-sm-none">Tot</span>
                                 </label>
-                                <label class="btn btn-sm btn-success btn-simple" data-measure="Avg">
+                                <label class="btn btn-sm btn-color3 btn-simple" data-measure="avg">
                                     <input type="radio" class="d-none d-sm-none"
                                            name="options">
                                     <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Avg</span>
                                     <span class="d-block d-sm-none">Avg</span>
                                 </label>
-                                <label class="btn btn-sm btn-success btn-simple" data-measure="Max">
+                                <label class="btn btn-sm btn-color3 btn-simple" data-measure="max">
                                     <input type="radio" class="d-none d-sm-none"
                                            name="options">
                                     <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Max</span>
                                     <span class="d-block d-sm-none">Max</span>
                                 </label>
-                                <label class="btn btn-sm btn-success btn-simple" data-measure="Min">
+                                <label class="btn btn-sm btn-color3 btn-simple" data-measure="min">
                                     <input type="radio" class="d-none d-sm-none"
                                            name="options">
                                     <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Min</span>

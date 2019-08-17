@@ -1,14 +1,15 @@
 class Dashboard {
     constructor(data) {
-        this.allData = data.allData;
-        this.measures = data.measures;
-        this.last = data.last;
-        this.lastMonth = data.lastMonth;
-        this.diff = data.diff;
-        this.monthMean = data.monthMean;
-        this.weekMean = data.weekMean;
-        this.yesterday = data.yesterday;
         this.sensor = data.sensor;
+        this.measures = data.measures;
+
+        this.chartAll = data.chartAll;
+        this.chartLastMonth = data.chartLastMonth;
+        this.chartDiff = data.chartDiff;
+
+        this.last = data.last;
+        this.lastMonthStats = data.lastMonthStats;
+        this.trend = data.trend;
     }
 
 
@@ -16,24 +17,22 @@ class Dashboard {
         console.log(this);
         this.setEvents();
 
-        const firstMeasure = this.measures[0].toLowerCase();
-        $('.js-main-measure').text(firstMeasure);
+        $('.js-main-measure').text(this.measures[0]);
         const animation = new Animation();
         const lastAnim = [], monthAnim = [];
         $('[class*="js-show-"]').hide();
         this.measures.forEach((m) => {
-            const measure = m.toLowerCase();
-            $('.js-show-' + measure).show();
-            lastAnim.push([$('.js-last-' + measure), this.last[measure]]);
-            monthAnim.push([$('.js-monthMean-' + measure), this.monthMean[measure]]);
+            $('.js-show-' + m).show();
+            lastAnim.push([$('.js-last-' + m), this.last[m]]);
+            monthAnim.push([$('.js-lastMonthStats-' + m), this.lastMonthStats[m]]);
         });
 
         animation.setValues(lastAnim, $('.js-last-space'));
-        animation.setValues(monthAnim, $('.js-monthMean-space'));
+        animation.setValues(monthAnim, $('.js-lastMonthStats-space'));
         animation.setValues([
-            setUpTrend($('.js-trend-day'), firstMeasure, this.last, this.yesterday),
-            setUpTrend($('.js-trend-week'), firstMeasure, this.last, this.weekMean),
-            setUpTrend($('.js-trend-month'), firstMeasure, this.last, this.monthMean)
+            setUpTrend($('.js-trend-day'), this.trend.day),
+            setUpTrend($('.js-trend-week'), this.trend.week),
+            setUpTrend($('.js-trend-month'), this.trend.month)
         ], $('.js-trend-space'));
         animation.animate();
 
@@ -44,20 +43,20 @@ class Dashboard {
         const $this = this;
         $('#month-chart .btn').off('click').click(function () {
             if (!$(this).hasClass("active"))
-                $this.updateChart($('#month-chart'), $this.lastMonth, $(this).data('measure').toLowerCase())
+                $this.updateChart($('#month-chart'), $this.chartLastMonth, $(this).data('measure'))
         });
-        $('#trend-chart .btn').off('click').click(function () {
+        $('#diff-chart .btn').off('click').click(function () {
             if (!$(this).hasClass("active"))
-                $this.updateChart($('#trend-chart'), $this.diff, $(this).data('measure').toLowerCase())
+                $this.updateChart($('#diff-chart'), $this.chartDiff, $(this).data('measure'))
         });
     }
 
 
     /* Charts */
     updateCharts() {
-        this.updateBigChart($('#sensor-chart'), this.allData);
-        this.setUpChart($('#month-chart'), this.lastMonth);
-        this.setUpChart($('#trend-chart'), this.diff);
+        this.updateBigChart($('#sensor-chart'), this.chartAll);
+        this.setUpChart($('#month-chart'), this.chartLastMonth);
+        this.setUpChart($('#diff-chart'), this.chartDiff);
     }
 
     updateBigChart(elem, data) {
@@ -68,7 +67,7 @@ class Dashboard {
             format: "%Y-%m-%d"
         });
         this.measures.forEach((m) => {
-            scheme.push({name: m, type: "number"});
+            scheme.push({name: ucFirst(m), type: "number"});
         });
 
         $('.js-sensor-measure').text(this.measures.join(', '));
@@ -85,7 +84,7 @@ class Dashboard {
                 },
                 data: fusionTable,
                 yAxis: [{
-                    "plot": this.measures.map((m) => ({value: m})),
+                    "plot": this.measures.map((m) => ({value: ucFirst(m)})),
                     "format": {"suffix": this.sensor.unit},
                     title: ''
                 }]
@@ -109,19 +108,19 @@ class Dashboard {
         let id = elem.attr('id');
         let styles = {
             "month-chart": {color: themeColors.color2, type: 'smooth-area'},
-            "trend-chart": {color: themeColors.color3, type: 'column'}
+            "diff-chart": {color: themeColors.color3, type: 'column'}
         };
         let scheme = [{
             name: "Time",
             type: "date",
             format: "%Y-%m-%d"
         }, {
-            name: measure,
+            name: ucFirst(measure),
             type: "number"
         }];
 
         elem.find('.js-sensor-measure').text(measure);
-        const fusionTable = new FusionCharts.DataStore().createDataTable(getMeasure(measure.toLowerCase(), data), scheme);
+        const fusionTable = new FusionCharts.DataStore().createDataTable(getMeasure(measure, data), scheme);
 
         elem.find('.chart').insertFusionCharts({
             type: 'timeseries',
@@ -148,7 +147,7 @@ class Dashboard {
                 data: fusionTable,
                 yAxis: [{
                     "plot": {
-                        "value": measure,
+                        "value": ucFirst(measure),
                         type: styles[id].type,
                         style: {'area': {"fill-opacity": 0.15}}
                     },

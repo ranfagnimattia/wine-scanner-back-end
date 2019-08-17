@@ -107,3 +107,26 @@ def update_realtime_data() -> dict:
     RealTimeData.objects.bulk_create(new_data)
     LastUpdate.objects.update_or_create(type='realtime', defaults={'time': end_date})
     return {'created': len(new_data)}
+
+
+def get_last_update(update_type: str):
+    try:
+        last_datetime = LastUpdate.objects.get(type=update_type).time
+        return {'date': _relative_date(last_datetime), 'time': last_datetime.strftime('%H:%M')}
+    except LastUpdate.DoesNotExist:
+        return {'date': '', 'time': ''}
+
+
+# Private
+def _relative_date(date: datetime):
+    diff = datetime.today().date() - date.date()
+    if diff.days == 0:
+        return 'oggi'
+    elif diff.days == 1:
+        return 'ieri'
+    elif diff.days <= 10:
+        return '{} giorni fa'.format(diff.days)
+    elif diff.days <= 300:
+        return 'il ' + date.strftime('%d/%m')
+    else:
+        return 'il ' + date.strftime('%d/%m/%Y')

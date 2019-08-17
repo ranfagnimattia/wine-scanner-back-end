@@ -8,12 +8,12 @@ let activeDiffBtn = 'avg';
 class Dashboard {
     constructor(data) {
         this.sensor = data.sensor;
+        this.mainMeasure = data.mainMeasure;
 
         this.chartAll = data.chartAll;
         this.chartLast24h = data.chartLast24h;
         this.chartDiff = data.chartDiff;
 
-        this.mainMeasure = data.mainMeasure;
         this.last = data.last;
         this.lastTime = data.lastTime;
         this.lastDayStats = data.lastDayStats;
@@ -55,7 +55,6 @@ class Dashboard {
                 $(this).addClass('js-active');
                 const elem = $('#diff-chart');
                 activeDiffBtn = $(this).data('type');
-                $this.updateChart(elem, $this.chartDiff[activeDiffBtn], "%Y-%m-%d %H");
                 let title, text;
                 if (activeDiffBtn === 'avg') {
                     title = 'Media';
@@ -67,6 +66,7 @@ class Dashboard {
 
                 elem.find('.card-title').text(title);
                 elem.find('.card-category').text(text);
+                $this.updateChart(elem, $this.chartDiff[activeDiffBtn], "%Y-%m-%d %H", title);
             }
         });
     }
@@ -75,7 +75,7 @@ class Dashboard {
     /* Charts */
     updateCharts() {
         this.updateBigChart($('#sensor-chart'), this.chartAll);
-        this.updateChart($('#last24h-chart'), this.chartLast24h, "%Y-%m-%d %H:%M:%S");
+        this.updateChart($('#last24h-chart'), this.chartLast24h, "%Y-%m-%d %H:%M:%S", 'Rilevazione');
         $('#diff-chart .btn[data-type=\'' + activeDiffBtn + '\']').click();
     }
 
@@ -127,7 +127,7 @@ class Dashboard {
         });
     }
 
-    updateChart(elem, data, timeFormat) {
+    updateChart(elem, data, timeFormat, title) {
         let id = elem.attr('id');
         let styles = {
             "last24h-chart": {color: themeColors.color2, type: 'smooth-area'},
@@ -138,7 +138,7 @@ class Dashboard {
             type: "date",
             format: timeFormat
         }, {
-            name: 'Rilevazione',
+            name: title,
             type: "number"
         }];
 
@@ -176,7 +176,7 @@ class Dashboard {
                 data: fusionTable,
                 yAxis: [{
                     "plot": {
-                        "value": 'Rilevazione',
+                        "value": title,
                         connectnulldata: true,
                         type: styles[id].type,
                         style: {'area': {"fill-opacity": 0.15}}

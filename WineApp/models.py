@@ -12,6 +12,14 @@ class Sensor(models.Model):
     tot = models.BooleanField(default=False)
     startTestSet = models.DateField(default=None, blank=True, null=True)
 
+    def get_measures(self):
+        measures = []
+        if self.tot:
+            measures.append('tot')
+        if self.values:
+            measures.extend(['avg', 'max', 'min'])
+        return measures
+
     def to_js(self):
         return {'id': self.id, 'name': self.name, 'unit': self.unit, 'icon': self.icon,
                 'values': self.values, 'tot': self.tot}
