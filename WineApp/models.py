@@ -57,6 +57,40 @@ class RealTimeData(models.Model):
         return self.time.strftime('%d/%m/%Y %H:%M') + '-' + str(self.sensor)
 
 
+class PredictionMethod(models.Model):
+    name = models.CharField(max_length=50)
+    reset = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.name
+
+
+class Prediction(models.Model):
+    MEASURES = (("tot", "tot"),
+                ("avg", "avg"),
+                ("max", "max"),
+                ("min", "min"))
+
+    date = models.DateField()
+    sensor = models.ForeignKey(Sensor, on_delete=models.CASCADE)
+    measure = models.CharField(choices=MEASURES, max_length=3)
+    actual = models.FloatField()
+    prediction = models.FloatField()
+    mean = models.FloatField()
+    var = models.FloatField()
+    limit = models.FloatField()
+    count = models.IntegerField()
+    anomaly = models.BooleanField()
+    method = models.ForeignKey(PredictionMethod, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('date', 'sensor', 'measure', 'method')
+
+    def __str__(self):
+        return self.date.strftime('%d/%m/%Y') + '-' + str(self.sensor) + '-' + \
+               str(self.measure) + '-' + str(self.method)
+
+
 class VintageRating(models.Model):
     year = models.IntegerField(primary_key=True)
     rating = models.FloatField(

@@ -109,7 +109,7 @@ def update_realtime_data() -> dict:
     return {'created': len(new_data)}
 
 
-def get_last_update(update_type: str):
+def get_last_update(update_type: str) -> dict:
     try:
         last_datetime = LastUpdate.objects.get(type=update_type).time
         return {'date': _relative_date(last_datetime), 'time': last_datetime.strftime('%H:%M')}

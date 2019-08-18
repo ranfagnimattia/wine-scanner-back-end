@@ -21,10 +21,6 @@ urlpatterns = [
     path('ajax/getAnomalies', views.ajax_get_anomalies, name='ajax.getAnomalies'),
     path('ajax/updateAnomalies', views.ajax_update_anomalies, name='ajax.updateAnomalies'),
 
-    # Other pages
-    path('update/daily', views.update_daily_data, name='update.daily'),
-    path('update/realtime', views.update_realtime_data, name='update.realtime'),
-
     # Algorithms
     path('<field>/<measure>/expsmoothing', views.expsmoothing, name='expsmoothing'),
     # es airTemperature/avg/expsmoothing

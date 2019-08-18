@@ -1,15 +1,25 @@
+let activeDiffBtn = 'avg';
+
+/**
+ * @param data.lastDayStats.maxTime
+ * @param data.lastDayStats.minTime
+ * @param data.trend.lastDay
+ */
 class Dashboard {
     constructor(data) {
-        this.measure = data.measure;
-
-        this.allData = data.allData;
-        this.last = data.last;
-        this.lastMonth = data.lastMonth;
-        this.diff = data.diff;
-        this.monthMean = data.monthMean;
-        this.weekMean = data.weekMean;
-        this.yesterday = data.yesterday;
         this.sensor = data.sensor;
+        // this.measure = data.measure;
+
+        this.chartAll = data.chartAll;
+        this.anomaliesAll = data.anomaliesAll;
+        this.chartLastMonth = data.chartLastMonth;
+
+        // this.chartDiff = data.chartDiff;
+        //
+        // this.last = data.last;
+        // this.lastTime = data.lastTime;
+        // this.lastDayStats = data.lastDayStats;
+        // this.trend = data.trend;
     }
 
 
@@ -17,24 +27,23 @@ class Dashboard {
         console.log(this);
         // this.setEvents();
         //
-        // const firstMeasure = this.measures[0].toLowerCase();
-        // $('.js-main-measure').text(firstMeasure);
-        // const animation = new Animation();
-        // const lastAnim = [], monthAnim = [];
-        // $('[class*="js-show-"]').hide();
-        // this.measures.forEach((m) => {
-        //     const measure = m.toLowerCase();
-        //     $('.js-show-' + measure).show();
-        //     lastAnim.push([$('.js-last-' + measure), this.last[measure]]);
-        //     monthAnim.push([$('.js-monthMean-' + measure), this.monthMean[measure]]);
-        // });
+        // $('.js-main-measure').text(this.mainMeasure);
         //
-        // animation.setValues(lastAnim, $('.js-last-space'));
-        // animation.setValues(monthAnim, $('.js-monthMean-space'));
+        // const animation = new Animation();
         // animation.setValues([
-        //     setUpTrend($('.js-trend-day'), firstMeasure, this.last, this.yesterday),
-        //     setUpTrend($('.js-trend-week'), firstMeasure, this.last, this.weekMean),
-        //     setUpTrend($('.js-trend-month'), firstMeasure, this.last, this.monthMean)
+        //     [$('.js-last-value'), this.last],
+        //     [$('.js-last-time'), this.lastTime, true],
+        //     [$('.js-lastDay-mainMeasure'), this.lastDayStats[this.mainMeasure]]
+        // ], $('.js-last-space'));
+        // animation.setValues([
+        //     [$('.js-lastDay-max'), this.lastDayStats.max],
+        //     [$('.js-lastDay-maxTime'), this.lastDayStats.maxTime, true],
+        //     [$('.js-lastDay-min'), this.lastDayStats.min],
+        //     [$('.js-lastDay-minTime'), this.lastDayStats.minTime, true]
+        // ], $('.js-lastDay-space'));
+        // animation.setValues([
+        //     setUpTrend($('.js-trend-previous'), this.trend.previous),
+        //     setUpTrend($('.js-trend-lastDay'), this.trend.lastDay),
         // ], $('.js-trend-space'));
         // animation.animate();
         //
@@ -43,204 +52,55 @@ class Dashboard {
 
     setEvents() {
         const $this = this;
-        $('#month-chart .btn').off('click').click(function () {
-            if (!$(this).hasClass("active"))
-                $this.updateChart($('#month-chart'), $this.lastMonth, $(this).data('measure').toLowerCase())
-        });
-        $('#trend-chart .btn').off('click').click(function () {
-            if (!$(this).hasClass("active"))
-                $this($('#trend-chart'), $this.diff, $(this).data('measure').toLowerCase())
+        $('#diff-chart .btn').off('click').click(function () {
+            if (!$(this).hasClass('active')) {
+                $(this).addClass('js-active');
+                const elem = $('#diff-chart');
+                activeDiffBtn = $(this).data('type');
+                let title, text;
+                if (activeDiffBtn === 'avg') {
+                    title = 'Media';
+                    text = 'Media ' + $this.sensor.name + ' ultima settimana per fascia oraria';
+                } else {
+                    title = 'Differenza';
+                    text = $this.sensor.name + ' rispetto all\'ultima settimana per fascia oraria';
+                }
+
+                elem.find('.card-title').text(title);
+                elem.find('.card-category').text(text);
+                $this.updateChart(elem, $this.chartDiff[activeDiffBtn], "%Y-%m-%d %H", title);
+            }
         });
     }
 
 
     /* Charts */
     updateCharts() {
-        this.updateBigChart($('#sensor-chart'), this.allData);
-        // this.setUpChart($('#month-chart'), this.lastMonth);
-        // this.setUpChart($('#trend-chart'), this.diff);
+        this.updateBigChart($('#sensor-chart'), this.chartAll);
+        this.updateMonthChart();
+        this.updateBarChart();
+        // $('#diff-chart .btn[data-type=\'' + activeDiffBtn + '\']').click();
     }
 
     updateBigChart(elem, data) {
-
-        data = [
-            [
-                "1901 Jan",
-                "Assam",
-                127.1,
-                150,
-                27.1
-            ],
-            [
-                "1901 Feb",
-                "Assam",
-                119.5,
-                150,
-                19.5
-            ],
-            [
-                "1901 Mar",
-                "Assam",
-                130.6,
-                150,
-                30.6
-            ],
-            [
-                "1901 Apr",
-                "Assam",
-                1223,
-                150,
-                223
-            ],
-            [
-                "1901 May",
-                "Assam",
-                1207,
-                150,
-                223
-            ],
-            [
-                "1901 Jun",
-                "Assam",
-                1524.9,
-                150,
-                524.9
-            ]];
-        let scheme = [];
-        scheme.push({
-            name: "Time",
-            type: "date",
-            format: "%Y-%m-%d"
-        }, {name: 'Min', type: "number"}, {name: 'Max', type: "number"});
-        // this.measures.forEach((m) => {
-        //     scheme.push({name: m, type: "number"});
-        // });
-        scheme = [{
-            "name": "Time",
-            "type": "date",
-            "format": "%Y %b"
-        },
-            {
-                "name": "State",
-                "type": "string"
-            },
-            {
-                "name": "Rainfall",
-                "type": "number"
-            },
-            {
-                "name": "Andrea",
-                "type": "number"
-            },
-            {
-                "name": "Altro",
-                "type": "number"
-            },
-        ];
-
-        // $('.js-sensor-measure').text(this.measures.join(', '));
-        const fusionTable = new FusionCharts.DataStore().createDataTable(data, scheme);
-
-        // [{
-        //                 "value": 'Min',
-        //                 type: 'area',
-        //                 style: {'area': {"fill-opacity": 0}}
-        //             }, {
-        //                 "value": 'Max',
-        //                 type: 'area',
-        //                 style: {'area': {"fill-opacity": 0.15}}
-        //             }]
-        elem.find('.chart').insertFusionCharts({
-            type: 'timeseries',
-            width: '100%',
-            height: '100%',
-            dataFormat: 'json',
-            dataSource: {
-                chart: {
-                    theme: 'candy',
-                    paletteColors: '#ffffff, #27293d, #ff293d',
-                },
-                // series: "State",
-                data: fusionTable,
-                yAxis: [{
-                    "plot": [{
-                        value: "Rainfall",
-                        type: "area",
-                        style: {
-                            plot: {
-                                "fill-opacity": "0.2"
-                            }, "line": {
-                                "opacity": 0
-                            }
-                        }
-                    }, {
-                        value: "Altro",
-                        type: "area",
-                        style: {
-                            plot: {
-                                "fill-opacity": "1"
-                            }, "line": {
-                                "opacity": 0
-                            }
-                        }
-                    }, {
-                        value: "Andrea",
-                        type: "line",
-                        style: {
-                            plot: {
-                                "fill-opacity": "1",
-                                "color": "#00ff00",
-                                "fill": "#00ff00",
-                                "fill-color": "#00ff00",
-                                stroke: "#003840"
-                            }, "line": {
-                                "color": "#00ff00",
-                                "fill": "#00ff00",
-                                "fill-color": "#00ff00",
-                                "opacity": 1
-                            },
-                            stroke: "#003840",
-                            "color": "#00ff00",
-                            "fill": "#00ff00",
-                            "fill-color": "#00ff00",
-                        }
-                    }],
-                    "format": {"suffix": this.sensor.unit},
-                    title: ''
-                }]
-            }
-        });
-    }
-
-    setUpChart(elem, data) {
-        elem.find('.btn').attr("disabled", "disabled");
-        this.measures.forEach((m, i) => {
-            const btn = elem.find(`[data-measure='${m}']`);
-            btn.removeAttr("disabled");
-            if (i === 0) {
-                btn.addClass("active");
-                this.updateChart(elem, data, m);
-            }
-        });
-    }
-
-    updateChart(elem, data, measure) {
-        let id = elem.attr('id');
-        let styles = {
-            "month-chart": {color: themeColors.color2, type: 'smooth-area'},
-            "trend-chart": {color: themeColors.color3, type: 'column'}
-        };
         let scheme = [{
             name: "Time",
             type: "date",
             format: "%Y-%m-%d"
         }, {
-            name: measure,
+            name: 'Actual',
             type: "number"
         }];
 
-        elem.find('.js-sensor-measure').text(measure);
-        const fusionTable = new FusionCharts.DataStore().createDataTable(getMeasure(measure.toLowerCase(), data), scheme);
+        const dataMarker = this.anomaliesAll.map((d) => ({
+            seriesname: "Actual",
+            time: d[0],
+            identifier: "H",
+            timeformat: "%Y-%m-%d",
+            tooltext: "he ral fund rates to approach 20 percent."
+        }));
+
+        const fusionTable = new FusionCharts.DataStore().createDataTable(data, scheme);
 
         elem.find('.chart').insertFusionCharts({
             type: 'timeseries',
@@ -248,12 +108,64 @@ class Dashboard {
             height: '100%',
             dataFormat: 'json',
             dataSource: {
+                chart: {
+                    theme: 'candy',
+                },
+                data: fusionTable,
+                yAxis: [{
+                    "plot": {
+                        value: 'Actual'
+                    },
+                    "format": {"suffix": this.sensor.unit},
+                    title: ''
+                }],
+                datamarker: dataMarker
+            }
+        });
+    }
+
+    updateMonthChart() {
+        const elem = $('#month-chart');
+        let scheme = [{
+            name: "Time",
+            type: "date",
+            format: "%Y-%m-%d"
+        }, {
+            name: 'Actual',
+            type: "number"
+        }, {
+            name: 'Prediction',
+            type: "number"
+        }, {
+            name: 'Upper limit',
+            type: "number"
+        }, {
+            name: 'Lower limit',
+            type: "number"
+        }];
+
+        const fusionTable = new FusionCharts.DataStore().createDataTable(this.chartLastMonth, scheme);
+
+        elem.find('.chart').insertFusionCharts({
+            type: 'timeseries',
+            width: '100%',
+            height: '100%',
+            dataFormat: 'json',
+            dataSource: {
+                tooltip: {
+                    outputTimeFormat: {
+                        Hour: "%d %b %Y, %H:00",
+                        Minute: "%d %b %Y, %H:%M",
+                        Second: "%d %b %Y, %H:%M:%S",
+                    }
+                },
                 navigator: {
                     enabled: 0
                 },
                 chart: {
                     theme: 'candy',
-                    paletteColors: styles[id].color,
+                    paletteColors: themeColors.color2 + ',' + '#25002b' +
+                        themeColors.color3 + ',' + themeColors.color2 + ',',
                     "showLegend": "0"
                 },
                 "extensions": {
@@ -266,15 +178,135 @@ class Dashboard {
                 },
                 data: fusionTable,
                 yAxis: [{
-                    "plot": {
-                        "value": measure,
-                        type: styles[id].type,
-                        style: {'area': {"fill-opacity": 0.15}}
+                    "plot": [{
+                        value: 'Upper limit',
+                        type: 'smooth-area',
+                        style: {
+                            plot: {
+                                "fill-opacity": 0.15
+                            }, "line": {
+                                "opacity": 0
+                            }
+                        }
+                    }, {
+                        value: 'Lower limit',
+                        type: 'smooth-area',
+                        style: {
+                            plot: {
+                                "fill-opacity": 0.38
+                            }, "line": {
+                                "opacity": 0
+                            }
+                        }
+                    }, {
+                        value: 'Actual',
+                        type: 'smooth-line'
                     },
+                        // {
+                        //     value: 'Prediction',
+                        //     type: 'smooth-line'
+                        // }
+                    ],
                     "format": {"suffix": this.sensor.unit},
                     title: ''
-                }]
+                }],
+                xAxis: {
+                    outputTimeFormat: {
+                        Hour: "%H",
+                        Minute: "%H:%M",
+                        Second: "%H:%M:%S",
+                    }
+                }
+            }
+        });
+    }
+
+    updateBarChart() {
+        const elem = $('#diff-chart');
+        let scheme = [{
+            name: "Time",
+            type: "date",
+            format: "%Y-%m-%d"
+        }, {
+            name: 'Actual',
+            type: "number"
+        }, {
+            name: 'Prediction',
+            type: "number"
+        }, {
+            name: 'Upper limit',
+            type: "number"
+        }, {
+            name: 'Lower limit',
+            type: "number"
+        }, {
+            name: 'Anomalies',
+            type: "number"
+        }];
+
+        const fusionTable = new FusionCharts.DataStore().createDataTable(this.chartLastMonth, scheme);
+
+        elem.find('.chart').insertFusionCharts({
+            type: 'timeseries',
+            width: '100%',
+            height: '100%',
+            dataFormat: 'json',
+            dataSource: {
+                tooltip: {
+                    outputTimeFormat: {
+                        Hour: "%d %b %Y, %H:00",
+                        Minute: "%d %b %Y, %H:%M",
+                        Second: "%d %b %Y, %H:%M:%S",
+                    }
+                },
+                navigator: {
+                    enabled: 0
+                },
+                chart: {
+                    theme: 'candy',
+                    paletteColors: themeColors.color3,
+                    "showLegend": "0"
+                },
+                "extensions": {
+                    "standardRangeSelector": {
+                        "enabled": "0"
+                    },
+                    "customRangeSelector": {
+                        "enabled": "0"
+                    }
+                },
+                data: fusionTable,
+                yAxis: [{
+                    "plot": [{
+                        value: 'Anomalies',
+                        type: 'column'
+                    }],
+                    title: ''
+                }],
+                xAxis: {
+                    outputTimeFormat: {
+                        Hour: "%H",
+                        Minute: "%H:%M",
+                        Second: "%H:%M:%S",
+                    }
+                }
             }
         });
     }
 }
+
+
+/*
+RGB3: final color
+RGB2: background
+A1: alpha of RGB1
+RGB1: foreground color
+
+r3=39, g3=41, b3=61
+r2=40, g2=66, b2=72
+a1=0.38
+r1 = (r3 - r2 + r2*a1)/a1
+g1 = (g3 - g2 + g2*a1)/a1
+b1 = (b3 - b2 + b2*a1)/a1
+'R:'+r1+' G:'+g1+ ' B:'+b1
+ */

@@ -1,5 +1,3 @@
-import time
-
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
@@ -10,6 +8,7 @@ import WineApp.algorithms.lstm as ls
 import WineApp.algorithms.seasonal_decompose as sd
 import WineApp.data.sensor_data as sensor_data
 import WineApp.data.update_data as update_data
+from WineApp.data import prediction
 from WineApp.models import Sensor
 
 
@@ -37,7 +36,6 @@ def ajax_get_daily_data(request):
 
 
 def ajax_update_daily_data(request):
-    # time.sleep(3)
     return JsonResponse(update_data.update_daily_data())
 
 
@@ -64,20 +62,21 @@ def ajax_get_realtime_data(request):
 
 
 def ajax_update_realtime_data(request):
-    # time.sleep(3)
     return JsonResponse(update_data.update_realtime_data())
 
 
 # Anomalies Dashboard
 def show_anomalies(request):
-    data_js = sensor_data.get_daily_data()
+    data_js = sensor_data.get_prediction_data()
     data_js.update({
-        'measure': 'max',
         'getUrl': reverse('WineApp:ajax.getAnomalies'),
-        'updateUrl': reverse('WineApp:ajax.updateDailyData')
+        'updateUrl': reverse('WineApp:ajax.updateAnomalies')
     })
+    sensors = Sensor.objects.all()
+    for sensor in sensors:
+        sensor.disabled = sensor.startTestSet is None
     return render(request, 'WineApp/anomalies.html', {
-        'sensors': Sensor.objects.all(),
+        'sensors': sensors,
         'multilevel': True,
         'data_js': data_js
     })
@@ -86,30 +85,11 @@ def show_anomalies(request):
 def ajax_get_anomalies(request):
     sensor_id = request.GET.get('sensorId', 1)
     measure = request.GET.get('measure')
-    data_js = sensor_data.get_daily_data(sensor_id)
-    data_js.update({
-        'measure': measure
-    })
-    return JsonResponse(data_js)
+    return JsonResponse(sensor_data.get_prediction_data(sensor_id, measure))
 
 
 def ajax_update_anomalies(request):
-    return None
-
-
-# Update Data
-def update_daily_data(request):
-    start = time.time()
-    data = update_data.update_daily_data()
-    end = time.time()
-    # data.append('Time: ' + str(end - start))
-    print(end - start)
-    return render(request, 'WineApp/index.html', {'list': data})
-
-
-def update_realtime_data(request):
-    data = update_data.update_realtime_data()
-    return render(request, 'WineApp/index.html', {'list': data})
+    return JsonResponse(prediction.update_prediction())
 
 
 # Algorithms

@@ -195,5 +195,6 @@ function _updateDashboard(data) {
 
     $('.js-measure').text(data.measure);
 
-    new Dashboard(data).update();
+    if (!data.error)
+        new Dashboard(data).update();
 }

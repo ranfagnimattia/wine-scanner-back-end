@@ -18,7 +18,7 @@
                                 <div class="col p-0"></div>
                                 <div class="col-auto">
                                     <p class="label">Ultimo aggiornamento</p>
-                                    <p class="number"><span class="js-last-update"></span></p>
+                                    <p class="number capitalize"><span class="js-last-update"></span></p>
                                 </div>
                             </div>
                         </div>
@@ -43,19 +43,15 @@
                             <div class="row flex-nowrap">
                                 <div class="col p-0"></div>
                                 <div class="col-auto labels pr-0">
-                                    <p class="js-show-tot">Tot</p>
-                                    <p class="js-show-avg">Avg</p>
-                                    <p class="js-show-max">Max</p>
-                                    <p class="js-show-min">Min</p>
+                                    <p>Valore</p>
+                                    <p>Ora</p>
+                                    <p class="js-main-measure capitalize"></p>
                                 </div>
                                 <div class="col-auto numbers">
-                                    <p class="js-show-tot"><span class="js-last-tot"></span><span
+                                    <p><span class="js-last-value"></span><span
                                             class="js-unit"></span></p>
-                                    <p class="js-show-avg"><span class="js-last-avg"></span><span
-                                            class="js-unit"></span></p>
-                                    <p class="js-show-max"><span class="js-last-max"></span><span
-                                            class="js-unit"></span></p>
-                                    <p class="js-show-min"><span class="js-last-min"></span><span
+                                    <p><span class="js-last-time"></span></p>
+                                    <p><span class="js-lastDay-mainMeasure"></span><span
                                             class="js-unit"></span></p>
                                     <p class="values-space"><span class="js-last-space"></span><span
                                             class="js-unit"></span></p>
@@ -68,7 +64,7 @@
                     <hr>
                     <div class="stats">
                         <span class="js-sensor-icon"></span>
-                        <span><span class="js-sensor"></span> <span class="js-measure"></span> oggi</span>
+                        <span><span class="js-sensor"></span> <span class="js-last-date"></span></span>
                     </div>
                 </div>
             </div>
@@ -79,28 +75,26 @@
                     <div class="row">
                         <div class="col-auto pr-0">
                             <div class="info-icon text-center icon-warning">
-                                <i class="fas fa-calendar-alt"></i>
+                                <i class="fas fa-calendar-day"></i>
                             </div>
                         </div>
                         <div class="col">
                             <div class="row flex-nowrap">
                                 <div class="col p-0"></div>
                                 <div class="col-auto labels pr-0">
-                                    <p class="js-show-tot">Tot</p>
-                                    <p class="js-show-avg">Avg</p>
-                                    <p class="js-show-max">Max</p>
-                                    <p class="js-show-min">Min</p>
+                                    <p>Max</p>
+                                    <p>Ora max</p>
+                                    <p>Min</p>
+                                    <p>Ora min</p>
                                 </div>
                                 <div class="col-auto numbers">
-                                    <p class="js-show-tot"><span class="js-monthMean-tot"></span><span
+                                    <p><span class="js-lastDay-max"></span><span
                                             class="js-unit"></span></p>
-                                    <p class="js-show-avg"><span class="js-monthMean-avg"></span><span
+                                    <p><span class="time js-lastDay-maxTime"></span></p>
+                                    <p><span class="js-lastDay-min"></span><span
                                             class="js-unit"></span></p>
-                                    <p class="js-show-max"><span class="js-monthMean-max"></span><span
-                                            class="js-unit"></span></p>
-                                    <p class="js-show-min"><span class="js-monthMean-min"></span><span
-                                            class="js-unit"></span></p>
-                                    <p class="values-space"><span class="js-monthMean-space"></span><span
+                                    <p><span class="time js-lastDay-minTime"></span></p>
+                                    <p class="values-space"><span class="js-lastDay-space"></span><span
                                             class="js-unit"></span></p>
                                 </div>
                             </div>
@@ -111,7 +105,7 @@
                     <hr>
                     <div class="stats">
                         <span class="js-sensor-icon"></span>
-                        <span><span class="js-sensor"></span> ultimo mese</span>
+                        <span><span class="js-sensor"></span> <span class="js-last-date"></span></span>
                     </div>
                 </div>
             </div>
@@ -129,20 +123,15 @@
                             <div class="row flex-nowrap">
                                 <div class="col p-0"></div>
                                 <div class="col-auto labels pr-0">
-                                    <p>Ieri</p>
-                                    <p>Sett</p>
-                                    <p>Mese</p>
+                                    <p>Precedente</p>
+                                    <p>Avg giorno</p>
                                 </div>
                                 <div class="col-auto numbers">
-                                    <p class="js-trend-day">
+                                    <p class="js-trend-previous">
                                         <span class="js-trend"></span><span class="js-unit"></span><span
                                             class="js-trend-icon"></span>
                                     </p>
-                                    <p class="js-trend-week">
-                                        <span class="js-trend"></span><span class="js-unit"></span><span
-                                            class="js-trend-icon"></span>
-                                    </p>
-                                    <p class="js-trend-month">
+                                    <p class="js-trend-lastDay">
                                         <span class="js-trend"></span><span class="js-unit"></span><span
                                             class="js-trend-icon"></span>
                                     </p>
@@ -160,7 +149,7 @@
                     <div class="stats">
                         <span class="js-sensor-icon"></span>
                         <span>
-                            <span class="js-sensor"></span> <span class="js-main-measure"></span>
+                            Valore <span class="js-sensor lowercase"></span>
                             <span> rispetto a:</span>
                         </span>
                     </div>
@@ -177,34 +166,7 @@
                             <h5 class="card-category"><span class="js-sensor"></span> <span
                                     class="js-sensor-measure"></span><span class="trasparent"> rispetto alla media mensile</span>
                             </h5>
-                            <h2 class="card-title">Ultimo Mese</h2>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="btn-group btn-group-toggle float-right" data-toggle="buttons">
-                                <label class="btn btn-sm btn-primary btn-simple" data-measure="Tot">
-                                    <input type="radio" class="d-none d-sm-none" name="options" checked="">
-                                    <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Tot</span>
-                                    <span class="d-block d-sm-none">Tot</span>
-                                </label>
-                                <label class="btn btn-sm btn-primary btn-simple" data-measure="Avg">
-                                    <input type="radio" class="d-none d-sm-none"
-                                           name="options">
-                                    <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Avg</span>
-                                    <span class="d-block d-sm-none">Avg</span>
-                                </label>
-                                <label class="btn btn-sm btn-primary btn-simple" data-measure="Max">
-                                    <input type="radio" class="d-none d-sm-none"
-                                           name="options">
-                                    <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Max</span>
-                                    <span class="d-block d-sm-none">Max</span>
-                                </label>
-                                <label class="btn btn-sm btn-primary btn-simple" data-measure="Min">
-                                    <input type="radio" class="d-none d-sm-none"
-                                           name="options">
-                                    <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Min</span>
-                                    <span class="d-block d-sm-none">Min</span>
-                                </label>
-                            </div>
+                            <h2 class="card-title">Ultime 24 ore</h2>
                         </div>
                     </div>
                 </div>
@@ -216,39 +178,25 @@
             </div>
         </div>
         <div class="col-12 col-xl-6">
-            <div class="card card-chart card-stats" id="trend-chart">
+            <div class="card card-chart card-stats" id="diff-chart">
                 <div class="card-header">
                     <div class="row">
                         <div class="col-sm-6 text-left">
-                            <h5 class="card-category"><span class="js-sensor"></span> <span
-                                    class="js-sensor-measure"></span><span> rispetto alla media mensile</span>
-                            </h5>
-                            <h2 class="card-title">Differenza</h2>
+                            <h5 class="card-category"></h5>
+                            <h2 class="card-title"></h2>
                         </div>
                         <div class="col-sm-6">
                             <div class="btn-group btn-group-toggle float-right" data-toggle="buttons">
-                                <label class="btn btn-sm btn-success btn-simple" data-measure="Tot">
+                                <label class="btn btn-sm btn-color3 btn-simple" data-type="avg">
                                     <input type="radio" class="d-none d-sm-none" name="options" checked="">
-                                    <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Tot</span>
-                                    <span class="d-block d-sm-none">Tot</span>
-                                </label>
-                                <label class="btn btn-sm btn-success btn-simple" data-measure="Avg">
-                                    <input type="radio" class="d-none d-sm-none"
-                                           name="options">
                                     <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Avg</span>
                                     <span class="d-block d-sm-none">Avg</span>
                                 </label>
-                                <label class="btn btn-sm btn-success btn-simple" data-measure="Max">
+                                <label class="btn btn-sm btn-color3 btn-simple" data-type="diff">
                                     <input type="radio" class="d-none d-sm-none"
                                            name="options">
-                                    <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Max</span>
-                                    <span class="d-block d-sm-none">Max</span>
-                                </label>
-                                <label class="btn btn-sm btn-success btn-simple" data-measure="Min">
-                                    <input type="radio" class="d-none d-sm-none"
-                                           name="options">
-                                    <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Min</span>
-                                    <span class="d-block d-sm-none">Min</span>
+                                    <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Diff</span>
+                                    <span class="d-block d-sm-none">Diff</span>
                                 </label>
                             </div>
                         </div>
@@ -268,8 +216,7 @@
                 <div class="card-header">
                     <div class="row">
                         <div class="col-sm-6 text-left">
-                            <h5 class="card-category "><span class="js-sensor"></span> <span
-                                    class="js-sensor-measure"></span></h5>
+                            <h5 class="card-category ">Storico <span class="js-sensor"></span></h5>
                             <h2 class="card-title"><span class="js-sensor-icon big-icon"></span>
                                 <span class="js-sensor"></span></h2>
                         </div>

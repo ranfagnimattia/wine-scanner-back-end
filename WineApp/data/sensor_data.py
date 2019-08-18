@@ -7,16 +7,6 @@ from WineApp.data.update_data import get_last_update
 from WineApp.models import Sensor
 
 
-def get_series(sensor: Sensor, measure: str):
-    train_set = sensor.dailydata_set.filter(date__lt=sensor.startTestSet).order_by('date')
-    test_set = sensor.dailydata_set.filter(date__gte=sensor.startTestSet).order_by('date')
-
-    date = list(test_set.values_list('date', flat=True))
-    test_set = list(test_set.values_list(measure, flat=True))
-    train_set = list(train_set.values_list(measure, flat=True))
-    return test_set, train_set, date
-
-
 def get_daily_data(sensor_id: int = 1) -> dict:
     sensor = Sensor.objects.get(pk=sensor_id)
     history = sensor.dailydata_set.filter(date__gte='2019-07-17').order_by('date')
@@ -115,6 +105,44 @@ def get_realtime_data(sensor_id: int = 1) -> dict:
         'lastTime': last_time.strftime('%H:%M:%S'),
         'lastDayStats': last_day_stats,
         'trend': trend
+    }
+
+
+def get_prediction_data(sensor_id: int = 1, measure: str = 'avg') -> dict:
+    sensor = Sensor.objects.get(pk=sensor_id)
+    predictions = sensor.prediction_set.filter(date__gte='2019-07-17', measure=measure).order_by('date')
+
+    if not predictions:
+        return {
+            'lastUpdate': get_last_update('realtime'),
+            'sensor': sensor.to_js(),
+            'measure': measure,
+            'error': 'No data'
+        }
+
+    # Charts
+    last_date = predictions.last().date
+    chart_all = predictions.values('date', 'actual')
+    all_data = predictions.values('date', 'actual', 'prediction', 'limit', 'anomaly')
+    last_month = _get_date_interval(all_data, last_date, 30)
+    for prediction in last_month:
+        prediction['upperLimit'] = prediction['prediction'] + prediction['limit']
+        prediction['lowerLimit'] = prediction['prediction'] - prediction['limit']
+        del prediction['limit']
+        prediction['anomalies'] = 1 if prediction['anomaly'] else 0
+        del prediction['anomaly']
+
+    anomalies_all = predictions.filter(anomaly=True).values('date')
+
+    # Cards
+
+    return {
+        'lastUpdate': get_last_update('realtime'),
+        'sensor': sensor.to_js(),
+        'measure': measure,
+        'chartAll': [list(elem.values()) for elem in chart_all],
+        'chartLastMonth': [list(elem.values()) for elem in last_month],
+        'anomaliesAll': [list(elem.values()) for elem in anomalies_all]
     }
 
 
