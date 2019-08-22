@@ -1,3 +1,5 @@
+import json
+
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
@@ -20,9 +22,18 @@ class Sensor(models.Model):
             measures.extend(['avg', 'max', 'min'])
         return measures
 
+    def get_prediction_measures(self):
+        if self.startTestSet is None:
+            return []
+        if self.tot:
+            return ['tot']
+        if self.values:
+            return ['avg', 'max', 'min']
+        return []
+
     def to_js(self):
         return {'id': self.id, 'name': self.name, 'unit': self.unit, 'icon': self.icon,
-                'values': self.values, 'tot': self.tot}
+                'values': self.values, 'tot': self.tot, 'min': self.min, 'max': self.max}
 
     def __str__(self):
         return self.name
@@ -60,9 +71,34 @@ class RealTimeData(models.Model):
 class PredictionMethod(models.Model):
     name = models.CharField(max_length=50)
     reset = models.BooleanField(default=False)
+    defaultParams = models.TextField(default='')
+
+    def get_params(self):
+        if self.defaultParams == '' or self.defaultParams == '{}':
+            return {}
+        else:
+            return json.loads(self.defaultParams)
 
     def __str__(self):
         return self.name
+
+
+class PredictionParams(models.Model):
+    method = models.ForeignKey(PredictionMethod, on_delete=models.CASCADE)
+    sensor = models.ForeignKey(Sensor, on_delete=models.CASCADE)
+    params = models.TextField(default='')
+
+    def get_params(self):
+        if self.params == '' or self.params == '{}':
+            return {}
+        else:
+            return json.loads(self.params)
+
+    class Meta:
+        unique_together = ('sensor', 'method')
+
+    def __str__(self):
+        return str(self.method) + '-' + str(self.sensor)
 
 
 class Prediction(models.Model):
@@ -82,6 +118,12 @@ class Prediction(models.Model):
     count = models.IntegerField()
     anomaly = models.BooleanField()
     method = models.ForeignKey(PredictionMethod, on_delete=models.CASCADE)
+
+    def check_limits(self):
+        if self.sensor.min is not None and self.prediction < self.sensor.min:
+            self.prediction = self.sensor.min
+        if self.sensor.max is not None and self.prediction > self.sensor.max:
+            self.prediction = self.sensor.max
 
     class Meta:
         unique_together = ('date', 'sensor', 'measure', 'method')

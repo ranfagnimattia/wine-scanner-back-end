@@ -21,12 +21,20 @@ def get_data(sensor_id: int = 1, measure: str = 'avg') -> dict:
     methods = PredictionMethod.objects.all()
     last_month = {}
     for method in methods:
-        method_data = predictions.filter(method=method).values('date', 'actual', 'prediction', 'limit')
+        method_data = predictions.filter(method=method).values('date', 'actual', 'prediction', 'limit',
+                                                               'sensor__min', 'sensor__max')
         method_last_month = get_date_interval(method_data, last_date, 30)
         for prediction in method_last_month:
             prediction['upperLimit'] = prediction['prediction'] + prediction['limit']
+            if prediction['sensor__max'] is not None and prediction['upperLimit'] > prediction['sensor__max']:
+                prediction['upperLimit'] = prediction['sensor__max']
             prediction['lowerLimit'] = prediction['prediction'] - prediction['limit']
+            if prediction['sensor__min'] is not None and prediction['lowerLimit'] < prediction['sensor__min']:
+                prediction['lowerLimit'] = prediction['sensor__min']
+
             del prediction['limit']
+            del prediction['sensor__min']
+            del prediction['sensor__max']
             prediction['error'] = prediction['actual'] - prediction['prediction']
         last_month[method.name.lower()] = [list(elem.values()) for elem in method_last_month]
 

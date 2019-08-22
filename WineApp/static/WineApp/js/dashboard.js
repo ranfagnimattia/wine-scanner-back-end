@@ -74,6 +74,13 @@ class Chart {
     create(data, scheme, options) {
         const fusionTable = new FusionCharts.DataStore().createDataTable(data, scheme);
         const enabled = options && options.navigator ? '1' : '0';
+        if (options.yAxis) {
+            options.yAxis.title = '';
+            if (options.limits) {
+                options.yAxis.min = options.limits.min !== undefined ? options.limits.min - 0.1 : undefined;
+                options.yAxis.max = options.limits.max !== undefined ? options.limits.max + 0.1 : undefined;
+            }
+        }
         this.elem.find('.chart').insertFusionCharts({
             type: 'timeseries',
             width: '100%',

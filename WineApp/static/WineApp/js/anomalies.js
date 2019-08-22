@@ -63,7 +63,7 @@ class Dashboard {
 
         chart.create(this.lastMonth[this.chart1Btn], this.lastMonthScheme, {
             colors: [themeColors.color2, '#25002b', themeColors.color2, themeColors.color3],
-            yAxis: [{
+            yAxis: {
                 "plot": [{
                     value: 'Upper limit',
                     type: 'smooth-area',
@@ -93,22 +93,21 @@ class Dashboard {
                     //     type: 'smooth-line'
                     // }
                 ],
-                "format": {"suffix": this.sensor.unit},
-                title: ''
-            }]
+                "format": {"suffix": this.sensor.unit}
+            },
+            limits: this.sensor
         });
     }
 
     updateChart2(chart) {
         chart.create(this.lastMonth[this.chart2Btn], this.lastMonthScheme, {
             colors: [themeColors.color3],
-            yAxis: [{
+            yAxis: {
                 "plot": [{
                     value: 'Error',
                     type: 'column'
-                }],
-                title: ''
-            }]
+                }]
+            }
         });
     }
 
@@ -123,13 +122,12 @@ class Dashboard {
             type: "number"
         }], {
             navigator: true,
-            yAxis: [{
+            yAxis: {
                 "plot": {
                     value: 'Actual'
                 },
-                "format": {"suffix": this.sensor.unit},
-                title: ''
-            }],
+                "format": {"suffix": this.sensor.unit}
+            },
             dataMarker: this.allAnomalies.map((d) => ({
                 seriesName: "Actual",
                 time: d[0],
@@ -146,7 +144,8 @@ class Dashboard {
             initialInterval: {
                 from: this.lastMonth[this.chart1Btn][0][0],
                 to: this.lastMonth[this.chart1Btn][this.lastMonth[this.chart1Btn].length - 1][0]
-            }
+            },
+            limits: this.sensor
         });
     }
 }

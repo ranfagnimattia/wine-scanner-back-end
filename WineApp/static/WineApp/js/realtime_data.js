@@ -54,16 +54,16 @@ class Dashboard {
             type: "number"
         }], {
             colors: [themeColors.color2],
-            yAxis: [{
+            yAxis: {
                 "plot": {
                     "value": 'Rilevazione',
                     connectNullData: true,
                     type: 'smooth-area',
                     style: {'area': {"fill-opacity": 0.15}}
                 },
-                "format": {"suffix": this.sensor.unit},
-                title: ''
-            }]
+                "format": {"suffix": this.sensor.unit}
+            },
+            limits: this.sensor
         });
     }
 
@@ -87,15 +87,15 @@ class Dashboard {
             type: "number"
         }], {
             colors: [themeColors.color3],
-            yAxis: [{
+            yAxis: {
                 "plot": {
                     "value": title,
                     connectNullData: true,
                     type: 'column'
                 },
-                "format": {"suffix": this.sensor.unit},
-                title: ''
-            }]
+                "format": {"suffix": this.sensor.unit}
+            },
+            limits: this.chart2Btn === 'avg' ? this.sensor : undefined
         });
     }
 
@@ -109,14 +109,14 @@ class Dashboard {
             type: "number"
         }], {
             navigator: true,
-            yAxis: [{
+            yAxis: {
                 "plot": {
                     value: 'Rilevazione',
                     connectNullData: true
                 },
-                "format": {"suffix": this.sensor.unit},
-                title: ''
-            }]
+                "format": {"suffix": this.sensor.unit}
+            },
+            limits: this.sensor
         });
     }
 }

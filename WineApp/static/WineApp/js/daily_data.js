@@ -53,15 +53,15 @@ class Dashboard {
             type: "number"
         }], {
             colors: [themeColors.color2],
-            yAxis: [{
+            yAxis: {
                 "plot": {
                     "value": ucFirst(this.chart1Btn),
                     type: 'smooth-area',
                     style: {'area': {"fill-opacity": 0.15}}
                 },
-                "format": {"suffix": this.sensor.unit},
-                title: ''
-            }]
+                "format": {"suffix": this.sensor.unit}
+            },
+            limits: this.sensor
         });
     }
 
@@ -77,14 +77,13 @@ class Dashboard {
             type: "number"
         }], {
             colors: [themeColors.color3],
-            yAxis: [{
+            yAxis: {
                 "plot": {
                     "value": ucFirst(this.chart2Btn),
                     type: 'column'
                 },
-                "format": {"suffix": this.sensor.unit},
-                title: ''
-            }]
+                "format": {"suffix": this.sensor.unit}
+            }
         });
     }
 
@@ -102,11 +101,11 @@ class Dashboard {
 
         chart.create(this.allData, scheme, {
             navigator: true,
-            yAxis: [{
+            yAxis: {
                 "plot": this.measures.map((m) => ({value: ucFirst(m)})),
-                "format": {"suffix": this.sensor.unit},
-                title: ''
-            }]
+                "format": {"suffix": this.sensor.unit}
+            },
+            limits: this.sensor
         });
     }
 }

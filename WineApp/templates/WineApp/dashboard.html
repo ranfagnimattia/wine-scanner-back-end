@@ -24,8 +24,7 @@
                                         <ul class="nav">
                                             {% if sensor.tot %}
                                                 <li><a class="nav-measure" data-measure="tot">Tot</a></li>
-                                            {% endif %}
-                                            {% if sensor.values %}
+                                            {% elif sensor.values %}
                                                 <li><a class="nav-measure" data-measure="avg">Avg</a></li>
                                                 <li><a class="nav-measure" data-measure="max">Max</a></li>
                                                 <li><a class="nav-measure" data-measure="min">Min</a></li>
