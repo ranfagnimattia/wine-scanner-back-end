@@ -1,0 +1,64 @@
+from datetime import timedelta
+from itertools import chain, groupby
+
+import numpy as np
+
+from WineApp.data.utils import get_last_update, get_time_interval
+from WineApp.models import Sensor
+
+
+def get_data(sensor_id: int = 1) -> dict:
+    sensor = Sensor.objects.get(pk=sensor_id)
+    all_data = sensor.realtimedata_set.order_by('time').values('time', 'value')
+    # Data
+    last_value = all_data.last()['value']
+    last_time = all_data.last()['time']
+    last24h = get_time_interval(all_data, last_time, 1)
+
+    # previous24h = _get_interval(all_data, last_time, 2, True)
+    previous_week = all_data.filter(time__gte=last_time - timedelta(days=8), time__lte=last_time - timedelta(days=1))
+
+    # Cards
+    last_day_values = get_time_interval(all_data, last_time.date(), 0).order_by('value')
+    last_day_stats = {
+        'avg': np.mean([e['value'] for e in last_day_values]),
+        'max': last_day_values.last()['value'],
+        'min': last_day_values.first()['value'],
+        'maxTime': last_day_values.last()['time'].strftime('%H:%M:%S'),
+        'minTime': last_day_values.first()['time'].strftime('%H:%M:%S')
+    }
+    if sensor.tot:
+        last_day_stats['tot'] = np.sum([e['value'] for e in last_day_values])
+
+    trend = {
+        'previous': last_value - all_data.reverse()[1]['value'],
+        'lastDay': last_value - last_day_stats['avg']
+    }
+
+    # Charts
+    last24h_aggr = [[key, np.mean([e['value'] for e in group])] for key, group in
+                    groupby(last24h, key=lambda x: x['time'].strftime('%Y-%m-%d %H'))]
+
+    previous_week_aggr = [[key, np.mean([e['value'] for e in group])] for key, group in
+                          groupby(previous_week, key=lambda x: x['time'].strftime('%H'))]
+
+    chart_diff = {
+        'avg': [[last[0], prev[1]] for last, prev in zip(last24h_aggr, previous_week_aggr)],
+        'diff': [[last[0], last[1] - prev[1]] for last, prev in zip(last24h_aggr, previous_week_aggr)]
+    }
+
+    for elem in chain(all_data, last24h):
+        elem['time'] = elem['time'].strftime('%Y-%m-%d %H:%M:%S')
+
+    return {
+        'lastUpdate': get_last_update('realtime'),
+        'sensor': sensor.to_js(),
+        'mainMeasure': 'tot' if sensor.tot else 'avg',
+        'allData': [list(elem.values()) for elem in all_data],
+        'last24h': [list(elem.values()) for elem in last24h],
+        'diff': chart_diff,
+        'last': last_value,
+        'lastTime': last_time.strftime('%H:%M:%S'),
+        'lastDayStats': last_day_stats,
+        'trend': trend
+    }

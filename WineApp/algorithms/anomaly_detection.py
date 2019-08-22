@@ -4,29 +4,6 @@ import math
 import matplotlib.pyplot as plt
 import numpy as np
 
-from WineApp.models import Prediction
-
-
-def detect_anomaly(last: Prediction, new: Prediction):
-    k = 2.5
-    error = new.actual - new.prediction
-    # stdev_corr
-    new_mean, new_var = update(last.mean, last.var, error, last.count + 1)
-    if last.count == 0:
-        new.limit = 100
-    else:
-        new.limit = k * math.sqrt(new_var / last.count)
-    if abs(error) > new.limit:
-        new.mean = last.mean
-        new.var = last.var
-        new.count = last.count
-        new.anomaly = True
-    else:
-        new.mean = new_mean
-        new.var = new_var
-        new.count = last.count + 1
-        new.anomaly = False
-
 
 def detect_anomalies(error, actual):
     absolute_error = [abs(error[i]) for i in range(0, len(error))]

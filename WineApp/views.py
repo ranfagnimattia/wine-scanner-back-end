@@ -2,13 +2,15 @@ from django.http import JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 
-import WineApp.algorithms.correlation as cor
-import WineApp.algorithms.exponential_smoothing as es
-import WineApp.algorithms.lstm as ls
-import WineApp.algorithms.seasonal_decompose as sd
-import WineApp.data.sensor_data as sensor_data
-import WineApp.data.update_data as update_data
-from WineApp.data import prediction
+import WineApp.data.anomalies as anomalies_data
+import WineApp.data.anomalies.get
+import WineApp.data.anomalies.update
+import WineApp.data.daily as daily_data
+import WineApp.data.daily.get
+import WineApp.data.daily.update
+import WineApp.data.realtime as realtime_data
+import WineApp.data.realtime.get
+import WineApp.data.realtime.update
 from WineApp.models import Sensor
 
 
@@ -19,7 +21,7 @@ def index(request):
 
 # Daily Dashboard
 def show_daily_data(request):
-    data_js = sensor_data.get_daily_data()
+    data_js = daily_data.get.get_data()
     data_js.update({
         'getUrl': reverse('WineApp:ajax.getDailyData'),
         'updateUrl': reverse('WineApp:ajax.updateDailyData')
@@ -32,16 +34,16 @@ def show_daily_data(request):
 
 def ajax_get_daily_data(request):
     sensor_id = request.GET.get('sensorId', 1)
-    return JsonResponse(sensor_data.get_daily_data(sensor_id))
+    return JsonResponse(daily_data.get.get_data(sensor_id))
 
 
 def ajax_update_daily_data(request):
-    return JsonResponse(update_data.update_daily_data())
+    return JsonResponse(daily_data.update.update_data())
 
 
 # RealTime Dashboard
 def show_realtime_data(request):
-    data_js = sensor_data.get_realtime_data()
+    data_js = realtime_data.get.get_data()
     data_js.update({
         'autoUpdate': True,
         'getUrl': reverse('WineApp:ajax.getRealTimeData'),
@@ -58,16 +60,16 @@ def show_realtime_data(request):
 
 def ajax_get_realtime_data(request):
     sensor_id = request.GET.get('sensorId', 1)
-    return JsonResponse(sensor_data.get_realtime_data(sensor_id))
+    return JsonResponse(realtime_data.get.get_data(sensor_id))
 
 
 def ajax_update_realtime_data(request):
-    return JsonResponse(update_data.update_realtime_data())
+    return JsonResponse(realtime_data.update.update_data())
 
 
 # Anomalies Dashboard
 def show_anomalies(request):
-    data_js = sensor_data.get_prediction_data()
+    data_js = anomalies_data.get.get_data()
     data_js.update({
         'getUrl': reverse('WineApp:ajax.getAnomalies'),
         'updateUrl': reverse('WineApp:ajax.updateAnomalies')
@@ -85,31 +87,8 @@ def show_anomalies(request):
 def ajax_get_anomalies(request):
     sensor_id = request.GET.get('sensorId', 1)
     measure = request.GET.get('measure')
-    return JsonResponse(sensor_data.get_prediction_data(sensor_id, measure))
+    return JsonResponse(anomalies_data.get.get_data(sensor_id, measure))
 
 
 def ajax_update_anomalies(request):
-    return JsonResponse(prediction.update_prediction())
-
-
-# Algorithms
-def expsmoothing(request, field, measure):
-    pred, actual, dates = es.exponential_smoothing(field, measure)
-    data = {'prediction': pred, 'actual': actual, 'dates': dates}
-    return render(request, 'WineApp/predict.html', data)
-
-
-def lstm(request, field, measure):
-    pred, actual, dates = ls.lstm(field, measure)
-    data = {'prediction': pred, 'actual': actual, 'dates': dates}
-    return render(request, 'WineApp/predict.html', data)
-
-
-def decompose(request, field):
-    sd.stl(field)
-    return render(request, 'WineApp/decompose.html')
-
-
-def correlation(request):
-    cor.correlation()
-    return render(request, 'WineApp/correlation.html')
+    return JsonResponse(anomalies_data.update.update_data())

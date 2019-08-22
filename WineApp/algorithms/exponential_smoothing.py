@@ -1,4 +1,7 @@
+import matplotlib.pyplot as plt
 from statsmodels.tsa.holtwinters import ExponentialSmoothing
+
+from WineApp.algorithms.anomaly_detection import detect_anomalies
 
 
 # todo scomporre database con anomaly, mean, var
@@ -18,18 +21,18 @@ exponential_smoothing.exponential_smoothing(train,test,param)
     forecast = fit_model.forecast(len(test_set))
 
     # Eliminare poi
-    # error = [test_set[i] - forecast[i] for i in range(0, len(forecast))]
-    # anomaly1, anomaly2, anomaly3 = detect_anomalies(error, test_set)
-    # title = 'Exponential Smoothing SS: ' + str(param['smoothing_seasonal']) + ' SL: ' + str(param['smoothing_level'])
-    # plt.figure(figsize=(12, 7), dpi=200)
-    # plt.title(title)
-    # plt.plot(test_set, '#000000', label='Actual')
-    # plt.plot(forecast, '#eb4634', label='Prediction')
-    # plt.plot(anomaly1, 'og', label='std', markersize=7)
-    # plt.plot(anomaly2, 'oy', label='stdev_corr', markersize=5)
-    # plt.plot(anomaly3, 'om', label='stdev welford', markersize=3)
-    # plt.legend()
-    # plt.show()
+    error = [test_set[i] - forecast[i] for i in range(0, len(forecast))]
+    anomaly1, anomaly2, anomaly3 = detect_anomalies(error, test_set)
+    title = 'Exponential Smoothing SS: ' + str(param['smoothing_seasonal']) + ' SL: ' + str(param['smoothing_level'])
+    plt.figure(figsize=(12, 7), dpi=200)
+    plt.title(title)
+    plt.plot(test_set, '#000000', label='Actual')
+    plt.plot(forecast, '#eb4634', label='Prediction')
+    plt.plot(anomaly1, 'og', label='std', markersize=7)
+    plt.plot(anomaly2, 'oy', label='stdev_corr', markersize=5)
+    plt.plot(anomaly3, 'om', label='stdev welford', markersize=3)
+    plt.legend()
+    plt.show()
 
     return forecast
 

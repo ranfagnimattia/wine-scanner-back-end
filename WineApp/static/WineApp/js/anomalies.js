@@ -113,6 +113,7 @@ class Dashboard {
     }
 
     updateChart3(chart) {
+        const colors = [0, themeColors.color2, themeColors.color3, themeColors.color4];
         chart.create(this.allData, [{
             name: "Time",
             type: "date",
@@ -132,10 +133,20 @@ class Dashboard {
             dataMarker: this.allAnomalies.map((d) => ({
                 seriesName: "Actual",
                 time: d[0],
-                identifier: '' + d[1],
+                // identifier: '' + d[1],
+                identifier: '',
                 timeFormat: "%Y-%m-%d",
-                toolText: d[2]
-            }))
+                toolText: d[2],
+                "style": {
+                    "marker": {
+                        "fill": colors[d[1]]
+                    }
+                }
+            })),
+            initialInterval: {
+                from: this.lastMonth[this.chart1Btn][0][0],
+                to: this.lastMonth[this.chart1Btn][this.lastMonth[this.chart1Btn].length - 1][0]
+            }
         });
     }
 }

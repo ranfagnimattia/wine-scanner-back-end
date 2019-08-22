@@ -5,14 +5,6 @@ from statsmodels.tsa.seasonal import seasonal_decompose
 from WineApp.algorithms.anomaly_detection import detect_anomalies
 
 
-def stl(train_set, test_set):
-    complete_set = train_set + test_set
-    decompose = seasonal_decompose(complete_set, model='additive', two_sided=False, freq=365)
-    forecast = [(decompose.seasonal[i] + decompose.trend[i]) for i in range(0, len(decompose.seasonal)) if
-                not np.isnan(decompose.trend[i])]
-    return forecast[-len(test_set):]
-
-
 def stl_debug(train_set, test_set):
     # Code for Test in Python Console
     """

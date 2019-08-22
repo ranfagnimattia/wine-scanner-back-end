@@ -19,13 +19,5 @@ urlpatterns = [
     # Anomalies Dashboard
     path('anomalies', views.show_anomalies, name='show.anomalies'),
     path('ajax/getAnomalies', views.ajax_get_anomalies, name='ajax.getAnomalies'),
-    path('ajax/updateAnomalies', views.ajax_update_anomalies, name='ajax.updateAnomalies'),
-
-    # Algorithms
-    path('<field>/<measure>/expsmoothing', views.expsmoothing, name='expsmoothing'),
-    # es airTemperature/avg/expsmoothing
-    path('<field>/<measure>/lstm', views.lstm, name='lstm'),
-    # es airTemperature/avg/lstm
-    path('<field>/decompose', views.decompose, name='decompose'),
-    path('correlation', views.correlation, name='correlation')
+    path('ajax/updateAnomalies', views.ajax_update_anomalies, name='ajax.updateAnomalies')
 ]

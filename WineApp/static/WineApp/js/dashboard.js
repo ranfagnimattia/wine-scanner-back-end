@@ -110,7 +110,8 @@ class Chart {
                         Hour: "%H",
                         Minute: "%H:%M",
                         Second: "%H:%M:%S",
-                    }
+                    },
+                    initialInterval: options.initialInterval
                 },
                 dataMarker: options && options.dataMarker ? options.dataMarker : []
             }
