@@ -1,18 +1,20 @@
-let activeDiffBtn = 'avg';
-
 /**
  * @param data.lastDayStats.maxTime
  * @param data.lastDayStats.minTime
  * @param data.trend.lastDay
  */
 class Dashboard {
-    constructor(data) {
+    static initButtons() {
+        return {chart2: ['Avg', 'Diff']};
+    }
+
+    update(data) {
         this.sensor = data.sensor;
         this.mainMeasure = data.mainMeasure;
 
-        this.chartAll = data.chartAll;
-        this.chartLast24h = data.chartLast24h;
-        this.chartDiff = data.chartDiff;
+        this.allData = data.allData;
+        this.last24h = data.last24h;
+        this.diff = data.diff;
 
         this.last = data.last;
         this.lastTime = data.lastTime;
@@ -21,13 +23,9 @@ class Dashboard {
     }
 
 
-    update() {
-        console.log(this);
-        this.setEvents();
-
+    updateCards(animation) {
         $('.js-main-measure').text(this.mainMeasure);
 
-        const animation = new Animation();
         animation.setValues([
             [$('.js-last-value'), this.last],
             [$('.js-last-time'), this.lastTime, true],
@@ -43,155 +41,82 @@ class Dashboard {
             setUpTrend($('.js-trend-previous'), this.trend.previous),
             setUpTrend($('.js-trend-lastDay'), this.trend.lastDay),
         ], $('.js-trend-space'));
-        animation.animate();
-
-        this.updateCharts();
     }
-
-    setEvents() {
-        const $this = this;
-        $('#diff-chart .btn').off('click').click(function () {
-            if (!$(this).hasClass('active')) {
-                $(this).addClass('js-active');
-                const elem = $('#diff-chart');
-                activeDiffBtn = $(this).data('type');
-                let title, text;
-                if (activeDiffBtn === 'avg') {
-                    title = 'Media';
-                    text = 'Media ' + $this.sensor.name + ' ultima settimana per fascia oraria';
-                } else {
-                    title = 'Differenza';
-                    text = $this.sensor.name + ' rispetto all\'ultima settimana per fascia oraria';
-                }
-
-                elem.find('.card-title').text(title);
-                elem.find('.card-category').text(text);
-                $this.updateChart(elem, $this.chartDiff[activeDiffBtn], "%Y-%m-%d %H", title);
-            }
-        });
-    }
-
 
     /* Charts */
-    updateCharts() {
-        this.updateBigChart($('#sensor-chart'), this.chartAll);
-        this.updateChart($('#last24h-chart'), this.chartLast24h, "%Y-%m-%d %H:%M:%S", 'Rilevazione');
-        $('#diff-chart .btn[data-type=\'' + activeDiffBtn + '\']').click();
-    }
-
-    updateBigChart(elem, data) {
-        let scheme = [{
+    updateChart1(chart) {
+        chart.create(this.last24h, [{
             name: "Time",
             type: "date",
             format: "%Y-%m-%d %H:%M:%S"
         }, {
             name: 'Rilevazione',
             type: "number"
-        }];
-
-        const fusionTable = new FusionCharts.DataStore().createDataTable(data, scheme);
-
-        elem.find('.chart').insertFusionCharts({
-            type: 'timeseries',
-            width: '100%',
-            height: '100%',
-            dataFormat: 'json',
-            dataSource: {
-                tooltip: {
-                    outputTimeFormat: {
-                        Hour: "%d %b %Y, %H:00",
-                        Minute: "%d %b %Y, %H:%M",
-                        Second: "%d %b %Y, %H:%M:%S",
-                    }
+        }], {
+            colors: [themeColors.color2],
+            yAxis: [{
+                "plot": {
+                    "value": 'Rilevazione',
+                    connectNullData: true,
+                    type: 'smooth-area',
+                    style: {'area': {"fill-opacity": 0.15}}
                 },
-                chart: {
-                    theme: 'candy',
-                },
-                data: fusionTable,
-                yAxis: [{
-                    "plot": {
-                        value: 'Rilevazione',
-                        connectnulldata: true
-                    },
-                    "format": {"suffix": this.sensor.unit},
-                    title: ''
-                }],
-                xAxis: {
-                    outputTimeFormat: {
-                        Hour: "%H",
-                        Minute: "%H:%M",
-                        Second: "%H:%M:%S",
-                    }
-                }
-            }
+                "format": {"suffix": this.sensor.unit},
+                title: ''
+            }]
         });
     }
 
-    updateChart(elem, data, timeFormat, title) {
-        let id = elem.attr('id');
-        let styles = {
-            "last24h-chart": {color: themeColors.color2, type: 'smooth-area'},
-            "diff-chart": {color: themeColors.color3, type: 'column'}
-        };
-        let scheme = [{
+    updateChart2(chart) {
+        let title;
+        if (this.chart2Btn === 'avg') {
+            title = 'Media';
+            chart.setCategory('Media ' + this.sensor.name + ' ultima settimana per fascia oraria');
+        } else {
+            title = 'Differenza';
+            chart.setCategory(this.sensor.name + ' rispetto all\'ultima settimana per fascia oraria');
+        }
+        chart.setTitle(title);
+
+        chart.create(this.diff[this.chart2Btn], [{
             name: "Time",
             type: "date",
-            format: timeFormat
+            format: "%Y-%m-%d %H"
         }, {
             name: title,
             type: "number"
-        }];
+        }], {
+            colors: [themeColors.color3],
+            yAxis: [{
+                "plot": {
+                    "value": title,
+                    connectNullData: true,
+                    type: 'column'
+                },
+                "format": {"suffix": this.sensor.unit},
+                title: ''
+            }]
+        });
+    }
 
-        const fusionTable = new FusionCharts.DataStore().createDataTable(data, scheme);
-
-        elem.find('.chart').insertFusionCharts({
-            type: 'timeseries',
-            width: '100%',
-            height: '100%',
-            dataFormat: 'json',
-            dataSource: {
-                tooltip: {
-                    outputTimeFormat: {
-                        Hour: "%d %b %Y, %H:00",
-                        Minute: "%d %b %Y, %H:%M",
-                        Second: "%d %b %Y, %H:%M:%S",
-                    }
+    updateChart3(chart) {
+        chart.create(this.allData, [{
+            name: "Time",
+            type: "date",
+            format: "%Y-%m-%d %H:%M:%S"
+        }, {
+            name: 'Rilevazione',
+            type: "number"
+        }], {
+            navigator: true,
+            yAxis: [{
+                "plot": {
+                    value: 'Rilevazione',
+                    connectNullData: true
                 },
-                navigator: {
-                    enabled: 0
-                },
-                chart: {
-                    theme: 'candy',
-                    paletteColors: styles[id].color,
-                    "showLegend": "0"
-                },
-                "extensions": {
-                    "standardRangeSelector": {
-                        "enabled": "0"
-                    },
-                    "customRangeSelector": {
-                        "enabled": "0"
-                    }
-                },
-                data: fusionTable,
-                yAxis: [{
-                    "plot": {
-                        "value": title,
-                        connectnulldata: true,
-                        type: styles[id].type,
-                        style: {'area': {"fill-opacity": 0.15}}
-                    },
-                    "format": {"suffix": this.sensor.unit},
-                    title: ''
-                }],
-                xAxis: {
-                    outputTimeFormat: {
-                        Hour: "%H",
-                        Minute: "%H:%M",
-                        Second: "%H:%M:%S",
-                    }
-                }
-            }
+                "format": {"suffix": this.sensor.unit},
+                title: ''
+            }]
         });
     }
 }

@@ -4,7 +4,7 @@ from itertools import chain, groupby
 import numpy as np
 
 from WineApp.data.update_data import get_last_update
-from WineApp.models import Sensor
+from WineApp.models import Sensor, PredictionMethod
 
 
 def get_daily_data(sensor_id: int = 1) -> dict:
@@ -42,9 +42,9 @@ def get_daily_data(sensor_id: int = 1) -> dict:
         'lastUpdate': get_last_update('daily'),
         'sensor': sensor.to_js(),
         'measures': measures,
-        'chartAll': [list(elem.values()) for elem in all_data],
-        'chartLastMonth': last_month,
-        'chartDiff': diff,
+        'allData': [list(elem.values()) for elem in all_data],
+        'lastMonth': last_month,
+        'diff': diff,
         'last': all_data.last(),
         'lastMonthStats': last_month_stats,
         'trend': trend
@@ -98,9 +98,9 @@ def get_realtime_data(sensor_id: int = 1) -> dict:
         'lastUpdate': get_last_update('realtime'),
         'sensor': sensor.to_js(),
         'mainMeasure': 'tot' if sensor.tot else 'avg',
-        'chartAll': [list(elem.values()) for elem in all_data],
-        'chartLast24h': [list(elem.values()) for elem in last24h],
-        'chartDiff': chart_diff,
+        'allData': [list(elem.values()) for elem in all_data],
+        'last24h': [list(elem.values()) for elem in last24h],
+        'diff': chart_diff,
         'last': last_value,
         'lastTime': last_time.strftime('%H:%M:%S'),
         'lastDayStats': last_day_stats,
@@ -114,7 +114,7 @@ def get_prediction_data(sensor_id: int = 1, measure: str = 'avg') -> dict:
 
     if not predictions:
         return {
-            'lastUpdate': get_last_update('realtime'),
+            'lastUpdate': get_last_update('prediction'),
             'sensor': sensor.to_js(),
             'measure': measure,
             'error': 'No data'
@@ -122,27 +122,35 @@ def get_prediction_data(sensor_id: int = 1, measure: str = 'avg') -> dict:
 
     # Charts
     last_date = predictions.last().date
-    chart_all = predictions.values('date', 'actual')
-    all_data = predictions.values('date', 'actual', 'prediction', 'limit', 'anomaly')
-    last_month = _get_date_interval(all_data, last_date, 30)
-    for prediction in last_month:
-        prediction['upperLimit'] = prediction['prediction'] + prediction['limit']
-        prediction['lowerLimit'] = prediction['prediction'] - prediction['limit']
-        del prediction['limit']
-        prediction['anomalies'] = 1 if prediction['anomaly'] else 0
-        del prediction['anomaly']
+    methods = PredictionMethod.objects.all()
+    last_month = {}
+    for method in methods:
+        method_data = predictions.filter(method=method).values('date', 'actual', 'prediction', 'limit')
+        method_last_month = _get_date_interval(method_data, last_date, 30)
+        for prediction in method_last_month:
+            prediction['upperLimit'] = prediction['prediction'] + prediction['limit']
+            prediction['lowerLimit'] = prediction['prediction'] - prediction['limit']
+            del prediction['limit']
+            prediction['error'] = prediction['actual'] - prediction['prediction']
+        last_month[method.name.lower()] = [list(elem.values()) for elem in method_last_month]
 
-    anomalies_all = predictions.filter(anomaly=True).values('date')
+    all_data = predictions.values('date', 'actual').distinct()
+
+    anomalies_all = predictions.filter(anomaly=True).values('date', 'method__name')
+    anomalies_aggr = []
+    for key, group_iter in groupby(anomalies_all, key=lambda x: x['date']):
+        group = list(group_iter)
+        anomalies_aggr.append([key, len(group), ', '.join([e['method__name'] for e in group])])
 
     # Cards
-
     return {
-        'lastUpdate': get_last_update('realtime'),
+        'lastUpdate': get_last_update('prediction'),
         'sensor': sensor.to_js(),
         'measure': measure,
-        'chartAll': [list(elem.values()) for elem in chart_all],
-        'chartLastMonth': [list(elem.values()) for elem in last_month],
-        'anomaliesAll': [list(elem.values()) for elem in anomalies_all]
+        'methods': [e.name for e in methods],
+        'allData': [list(elem.values()) for elem in all_data],
+        'allAnomalies': anomalies_aggr,
+        'lastMonth': last_month,
     }
 
 

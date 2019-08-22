@@ -1,9 +1,6 @@
 import math
 import matplotlib.pyplot as plt
 import numpy as np
-
-from WineApp.algorithms.anomaly_detection import detect_anomalies
-
 from keras.layers import Dense
 from keras.layers import LSTM
 from keras.models import Sequential
@@ -14,8 +11,41 @@ from keras.optimizers import Adam
 from sklearn.metrics import mean_squared_error
 from sklearn.preprocessing import MinMaxScaler
 
+from WineApp.algorithms.anomaly_detection import detect_anomalies
+
 
 def lstm(train_set, test_set, param):
+    # fix random seed for reproducibility
+    np.random.seed(7)
+
+    dataset = np.array(train_set + test_set)
+    dataset = dataset.reshape(-1, 1)
+    # normalize the dataset
+    scaler = MinMaxScaler(feature_range=(0, 1))
+    dataset = scaler.fit_transform(dataset)
+    # split into train and test sets
+    train, test = dataset[0:-len(test_set), 0], dataset[-len(test_set) - param['lookback']:, 0]
+    # reshape into X=t and Y=t+1
+    train_x, train_y = create_dataset(train, param['lookback'])
+    test_x, test_y = create_dataset(test, param['lookback'])
+    # reshape input to be [samples, time steps, features]
+    train_x = np.reshape(train_x, (train_x.shape[0], 1, train_x.shape[1]))
+    test_x = np.reshape(test_x, (test_x.shape[0], 1, test_x.shape[1]))
+    # create and fit the LSTM network
+    model = Sequential()
+    model.add(LSTM(param['neurons'], input_shape=(1, param['lookback'])))
+    model.add(Dense(1))
+    model.compile(loss='mean_squared_error', optimizer=Adam(lr=0.0001))
+    model.fit(train_x, train_y, epochs=param['epochs'], batch_size=param['batchsize'], verbose=2,
+              validation_data=[test_x, test_y])
+    # make predictions
+    test_predict = model.predict(test_x)
+    # invert predictions
+    forecast = scaler.inverse_transform(test_predict).reshape(1, -1)
+    return forecast[0]
+
+
+def lstm_debug(train_set, test_set, param):
     # Code for Test in Python Console
     """
         from WineApp.models import Sensor

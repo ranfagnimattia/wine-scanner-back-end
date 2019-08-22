@@ -159,14 +159,15 @@
     </div>
     <div class="row">
         <div class="col-12 col-xl-6">
-            <div class="card card-chart card-stats" id="month-chart">
+            <div class="card card-chart card-stats" id="chart1">
                 <div class="card-header">
                     <div class="row">
                         <div class="col-sm-6 text-left">
-                            <h5 class="card-category"><span class="js-sensor"></span> <span
-                                    class="js-sensor-measure"></span><span class="trasparent"> rispetto alla media mensile</span>
+                            <h5 class="card-category">Predizione <span class="js-sensor"></span> <span
+                                    class="js-measure"></span><span> con il metodo <span
+                                    class="js-chart1-method"></span></span>
                             </h5>
-                            <h2 class="card-title">Ultime 24 ore</h2>
+                            <h2 class="card-title">Ultimo mese</h2>
                         </div>
                     </div>
                 </div>
@@ -178,27 +179,15 @@
             </div>
         </div>
         <div class="col-12 col-xl-6">
-            <div class="card card-chart card-stats" id="diff-chart">
+            <div class="card card-chart card-stats" id="chart2">
                 <div class="card-header">
                     <div class="row">
                         <div class="col-sm-6 text-left">
-                            <h5 class="card-category"></h5>
-                            <h2 class="card-title"></h2>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="btn-group btn-group-toggle float-right" data-toggle="buttons">
-                                <label class="btn btn-sm btn-color3 btn-simple" data-type="avg">
-                                    <input type="radio" class="d-none d-sm-none" name="options" checked="">
-                                    <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Avg</span>
-                                    <span class="d-block d-sm-none">Avg</span>
-                                </label>
-                                <label class="btn btn-sm btn-color3 btn-simple" data-type="diff">
-                                    <input type="radio" class="d-none d-sm-none"
-                                           name="options">
-                                    <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Diff</span>
-                                    <span class="d-block d-sm-none">Diff</span>
-                                </label>
-                            </div>
+                            <h5 class="card-category">Errore predizione <span class="js-sensor"></span> <span
+                                    class="js-measure"></span><span> con il metodo <span
+                                    class="js-chart1-method"></span></span>
+                            </h5>
+                            <h2 class="card-title">Errore</h2>
                         </div>
                     </div>
                 </div>
@@ -212,13 +201,14 @@
     </div>
     <div class="row">
         <div class="col-12">
-            <div class="card card-chart" id="sensor-chart">
+            <div class="card card-chart" id="chart3">
                 <div class="card-header">
                     <div class="row">
                         <div class="col-sm-6 text-left">
-                            <h5 class="card-category ">Storico <span class="js-sensor"></span></h5>
+                            <h5 class="card-category ">Anomalie <span class="js-sensor"></span> <span
+                                    class="js-measure"></span></h5>
                             <h2 class="card-title"><span class="js-sensor-icon big-icon"></span>
-                                <span class="js-sensor"></span></h2>
+                                <span class="js-sensor"></span> <span class="js-measure"></span></h2>
                         </div>
                     </div>
                 </div>

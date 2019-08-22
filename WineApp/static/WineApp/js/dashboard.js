@@ -23,7 +23,7 @@ class Animation {
         this.animations = this.animations.concat(valuesPair);
     }
 
-    animate() {
+    _animate() {
         function formatTime(t) {
             return (t < 10) ? '0' + t : t;
         }
@@ -58,6 +58,149 @@ class Animation {
 }
 
 
+class Chart {
+    constructor(elem) {
+        this.elem = elem;
+    }
+
+    setTitle(title) {
+        this.elem.find('.card-title').text(title);
+    }
+
+    setCategory(category) {
+        this.elem.find('.card-category').text(category);
+    }
+
+    create(data, scheme, options) {
+        const fusionTable = new FusionCharts.DataStore().createDataTable(data, scheme);
+        const enabled = options && options.navigator ? '1' : '0';
+        this.elem.find('.chart').insertFusionCharts({
+            type: 'timeseries',
+            width: '100%',
+            height: '100%',
+            dataFormat: 'json',
+            dataSource: {
+                tooltip: {
+                    outputTimeFormat: {
+                        Hour: "%d %b %Y, %H:00",
+                        Minute: "%d %b %Y, %H:%M",
+                        Second: "%d %b %Y, %H:%M:%S",
+                    }
+                },
+                navigator: {
+                    enabled: enabled,
+                },
+                chart: {
+                    theme: 'candy',
+                    paletteColors: options && options.colors ? options.colors.join(',') : undefined,
+                    "showLegend": enabled
+                },
+                "extensions": {
+                    "standardRangeSelector": {
+                        "enabled": enabled
+                    },
+                    "customRangeSelector": {
+                        "enabled": enabled
+                    }
+                },
+                data: fusionTable,
+                yAxis: options ? options.yAxis : undefined,
+                xAxis: {
+                    outputTimeFormat: {
+                        Hour: "%H",
+                        Minute: "%H:%M",
+                        Second: "%H:%M:%S",
+                    }
+                },
+                dataMarker: options && options.dataMarker ? options.dataMarker : []
+            }
+        });
+    }
+
+
+}
+
+
+class Button {
+    constructor(key, buttons, dashboard) {
+        this.elem = $('#' + key);
+        this.update = 'update' + ucFirst(key);
+        this.buttons = buttons;
+        this.attr = key + 'Btn';
+        this.chart = new Chart(this.elem);
+        this.dashboard = dashboard;
+
+        if (this.buttons.length === 0)
+            return;
+
+        let html = '';
+        const color = key === 'chart1' ? '2' : '3';
+        this.buttons.forEach((btn, i) => {
+            if (typeof btn === 'string' || btn instanceof String)
+                this.buttons[i] = {name: btn};
+
+            btn = this.buttons[i];
+            if (!btn.value || btn.value === '')
+                btn.value = btn.name.toLowerCase();
+            html +=
+                '<label class="btn btn-sm btn-color' + color + ' btn-simple" data-value="' + btn.value + '">' +
+                '   <input type="radio" class="d-none d-sm-none" name="options">' +
+                '   <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">' + btn.name + '</span>' +
+                '   <span class="d-block d-sm-none">' + btn.name + '</span>' +
+                '</label>';
+        });
+        this.elem.find('.card-header>div.row').append('<div class="col-sm-6">' +
+            '<div class="btn-group btn-group-toggle float-right" data-toggle="buttons">' + html + '</div></div>');
+    }
+
+    setEvents() {
+        if (this.buttons.length === 0)
+            return;
+        const $this = this;
+        this.elem.find('.btn').off('click').click(function () {
+            if (!$(this).hasClass('active')) {
+                $this.dashboard[$this.attr] = $(this).data('value');
+                $this.dashboard[$this.update]($this.chart);
+                if ($this.linkedBtn && !$this.linkedClick) {
+                    $this.linkedBtn._linkedClicked($this.dashboard[$this.attr]);
+                }
+            }
+        });
+    }
+
+    clickActive() {
+        if (this.buttons.length === 0)
+            return this.dashboard[this.update](this.chart);
+        if (!this.dashboard[this.attr])
+            this.dashboard[this.attr] = this.buttons[0].value;
+        this.elem.find('.btn[data-value="' + this.dashboard[this.attr] + '"]').click();
+    }
+
+    setLinked(btn) {
+        this.linkedBtn = btn;
+    }
+
+    _linkedClicked(value) {
+        this.dashboard[this.attr] = value;
+        this.linkedClick = true;
+        this.clickActive();
+        this.linkedClick = false;
+    }
+
+    disableOthers(values) {
+        this.elem.find('.btn').attr("disabled", "disabled");
+        values.forEach((v, i) => {
+            const btn = this.elem.find(`[data-value='${v.toLowerCase()}']`);
+            btn.removeAttr("disabled");
+            if (i === 0 && values.indexOf(this.dashboard[this.attr]) < 0) {
+                this.dashboard[this.attr] = v.toLowerCase();
+            }
+        });
+    }
+
+}
+
+
 function setUpTrend(elem, trend) {
     if (trend > 0)
         elem.find('.js-trend-icon').html('<i class="fas fa-caret-up"></i>');
@@ -84,7 +227,26 @@ function getMeasure(measure, data) {
 
 // Dashboard
 $('document').ready(function () {
-    _updateDashboard(data_py);
+    const dashboard = new Dashboard();
+    const btnList = {
+        chart1: [],
+        chart2: [],
+        chart3: [],
+        linkedButtons: false
+    };
+    $.extend(btnList, Dashboard.initButtons(data_py));
+    let buttons;
+    if (btnList.linkedButtons) {
+        const c1 = new Button('chart1', btnList['chart1'], dashboard);
+        const c2 = new Button('chart2', btnList['chart2'], dashboard);
+        c1.setLinked(c2);
+        c2.setLinked(c1);
+        buttons = [c1, c2, new Button('chart3', btnList['chart3'], dashboard)];
+    } else
+        buttons = [new Button('chart1', btnList['chart1'], dashboard),
+            new Button('chart2', btnList['chart2'], dashboard),
+            new Button('chart3', btnList['chart3'], dashboard)];
+    _updateDashboard(data_py, dashboard, buttons);
 
     // Sidebar
     $('.nav-sensor:not([disabled])').click(function () {
@@ -96,7 +258,7 @@ $('document').ready(function () {
                 },
                 success: function (response) {
                     if (response) {
-                        _updateDashboard(response);
+                        _updateDashboard(response, dashboard, buttons);
                     }
                 }, error: function (response) {
                     console.error(response);
@@ -114,7 +276,7 @@ $('document').ready(function () {
                 },
                 success: function (response) {
                     if (response) {
-                        _updateDashboard(response);
+                        _updateDashboard(response, dashboard, buttons);
                     }
                 }, error: function (response) {
                     console.error(response);
@@ -171,7 +333,7 @@ function _updateData() {
     });
 }
 
-function _updateDashboard(data) {
+function _updateDashboard(data, dashboard, buttons) {
     $('.active').removeClass('active');
     $(`.nav-sensor[data-id='${data.sensor.id}']`).parent().addClass('active');
     const sensorToggle = $(`.nav-sensor-toggle[data-id='${data.sensor.id}']`);
@@ -195,6 +357,16 @@ function _updateDashboard(data) {
 
     $('.js-measure').text(data.measure);
 
-    if (!data.error)
-        new Dashboard(data).update();
+    if (data.error)
+        return console.error(data.error);
+
+    dashboard.update(data);
+    console.log(dashboard);
+    if (dashboard['updateButtons'])
+        dashboard['updateButtons'](buttons);
+    const animation = new Animation();
+    dashboard.updateCards(animation);
+    animation._animate();
+    buttons.forEach((btn) => btn.setEvents());
+    buttons.forEach((btn) => btn.clickActive());
 }
