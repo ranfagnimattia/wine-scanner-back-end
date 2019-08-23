@@ -10,33 +10,35 @@
 
 // Utilities
 class Animation {
-    animations = [];
+    static TIME = 1;
+    static INT = 2;
+
+
+    constructor(unit) {
+        this.animations = [];
+        this.unit = '<span class="js-unit">' + unit + '</span>';
+    }
 
     setValues(valuesPair, spaceElem) {
-        function getTextWidth(elem, text) {
-            return elem.text(text).width()
-        }
+        valuesPair = valuesPair.map((pair) => ({
+            elem: pair[0],
+            value: (pair[2] === Animation.TIME) ? pair[1].replace(/:/g, "") : pair[1],
+            type: pair[2]
+        }));
 
-        const widths = valuesPair.map((pair) => pair[2] !== true ?
-            getTextWidth(spaceElem, pair[1].toFixed(2)) : 0);
-        spaceElem.text(valuesPair[widths.indexOf(Math.max(...widths))][1].toFixed(2) + '0');
+        const widths = valuesPair.map((pair) => spaceElem.html(this._format(pair)).width());
+        const maxWidthPair = valuesPair[widths.indexOf(Math.max(...widths))];
+        spaceElem.html(this._format(maxWidthPair) + '0');
         this.animations = this.animations.concat(valuesPair);
     }
 
     _animate() {
-        function formatTime(t) {
-            return (t < 10) ? '0' + t : t;
-        }
-
         const initValues = {};
-        const elements = {};
-        const timeValues = {};
         const finalValues = {};
+        const $this = this;
         this.animations.forEach((pair, i) => {
             initValues[i] = 0;
-            elements[i] = pair[0];
-            timeValues[i] = pair[2] === true;
-            finalValues[i] = pair[2] === true ? pair[1].replace(/:/g, "") : pair[1];
+            finalValues[i] = pair.value;
         });
         $(initValues).animate(finalValues, {
             duration: 1000,
@@ -44,16 +46,28 @@ class Animation {
             step: function () {
                 for (let prop in this)
                     if (this.hasOwnProperty(prop)) {
-                        if (timeValues[prop]) {
-                            const h = Math.floor(this[prop] / 10000);
-                            const m = Math.floor((this[prop] - h * 10000) / 100);
-                            const s = Math.floor(this[prop] - h * 10000 - m * 100);
-                            elements[prop].text(formatTime(h) + ':' + formatTime(m) + ':' + formatTime(s));
-                        } else
-                            elements[prop].text(this[prop].toFixed(2));
+                        const pair = $this.animations[prop];
+                        pair.value = this[prop];
+                        pair.elem.html($this._format(pair));
                     }
             }
         });
+    }
+
+    _format(pair) {
+        function formatTime(t) {
+            return (t < 10) ? '0' + t : t;
+        }
+
+        if (pair.type === Animation.TIME) {
+            const h = Math.floor(pair.value / 10000);
+            const m = Math.floor((pair.value - h * 10000) / 100);
+            const s = Math.floor(pair.value - h * 10000 - m * 100);
+            return formatTime(h) + ':' + formatTime(m) + ':' + formatTime(s);
+        } else if (pair.type === Animation.INT) {
+            return pair.value.toFixed(0);
+        } else
+            return pair.value.toFixed(2) + this.unit;
     }
 }
 
@@ -133,7 +147,7 @@ class Button {
     constructor(key, buttons, dashboard) {
         this.elem = $('#' + key);
         this.update = 'update' + ucFirst(key);
-        this.buttons = buttons;
+        this.buttons = buttons.slice();
         this.attr = key + 'Btn';
         this.chart = new Chart(this.elem);
         this.dashboard = dashboard;
@@ -372,7 +386,7 @@ function _updateDashboard(data, dashboard, buttons) {
     console.log(dashboard);
     if (dashboard['updateButtons'])
         dashboard['updateButtons'](buttons);
-    const animation = new Animation();
+    const animation = new Animation(data.sensor.unit.replace('^2', '<sup>2</sup>'));
     dashboard.updateCards(animation);
     animation._animate();
     buttons.forEach((btn) => btn.setEvents());

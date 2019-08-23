@@ -16,6 +16,9 @@ class Dashboard {
         this.allAnomalies = data.allAnomalies;
         this.lastMonth = data.lastMonth;
 
+        this.methodStats = data.methodStats;
+        this.anomaliesStats = data.anomaliesStats;
+
         this.lastMonthScheme = [{
             name: "Time",
             type: "date",
@@ -39,21 +42,27 @@ class Dashboard {
     }
 
     updateCards(animation) {
-        // animation.setValues([
-        //     [$('.js-last-value'), this.last],
-        //     [$('.js-last-time'), this.lastTime, true],
-        //     [$('.js-lastDay-mainMeasure'), this.lastDayStats[this.mainMeasure]]
-        // ], $('.js-last-space'));
-        // animation.setValues([
-        //     [$('.js-lastDay-max'), this.lastDayStats.max],
-        //     [$('.js-lastDay-maxTime'), this.lastDayStats.maxTime, true],
-        //     [$('.js-lastDay-min'), this.lastDayStats.min],
-        //     [$('.js-lastDay-minTime'), this.lastDayStats.minTime, true]
-        // ], $('.js-lastDay-space'));
-        // animation.setValues([
-        //     setUpTrend($('.js-trend-previous'), this.trend.previous),
-        //     setUpTrend($('.js-trend-lastDay'), this.trend.lastDay),
-        // ], $('.js-trend-space'));
+        const methodMonth = [];
+        const methodTot = [];
+        const methodMse = [];
+        this.methods.forEach((method) => {
+            const m = method.toLowerCase();
+            methodMonth.push([$('.js-' + m + '-month'), this.methodStats[m]['lastMonth'], Animation.INT]);
+            methodTot.push([$('.js-' + m + '-tot'), this.methodStats[m]['tot'], Animation.INT]);
+            methodMse.push([$('.js-' + m + '-mse'), this.methodStats[m]['mse']]);
+        });
+        animation.setValues(methodMonth, $('.js-method-month-space'));
+        animation.setValues(methodTot, $('.js-method-tot-space'));
+        animation.setValues(methodMse, $('.js-method-mse-space'));
+
+        const anomaliesMonth = [];
+        const anomaliesTot = [];
+        ['minor', 'medium', 'major'].forEach((type) => {
+            anomaliesMonth.push([$('.js-' + type + '-month'), this.anomaliesStats['lastMonth'][type], Animation.INT]);
+            anomaliesTot.push([$('.js-' + type + '-tot'), this.anomaliesStats['tot'][type], Animation.INT]);
+        });
+        animation.setValues(anomaliesMonth, $('.js-anomalies-month-space'));
+        animation.setValues(anomaliesTot, $('.js-anomalies-tot-space'));
     }
 
 

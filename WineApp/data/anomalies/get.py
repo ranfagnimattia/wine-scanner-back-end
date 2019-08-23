@@ -16,13 +16,14 @@ def get_data(sensor_id: int = 1, measure: str = 'avg') -> dict:
             'error': 'No data'
         }
 
-    # Charts
     last_date = predictions.last().date
     methods = PredictionMethod.objects.all()
     last_month = {}
+    method_stats = {}
     for method in methods:
-        method_data = predictions.filter(method=method).values('date', 'actual', 'prediction', 'limit',
-                                                               'sensor__min', 'sensor__max')
+        method_predictions = predictions.filter(method=method)
+        method_data = method_predictions.values('date', 'actual', 'prediction', 'limit',
+                                                'sensor__min', 'sensor__max')
         method_last_month = get_date_interval(method_data, last_date, 30)
         for prediction in method_last_month:
             prediction['upperLimit'] = prediction['prediction'] + prediction['limit']
@@ -38,6 +39,13 @@ def get_data(sensor_id: int = 1, measure: str = 'avg') -> dict:
             prediction['error'] = prediction['actual'] - prediction['prediction']
         last_month[method.name.lower()] = [list(elem.values()) for elem in method_last_month]
 
+        anomalies = method_predictions.filter(anomaly=True)
+        method_stats[method.name.lower()] = {
+            'tot': anomalies.count(),
+            'lastMonth': get_date_interval(anomalies, last_date, 30).count(),
+            'mse': method_predictions.last().get_mse()
+        }
+
     all_data = predictions.values('date', 'actual').distinct()
 
     anomalies_all = predictions.filter(anomaly=True).values('date', 'method__name')
@@ -46,7 +54,24 @@ def get_data(sensor_id: int = 1, measure: str = 'avg') -> dict:
         group = list(group_iter)
         anomalies_aggr.append([key, len(group), ', '.join([e['method__name'] for e in group])])
 
-    # Cards
+    anomalies_last_month = get_date_interval(predictions.filter(anomaly=True), last_date, 30) \
+        .values('date', 'method__name')
+    anomalies_last_month_aggr = [[key, len(list(group_iter))] for key, group_iter in
+                                 groupby(anomalies_last_month, key=lambda x: x['date'])]
+
+    anomalies_stats = {
+        'lastMonth': {
+            'minor': sum(i[1] == 1 for i in anomalies_last_month_aggr),
+            'medium': sum(i[1] == 2 for i in anomalies_last_month_aggr),
+            'major': sum(i[1] == 3 for i in anomalies_last_month_aggr)
+        },
+        'tot': {
+            'minor': sum(i[1] == 1 for i in anomalies_aggr),
+            'medium': sum(i[1] == 2 for i in anomalies_aggr),
+            'major': sum(i[1] == 3 for i in anomalies_aggr)
+        }
+    }
+
     return {
         'lastUpdate': get_last_update('prediction'),
         'sensor': sensor.to_js(),
@@ -55,4 +80,6 @@ def get_data(sensor_id: int = 1, measure: str = 'avg') -> dict:
         'allData': [list(elem.values()) for elem in all_data],
         'allAnomalies': anomalies_aggr,
         'lastMonth': last_month,
+        'methodStats': method_stats,
+        'anomaliesStats': anomalies_stats
     }

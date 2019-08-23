@@ -1,5 +1,6 @@
 import json
 
+import math
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
@@ -124,6 +125,9 @@ class Prediction(models.Model):
             self.prediction = self.sensor.min
         if self.sensor.max is not None and self.prediction > self.sensor.max:
             self.prediction = self.sensor.max
+
+    def get_mse(self):
+        return math.sqrt(self.var / self.count)
 
     class Meta:
         unique_together = ('date', 'sensor', 'measure', 'method')

@@ -36,25 +36,33 @@
                     <div class="row">
                         <div class="col-auto pr-0">
                             <div class="info-icon text-center icon-warning">
-                                <i class="fas fa-calendar-day"></i>
+                                <i class="fas fa-exclamation-triangle"></i>
                             </div>
                         </div>
                         <div class="col">
                             <div class="row flex-nowrap">
                                 <div class="col p-0"></div>
                                 <div class="col-auto labels pr-0">
-                                    <p>Valore</p>
-                                    <p>Ora</p>
-                                    <p class="js-main-measure capitalize"></p>
+                                    <p>Minori</p>
+                                    <p>Medie</p>
+                                    <p>Gravi</p>
                                 </div>
                                 <div class="col-auto numbers">
-                                    <p><span class="js-last-value"></span><span
-                                            class="js-unit"></span></p>
-                                    <p><span class="js-last-time"></span></p>
-                                    <p><span class="js-lastDay-mainMeasure"></span><span
-                                            class="js-unit"></span></p>
-                                    <p class="values-space"><span class="js-last-space"></span><span
-                                            class="js-unit"></span></p>
+                                    <p class="js-minor-month"></p>
+                                    <p class="js-medium-month"></p>
+                                    <p class="js-major-month"></p>
+                                    <p class="values-space"><span class="js-anomalies-month-space"></span></p>
+                                </div>
+                                <div class="col-auto numbers pr-0">
+                                    <p>-</p>
+                                    <p>-</p>
+                                    <p>-</p>
+                                </div>
+                                <div class="col-auto numbers">
+                                    <p class="js-minor-tot"></p>
+                                    <p class="js-medium-tot"></p>
+                                    <p class="js-major-tot"></p>
+                                    <p class="values-space"><span class="js-anomalies-tot-space"></span></p>
                                 </div>
                             </div>
                         </div>
@@ -64,7 +72,8 @@
                     <hr>
                     <div class="stats">
                         <span class="js-sensor-icon"></span>
-                        <span><span class="js-sensor"></span> <span class="js-last-date"></span></span>
+                        <span>Anomalie <span class="js-sensor lowercase"></span> <span
+                                class="js-measure"></span> (ultimo mese - totali)</span>
                     </div>
                 </div>
             </div>
@@ -75,27 +84,33 @@
                     <div class="row">
                         <div class="col-auto pr-0">
                             <div class="info-icon text-center icon-warning">
-                                <i class="fas fa-calendar-day"></i>
+                                <i class="fas fa-calendar-alt"></i>
                             </div>
                         </div>
                         <div class="col">
                             <div class="row flex-nowrap">
                                 <div class="col p-0"></div>
                                 <div class="col-auto labels pr-0">
-                                    <p>Max</p>
-                                    <p>Ora max</p>
-                                    <p>Min</p>
-                                    <p>Ora min</p>
+                                    <p>Exp</p>
+                                    <p>STL</p>
+                                    <p>LSTM</p>
                                 </div>
                                 <div class="col-auto numbers">
-                                    <p><span class="js-lastDay-max"></span><span
-                                            class="js-unit"></span></p>
-                                    <p><span class="time js-lastDay-maxTime"></span></p>
-                                    <p><span class="js-lastDay-min"></span><span
-                                            class="js-unit"></span></p>
-                                    <p><span class="time js-lastDay-minTime"></span></p>
-                                    <p class="values-space"><span class="js-lastDay-space"></span><span
-                                            class="js-unit"></span></p>
+                                    <p class="js-exp-month"></p>
+                                    <p class="js-stl-month"></p>
+                                    <p class="js-lstm-month"></p>
+                                    <p class="values-space"><span class="js-method-month-space"></span></p>
+                                </div>
+                                <div class="col-auto numbers pr-0">
+                                    <p>-</p>
+                                    <p>-</p>
+                                    <p>-</p>
+                                </div>
+                                <div class="col-auto numbers">
+                                    <p class="js-exp-tot"></p>
+                                    <p class="js-stl-tot"></p>
+                                    <p class="js-lstm-tot"></p>
+                                    <p class="values-space"><span class="js-method-tot-space"></span></p>
                                 </div>
                             </div>
                         </div>
@@ -105,7 +120,8 @@
                     <hr>
                     <div class="stats">
                         <span class="js-sensor-icon"></span>
-                        <span><span class="js-sensor"></span> <span class="js-last-date"></span></span>
+                        <span>Anomalie <span class="js-sensor lowercase"></span> <span
+                                class="js-measure"></span> (ultimo mese - totali)</span>
                     </div>
                 </div>
             </div>
@@ -123,22 +139,15 @@
                             <div class="row flex-nowrap">
                                 <div class="col p-0"></div>
                                 <div class="col-auto labels pr-0">
-                                    <p>Precedente</p>
-                                    <p>Avg giorno</p>
+                                    <p>Exp</p>
+                                    <p>STL</p>
+                                    <p>LSTM</p>
                                 </div>
                                 <div class="col-auto numbers">
-                                    <p class="js-trend-previous">
-                                        <span class="js-trend"></span><span class="js-unit"></span><span
-                                            class="js-trend-icon"></span>
-                                    </p>
-                                    <p class="js-trend-lastDay">
-                                        <span class="js-trend"></span><span class="js-unit"></span><span
-                                            class="js-trend-icon"></span>
-                                    </p>
-                                    <p class="values-space">
-                                        <span class="js-trend-space"></span><span class="js-unit"></span><span>
-                                        <i class="fas fa-caret-down"></i></span>
-                                    </p>
+                                    <p class="js-exp-mse"></p>
+                                    <p class="js-stl-mse"></p>
+                                    <p class="js-lstm-mse"></p>
+                                    <p class="values-space"><span class="js-method-mse-space"></span></p>
                                 </div>
                             </div>
                         </div>
@@ -148,10 +157,8 @@
                     <hr>
                     <div class="stats">
                         <span class="js-sensor-icon"></span>
-                        <span>
-                            Valore <span class="js-sensor lowercase"></span>
-                            <span> rispetto a:</span>
-                        </span>
+                        <span>Errore quadratico medio <span class="js-sensor lowercase"></span> <span
+                                class="js-measure"></span></span>
                     </div>
                 </div>
             </div>

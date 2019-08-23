@@ -28,14 +28,14 @@ class Dashboard {
 
         animation.setValues([
             [$('.js-last-value'), this.last],
-            [$('.js-last-time'), this.lastTime, true],
+            [$('.js-last-time'), this.lastTime, Animation.TIME],
             [$('.js-lastDay-mainMeasure'), this.lastDayStats[this.mainMeasure]]
         ], $('.js-last-space'));
         animation.setValues([
             [$('.js-lastDay-max'), this.lastDayStats.max],
-            [$('.js-lastDay-maxTime'), this.lastDayStats.maxTime, true],
+            [$('.js-lastDay-maxTime'), this.lastDayStats.maxTime, Animation.TIME],
             [$('.js-lastDay-min'), this.lastDayStats.min],
-            [$('.js-lastDay-minTime'), this.lastDayStats.minTime, true]
+            [$('.js-lastDay-minTime'), this.lastDayStats.minTime, Animation.TIME]
         ], $('.js-lastDay-space'));
         animation.setValues([
             setUpTrend($('.js-trend-previous'), this.trend.previous),

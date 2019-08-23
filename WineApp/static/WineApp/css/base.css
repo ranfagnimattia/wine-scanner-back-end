@@ -92,6 +92,11 @@ html {
     padding: 24px 0 22px 250px;
 }
 
+.card-stats .info-icon i.fa-exclamation-triangle {
+    padding-top: 12px;
+    padding-left: 12px;
+}
+
 
 /* Colors */
 .btn-color2.btn-simple, .btn-color2.btn-simple:hover, .btn-color2.btn-simple:focus,
@@ -187,6 +192,10 @@ html {
     color: rgba(255, 255, 255, 0.6);
     font-size: 12px;
     line-height: 27px;
+}
+
+.card-stats .numbers {
+    padding-left: 0;
 }
 
 .card-stats .numbers > p {
