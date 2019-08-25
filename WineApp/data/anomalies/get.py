@@ -48,27 +48,28 @@ def get_data(sensor_id: int = 1, measure: str = 'avg') -> dict:
 
     all_data = predictions.values('date', 'actual').distinct()
 
-    anomalies_all = predictions.filter(anomaly=True).values('date', 'method__name')
+    anomalies_all = predictions.filter(anomaly=True).values('date', 'method__name', 'actual', 'prediction')
     anomalies_aggr = []
     for key, group_iter in groupby(anomalies_all, key=lambda x: x['date']):
         group = list(group_iter)
-        anomalies_aggr.append([key, len(group), ', '.join([e['method__name'] for e in group])])
+        methods_info = [(e['method__name'], e['actual'] > e['prediction']) for e in group]
+        anomalies_aggr.append({'date': key, 'gravity': len(group), 'methods': methods_info})
 
     anomalies_last_month = get_date_interval(predictions.filter(anomaly=True), last_date, 30) \
         .values('date', 'method__name')
-    anomalies_last_month_aggr = [[key, len(list(group_iter))] for key, group_iter in
+    anomalies_last_month_aggr = [{'date': key, 'gravity': len(list(group_iter))} for key, group_iter in
                                  groupby(anomalies_last_month, key=lambda x: x['date'])]
 
     anomalies_stats = {
         'lastMonth': {
-            'minor': sum(i[1] == 1 for i in anomalies_last_month_aggr),
-            'medium': sum(i[1] == 2 for i in anomalies_last_month_aggr),
-            'major': sum(i[1] == 3 for i in anomalies_last_month_aggr)
+            'minor': sum(i['gravity'] == 1 for i in anomalies_last_month_aggr),
+            'medium': sum(i['gravity'] == 2 for i in anomalies_last_month_aggr),
+            'major': sum(i['gravity'] == 3 for i in anomalies_last_month_aggr)
         },
         'tot': {
-            'minor': sum(i[1] == 1 for i in anomalies_aggr),
-            'medium': sum(i[1] == 2 for i in anomalies_aggr),
-            'major': sum(i[1] == 3 for i in anomalies_aggr)
+            'minor': sum(i['gravity'] == 1 for i in anomalies_aggr),
+            'medium': sum(i['gravity'] == 2 for i in anomalies_aggr),
+            'major': sum(i['gravity'] == 3 for i in anomalies_aggr)
         }
     }
 

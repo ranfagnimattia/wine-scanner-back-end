@@ -1,22 +1,178 @@
-{% extends 'WineApp/base.html' %}
+{% extends 'WineApp/dashboard.html' %}
 {% load static %}
-
 {% block stylesheet %}
-    <link rel="stylesheet" type="text/css" href="{% static 'WineApp/css/index.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'WineApp/lib/calendar/calendar.css' %}">
 {% endblock %}
-
 {% block content %}
-    {% if list %}
-        <ul>
-            {% for item in list %}
-                <li>{{ item }}</li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>No wines available.</p>
-    {% endif %}
+    <div class="row card-stats-row">
+        <div class="col-sm-6 col-xl-3">
+            <div class="card-stats card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-auto pr-0">
+                            <div class="info-icon text-center icon-warning">
+                                <i class="far fa-clock"></i>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="row flex-nowrap">
+                                <div class="col p-0"></div>
+                                <div class="col-auto">
+                                    <p class="label">Ultimo aggiornamento</p>
+                                    <p class="number capitalize"><span class="js-last-update"></span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <hr>
+                    <span class="stats link" id="refresh"></span>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="card-stats card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-auto pr-0">
+                            <div class="info-icon text-center icon-warning">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="row flex-nowrap">
+                                <div class="col p-0"></div>
+                                <div class="col-auto labels pr-0">
+                                    <p>Minori</p>
+                                    <p>Medie</p>
+                                    <p>Gravi</p>
+                                </div>
+                                <div class="col-auto numbers">
+                                    <p class="js-minor-month"></p>
+                                    <p class="js-medium-month"></p>
+                                    <p class="js-major-month"></p>
+                                    <p class="values-space"><span class="js-anomalies-month-space"></span></p>
+                                </div>
+                                <div class="col-auto numbers pr-0">
+                                    <p>-</p>
+                                    <p>-</p>
+                                    <p>-</p>
+                                </div>
+                                <div class="col-auto numbers">
+                                    <p class="js-minor-tot"></p>
+                                    <p class="js-medium-tot"></p>
+                                    <p class="js-major-tot"></p>
+                                    <p class="values-space"><span class="js-anomalies-tot-space"></span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <hr>
+                    <div class="stats">
+                        <span class="js-sensor-icon"></span>
+                        <span>Anomalie <span class="js-sensor lowercase"></span> <span
+                                class="js-measure"></span> (ultimo mese - totali)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="card-stats card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-auto pr-0">
+                            <div class="info-icon text-center icon-warning">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="row flex-nowrap">
+                                <div class="col p-0"></div>
+                                <div class="col-auto labels pr-0">
+                                    <p>Exp</p>
+                                    <p>STL</p>
+                                    <p>LSTM</p>
+                                </div>
+                                <div class="col-auto numbers">
+                                    <p class="js-exp-month"></p>
+                                    <p class="js-stl-month"></p>
+                                    <p class="js-lstm-month"></p>
+                                    <p class="values-space"><span class="js-method-month-space"></span></p>
+                                </div>
+                                <div class="col-auto numbers pr-0">
+                                    <p>-</p>
+                                    <p>-</p>
+                                    <p>-</p>
+                                </div>
+                                <div class="col-auto numbers">
+                                    <p class="js-exp-tot"></p>
+                                    <p class="js-stl-tot"></p>
+                                    <p class="js-lstm-tot"></p>
+                                    <p class="values-space"><span class="js-method-tot-space"></span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <hr>
+                    <div class="stats">
+                        <span class="js-sensor-icon"></span>
+                        <span>Anomalie <span class="js-sensor lowercase"></span> <span
+                                class="js-measure"></span> (ultimo mese - totali)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="card-stats card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-auto pr-0">
+                            <div class="info-icon text-center icon-warning">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="row flex-nowrap">
+                                <div class="col p-0"></div>
+                                <div class="col-auto labels pr-0">
+                                    <p>Exp</p>
+                                    <p>STL</p>
+                                    <p>LSTM</p>
+                                </div>
+                                <div class="col-auto numbers">
+                                    <p class="js-exp-mse"></p>
+                                    <p class="js-stl-mse"></p>
+                                    <p class="js-lstm-mse"></p>
+                                    <p class="values-space"><span class="js-method-mse-space"></span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <hr>
+                    <div class="stats">
+                        <span class="js-sensor-icon"></span>
+                        <span>Errore quadratico medio <span class="js-sensor lowercase"></span> <span
+                                class="js-measure"></span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card card-calendar" id='calendar'></div>
+        </div>
+    </div>
 {% endblock %}
-
 {% block javascript %}
-    <script type="text/javascript" src="{% static 'WineApp/js/index.js' %}"></script>
+    <script src="{% static 'WineApp/lib/calendar/calendar.js' %}"></script>
+    <script src="{% static 'WineApp/js/index.js' %}"></script>
+    {{ block.super }}
 {% endblock %}

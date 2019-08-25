@@ -91,7 +91,7 @@ class Chart {
         if (options.yAxis) {
             options.yAxis.title = '';
             if (options.limits) {
-                options.yAxis.min = options.limits.min !== undefined ? options.limits.min - 0.1 : undefined;
+                options.yAxis.min = options.limits.min !== undefined ? options.limits.min : undefined;
                 options.yAxis.max = options.limits.max !== undefined ? options.limits.max + 0.1 : undefined;
             }
         }
@@ -250,24 +250,26 @@ function getMeasure(measure, data) {
 // Dashboard
 $('document').ready(function () {
     const dashboard = new Dashboard();
-    const btnList = {
-        chart1: [],
-        chart2: [],
-        chart3: [],
-        linkedButtons: false
-    };
-    $.extend(btnList, Dashboard.initButtons(data_py));
-    let buttons;
-    if (btnList.linkedButtons) {
-        const c1 = new Button('chart1', btnList['chart1'], dashboard);
-        const c2 = new Button('chart2', btnList['chart2'], dashboard);
-        c1.setLinked(c2);
-        c2.setLinked(c1);
-        buttons = [c1, c2, new Button('chart3', btnList['chart3'], dashboard)];
-    } else
-        buttons = [new Button('chart1', btnList['chart1'], dashboard),
-            new Button('chart2', btnList['chart2'], dashboard),
-            new Button('chart3', btnList['chart3'], dashboard)];
+    let buttons = Dashboard.initButtons(data_py);
+    if (buttons) {
+        const btnList = {
+            chart1: [],
+            chart2: [],
+            chart3: [],
+            linkedButtons: false
+        };
+        $.extend(btnList, buttons);
+        if (btnList.linkedButtons) {
+            const c1 = new Button('chart1', btnList['chart1'], dashboard);
+            const c2 = new Button('chart2', btnList['chart2'], dashboard);
+            c1.setLinked(c2);
+            c2.setLinked(c1);
+            buttons = [c1, c2, new Button('chart3', btnList['chart3'], dashboard)];
+        } else
+            buttons = [new Button('chart1', btnList['chart1'], dashboard),
+                new Button('chart2', btnList['chart2'], dashboard),
+                new Button('chart3', btnList['chart3'], dashboard)];
+    }
     _updateDashboard(data_py, dashboard, buttons);
 
     // Sidebar
@@ -384,11 +386,13 @@ function _updateDashboard(data, dashboard, buttons) {
 
     dashboard.update(data);
     console.log(dashboard);
-    if (dashboard['updateButtons'])
+    if (dashboard['updateButtons'] && buttons)
         dashboard['updateButtons'](buttons);
     const animation = new Animation(data.sensor.unit.replace('^2', '<sup>2</sup>'));
     dashboard.updateCards(animation);
     animation._animate();
-    buttons.forEach((btn) => btn.setEvents());
-    buttons.forEach((btn) => btn.clickActive());
+    if (buttons) {
+        buttons.forEach((btn) => btn.setEvents());
+        buttons.forEach((btn) => btn.clickActive());
+    }
 }

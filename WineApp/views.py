@@ -8,15 +8,38 @@ import WineApp.data.anomalies.update
 import WineApp.data.daily as daily_data
 import WineApp.data.daily.get
 import WineApp.data.daily.update
+import WineApp.data.index as index
+import WineApp.data.index.get
 import WineApp.data.realtime as realtime_data
 import WineApp.data.realtime.get
 import WineApp.data.realtime.update
 from WineApp.models import Sensor
 
 
-def index(request):
-    history = []
-    return render(request, 'WineApp/index.html', {'list': history})
+# Index Dashboard
+def show_index(request):
+    data_js = index.get.get_data()
+    data_js.update({
+        'getUrl': reverse('WineApp:ajax.getIndex'),
+        'updateUrl': reverse('WineApp:ajax.updateIndex')
+    })
+    sensors = Sensor.objects.all()
+    for sensor in sensors:
+        sensor.disabled = sensor.startTestSet is None
+    return render(request, 'WineApp/index.html', {
+        'sensors': sensors,
+        'allSensors': True,
+        'data_js': data_js
+    })
+
+
+def ajax_get_index(request):
+    sensor_id = request.GET.get('sensorId', 0)
+    return JsonResponse(index.get.get_data(sensor_id))
+
+
+def ajax_update_index(request):
+    return JsonResponse(anomalies_data.update.update_data())
 
 
 # Daily Dashboard

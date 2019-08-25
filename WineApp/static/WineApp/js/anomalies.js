@@ -139,14 +139,15 @@ class Dashboard {
             },
             dataMarker: this.allAnomalies.map((d) => ({
                 seriesName: "Actual",
-                time: d[0],
+                time: d.date,
                 // identifier: '' + d[1],
                 identifier: '',
                 timeFormat: "%Y-%m-%d",
-                toolText: d[2],
+                toolText: d.methods.map((m) =>
+                    '<i class="fas fa-caret-' + (m[1] ? 'up' : 'down') + ' pr-1"></i>' + m[0]).join(', '),
                 "style": {
                     "marker": {
-                        "fill": colors[d[1]]
+                        "fill": colors[d['gravity']]
                     }
                 }
             })),

@@ -4,7 +4,10 @@ from WineApp import views
 
 app_name = 'WineApp'
 urlpatterns = [
-    path('', views.index, name='index'),
+    # Index Dashboard
+    path('', views.show_index, name='show.index'),
+    path('ajax/getIndex', views.ajax_get_index, name='ajax.getIndex'),
+    path('ajax/updateIndex', views.ajax_update_index, name='ajax.updateIndex'),
 
     # Daily Dashboard
     path('dailyData', views.show_daily_data, name='show.dailyData'),
