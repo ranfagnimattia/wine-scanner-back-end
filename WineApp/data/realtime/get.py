@@ -1,9 +1,10 @@
+from collections import deque
 from datetime import timedelta
 from itertools import chain, groupby
 
 import numpy as np
 
-from WineApp.data.utils import get_last_update, get_time_interval
+from WineApp.data.utils import get_last_update, get_time_interval, sort_and_group
 from WineApp.models import Sensor
 
 
@@ -36,15 +37,17 @@ def get_data(sensor_id: int = 1) -> dict:
     }
 
     # Charts
-    last24h_aggr = [[key, np.mean([e['value'] for e in group])] for key, group in
-                    groupby(last24h, key=lambda x: x['time'].strftime('%Y-%m-%d %H'))]
+    last24h_aggr = [[key[0], key[1], np.mean([e['value'] for e in group])] for key, group in
+                    groupby(last24h, key=lambda x: (x['time'].strftime('%Y-%m-%d'), x['time'].strftime('%H')))]
 
     previous_week_aggr = [[key, np.mean([e['value'] for e in group])] for key, group in
-                          groupby(previous_week, key=lambda x: x['time'].strftime('%H'))]
+                          sort_and_group(previous_week, key=lambda x: x['time'].strftime('%H'))]
 
+    week_aggr_ordered = deque(previous_week_aggr)
+    week_aggr_ordered.rotate(24 - int(last24h_aggr[0][1]))
     chart_diff = {
-        'avg': [[last[0], prev[1]] for last, prev in zip(last24h_aggr, previous_week_aggr)],
-        'diff': [[last[0], last[1] - prev[1]] for last, prev in zip(last24h_aggr, previous_week_aggr)]
+        'avg': [[last[0] + ' ' + last[1], prev[1]] for last, prev in zip(last24h_aggr, week_aggr_ordered)],
+        'diff': [[last[0] + ' ' + last[1], last[2] - prev[1]] for last, prev in zip(last24h_aggr, week_aggr_ordered)]
     }
 
     for elem in chain(all_data, last24h):

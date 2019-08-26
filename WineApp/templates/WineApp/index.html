@@ -37,6 +37,45 @@
                     <div class="row">
                         <div class="col-auto pr-0">
                             <div class="info-icon text-center icon-warning">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="row flex-nowrap">
+                                <div class="col p-0"></div>
+                                <div class="col-auto labels pr-0 js-monthStats-hide">
+                                    <p class="js-show-tot">Tot</p>
+                                    <p class="js-show-avg">Avg</p>
+                                    <p class="js-show-max">Max</p>
+                                    <p class="js-show-min">Min</p>
+                                </div>
+                                <div class="col-auto numbers js-monthStats-hide">
+                                    <p class="js-show-tot js-lastMonthStats-tot"></p>
+                                    <p class="js-show-avg js-lastMonthStats-avg"></p>
+                                    <p class="js-show-max js-lastMonthStats-max"></p>
+                                    <p class="js-show-min js-lastMonthStats-min"></p>
+                                    <p class="values-space"><span class="js-lastMonthStats-space"></span></p>
+                                </div>
+                                <p class="col-auto js-monthStats-info card-info pt-3"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <hr>
+                    <div class="stats">
+                        <span class="js-sensor-icon"></span>
+                        <span><span class="js-sensor"></span> <span class="js-calendar-month"></span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="card-stats card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-auto pr-0">
+                            <div class="info-icon text-center icon-warning">
                                 <i class="fas fa-exclamation-triangle"></i>
                             </div>
                         </div>
@@ -54,16 +93,11 @@
                                     <p class="js-major-month"></p>
                                     <p class="values-space"><span class="js-anomalies-month-space"></span></p>
                                 </div>
-                                <div class="col-auto numbers pr-0">
-                                    <p>-</p>
-                                    <p>-</p>
-                                    <p>-</p>
-                                </div>
                                 <div class="col-auto numbers">
-                                    <p class="js-minor-tot"></p>
-                                    <p class="js-medium-tot"></p>
-                                    <p class="js-major-tot"></p>
-                                    <p class="values-space"><span class="js-anomalies-tot-space"></span></p>
+                                    <p class="js-minor-year"></p>
+                                    <p class="js-medium-year"></p>
+                                    <p class="js-major-year"></p>
+                                    <p class="values-space"><span class="js-anomalies-year-space"></span></p>
                                 </div>
                             </div>
                         </div>
@@ -74,7 +108,8 @@
                     <div class="stats">
                         <span class="js-sensor-icon"></span>
                         <span>Anomalie <span class="js-sensor lowercase"></span> <span
-                                class="js-measure"></span> (ultimo mese - totali)</span>
+                                class="js-measure"></span> (<span class="js-calendar-month"></span> - <span
+                                class="js-calendar-year"></span>)</span>
                     </div>
                 </div>
             </div>
@@ -85,34 +120,33 @@
                     <div class="row">
                         <div class="col-auto pr-0">
                             <div class="info-icon text-center icon-warning">
-                                <i class="fas fa-calendar-alt"></i>
+                                <i class="fas fa-exclamation-triangle"></i>
                             </div>
                         </div>
                         <div class="col">
                             <div class="row flex-nowrap">
                                 <div class="col p-0"></div>
-                                <div class="col-auto labels pr-0">
-                                    <p>Exp</p>
-                                    <p>STL</p>
-                                    <p>LSTM</p>
+                                <div class="col-auto labels pr-0 js-monthAnomalies-hide">
+                                    <p class="js-show-tot">Tot</p>
+                                    <p class="js-show-avg">Avg</p>
+                                    <p class="js-show-max">Max</p>
+                                    <p class="js-show-min">Min</p>
                                 </div>
-                                <div class="col-auto numbers">
-                                    <p class="js-exp-month"></p>
-                                    <p class="js-stl-month"></p>
-                                    <p class="js-lstm-month"></p>
-                                    <p class="values-space"><span class="js-method-month-space"></span></p>
+                                <div class="col-auto numbers js-monthAnomalies-hide">
+                                    <p class="js-show-tot js-monthAnomalies-tot"></p>
+                                    <p class="js-show-avg js-monthAnomalies-avg"></p>
+                                    <p class="js-show-max js-monthAnomalies-max"></p>
+                                    <p class="js-show-min js-monthAnomalies-min"></p>
+                                    <p class="values-space"><span class="js-monthAnomalies-space"></span></p>
                                 </div>
-                                <div class="col-auto numbers pr-0">
-                                    <p>-</p>
-                                    <p>-</p>
-                                    <p>-</p>
+                                <div class="col-auto numbers js-monthAnomalies-hide">
+                                    <p class="js-show-tot js-yearAnomalies-tot"></p>
+                                    <p class="js-show-avg js-yearAnomalies-avg"></p>
+                                    <p class="js-show-max js-yearAnomalies-max"></p>
+                                    <p class="js-show-min js-yearAnomalies-min"></p>
+                                    <p class="values-space"><span class="js-yearAnomalies-space"></span></p>
                                 </div>
-                                <div class="col-auto numbers">
-                                    <p class="js-exp-tot"></p>
-                                    <p class="js-stl-tot"></p>
-                                    <p class="js-lstm-tot"></p>
-                                    <p class="values-space"><span class="js-method-tot-space"></span></p>
-                                </div>
+                                <p class="col-auto js-monthAnomalies-info card-info pt-3"></p>
                             </div>
                         </div>
                     </div>
@@ -122,44 +156,8 @@
                     <div class="stats">
                         <span class="js-sensor-icon"></span>
                         <span>Anomalie <span class="js-sensor lowercase"></span> <span
-                                class="js-measure"></span> (ultimo mese - totali)</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-6 col-xl-3">
-            <div class="card-stats card">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-auto pr-0">
-                            <div class="info-icon text-center icon-warning">
-                                <i class="fas fa-chart-line"></i>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="row flex-nowrap">
-                                <div class="col p-0"></div>
-                                <div class="col-auto labels pr-0">
-                                    <p>Exp</p>
-                                    <p>STL</p>
-                                    <p>LSTM</p>
-                                </div>
-                                <div class="col-auto numbers">
-                                    <p class="js-exp-mse"></p>
-                                    <p class="js-stl-mse"></p>
-                                    <p class="js-lstm-mse"></p>
-                                    <p class="values-space"><span class="js-method-mse-space"></span></p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-footer">
-                    <hr>
-                    <div class="stats">
-                        <span class="js-sensor-icon"></span>
-                        <span>Errore quadratico medio <span class="js-sensor lowercase"></span> <span
-                                class="js-measure"></span></span>
+                                class="js-measure"></span> (<span class="js-calendar-month"></span> - <span
+                                class="js-calendar-year"></span>)</span>
                     </div>
                 </div>
             </div>

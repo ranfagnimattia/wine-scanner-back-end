@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from itertools import groupby
 from xml.etree import ElementTree
 
 import requests
@@ -39,6 +40,10 @@ def get_last_update(update_type: str) -> dict:
         return {'date': _relative_date(last_datetime), 'time': last_datetime.strftime('%H:%M')}
     except LastUpdate.DoesNotExist:
         return {'date': '', 'time': ''}
+
+
+def sort_and_group(iterable, key=None):
+    return groupby(sorted(iterable, key=key), key=key)
 
 
 # Private

@@ -1601,7 +1601,7 @@ function enableTextSelection(element) {
             renderBasic(rowCnt, colCnt, true);
 
             if (renderViewEvent)
-                renderViewEvent(start.getMonth() + 1, start.getFullYear(), opt('monthNames')[start.getMonth()]);
+                renderViewEvent(zeroPad(start.getMonth() + 1), '' + start.getFullYear(), opt('monthNames')[start.getMonth()]);
         }
 
 
@@ -1991,7 +1991,7 @@ function enableTextSelection(element) {
             }
 
             let content = '';
-            if (calendarMarkers) {
+            if (calendarMarkers && date.getMonth() === month) {
                 const marker = calendarMarkers.find((m) => m.date.getTime() === date.getTime());
                 if (marker) {
                     function getTooltip(markers) {

@@ -443,8 +443,8 @@ table.fc-border-separate {
 }
 
 .fc-grid .fc-other-month .fc-day-number {
-    opacity: 0.5;
-    filter: alpha(opacity=50); /* for IE */
+    opacity: 0.2;
+    filter: alpha(opacity=20); /* for IE */
     /* opacity with small font can sometimes look too faded
        might want to set the 'color' property instead
        making day-numbers bold also fixes the problem */

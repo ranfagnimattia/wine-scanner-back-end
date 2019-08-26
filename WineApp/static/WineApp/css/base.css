@@ -177,6 +177,11 @@ html {
     padding: 14px 13px;
 }
 
+.card-stats .card-info {
+    color: #fff;
+    font-size: 16px;
+}
+
 .card-stats .labels {
     width: max-content;
 }

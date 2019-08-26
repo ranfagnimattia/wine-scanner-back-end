@@ -251,15 +251,15 @@ function getMeasure(measure, data) {
 // Dashboard
 $('document').ready(function () {
     const dashboard = new Dashboard();
-    let buttons = Dashboard.initButtons(data_py);
-    if (buttons) {
+    let buttons;
+    if (Dashboard['initButtons']) {
         const btnList = {
             chart1: [],
             chart2: [],
             chart3: [],
             linkedButtons: false
         };
-        $.extend(btnList, buttons);
+        $.extend(btnList, Dashboard.initButtons(data_py));
         if (btnList.linkedButtons) {
             const c1 = new Button('chart1', btnList['chart1'], dashboard);
             const c2 = new Button('chart2', btnList['chart2'], dashboard);
