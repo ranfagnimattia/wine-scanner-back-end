@@ -140,7 +140,6 @@ class Dashboard {
             dataMarker: this.allAnomalies.map((d) => ({
                 seriesName: "Actual",
                 time: d.date,
-                // identifier: '' + d[1],
                 identifier: '',
                 timeFormat: "%Y-%m-%d",
                 toolText: d.methods.map((m) =>
@@ -152,8 +151,7 @@ class Dashboard {
                 }
             })),
             initialInterval: {
-                from: this.lastMonth[this.chart1Btn][0][0],
-                to: this.lastMonth[this.chart1Btn][this.lastMonth[this.chart1Btn].length - 1][0]
+                from: this.lastMonth[this.chart1Btn][0][0]
             },
             limits: this.sensor
         });

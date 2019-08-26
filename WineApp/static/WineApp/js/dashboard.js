@@ -103,7 +103,7 @@ class Chart {
             dataSource: {
                 tooltip: {
                     outputTimeFormat: {
-                        Hour: "%d %b %Y, %H:00",
+                        Hour: options.onlyHours ? "%H:00" : "%d %b %Y, %H:00",
                         Minute: "%d %b %Y, %H:%M",
                         Second: "%d %b %Y, %H:%M:%S",
                     }
@@ -128,6 +128,7 @@ class Chart {
                 yAxis: options ? options.yAxis : undefined,
                 xAxis: {
                     outputTimeFormat: {
+                        Day: options.onlyHours ? "00" : undefined,
                         Hour: "%H",
                         Minute: "%H:%M",
                         Second: "%H:%M:%S",

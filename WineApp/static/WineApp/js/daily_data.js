@@ -105,6 +105,9 @@ class Dashboard {
                 "plot": this.measures.map((m) => ({value: ucFirst(m)})),
                 "format": {"suffix": this.sensor.unit}
             },
+            initialInterval: {
+                from: this.lastMonth[0].date
+            },
             limits: this.sensor
         });
     }

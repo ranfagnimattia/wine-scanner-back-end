@@ -20,6 +20,8 @@ class Dashboard {
         this.lastTime = data.lastTime;
         this.lastDayStats = data.lastDayStats;
         this.trend = data.trend;
+
+        this.lastWeekTime = data.lastWeekTime;
     }
 
 
@@ -95,7 +97,8 @@ class Dashboard {
                 },
                 "format": {"suffix": this.sensor.unit}
             },
-            limits: this.chart2Btn === 'avg' ? this.sensor : undefined
+            limits: this.chart2Btn === 'avg' ? this.sensor : undefined,
+            onlyHours: this.chart2Btn === 'avg'
         });
     }
 
@@ -115,6 +118,9 @@ class Dashboard {
                     connectNullData: true
                 },
                 "format": {"suffix": this.sensor.unit}
+            },
+            initialInterval: {
+                from: this.lastWeekTime
             },
             limits: this.sensor
         });

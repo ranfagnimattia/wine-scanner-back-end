@@ -60,5 +60,6 @@ def get_data(sensor_id: int = 1) -> dict:
         'last': last_value,
         'lastTime': last_time.strftime('%H:%M:%S'),
         'lastDayStats': last_day_stats,
-        'trend': trend
+        'trend': trend,
+        'lastWeekTime': (last_time - timedelta(days=7)).strftime('%Y-%m-%d %H:%M:%S')
     }

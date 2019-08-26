@@ -1994,16 +1994,6 @@ function enableTextSelection(element) {
             if (calendarMarkers) {
                 const marker = calendarMarkers.find((m) => m.date.getTime() === date.getTime());
                 if (marker) {
-                    // content = '<svg style="width:  14px;height: 16px;">' +
-                    //     '<path stroke="#1d8cf8" fill="#f5365c" stroke-opacity="0.5" fill-opacity="0.5" stroke-width="1" ' +
-                    //     'd="M12.4444444,0 L1.55555556,0 C0.7,0 0,0.654545455 0,1.45454545 L0,10.8363636 C0,11.3454545 ' +
-                    //     '0.233333333,11.7817897 0.7,12.0727273 L7,16 L13.3,12.0727273 C13.6888889,11.7818182 ' +
-                    //     '14,11.3454545 14,10.8363636 L14,1.45454545 C14,0.654545455 13.3,0 12.4444444,0 Z"></path>' +
-                    //     '</svg>';
-
-                    // content='<div class="progress-container"><span class="progress-badge"></span><div class="progress"><div class="progress-bar" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="width: 25%;"><span class="progress-value">25</span></div></div></div>';
-                    // content+='<br><div class="progress-container"><span class="progress-badge"></span><div class="progress"><div class="progress-bar" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="width: 25%;"><span class="progress-value">25</span></div></div></div>';
-
                     function getTooltip(markers) {
                         let tooltip = '<ul>';
                         markers.forEach((m) => {
