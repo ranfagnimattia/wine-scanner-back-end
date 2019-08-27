@@ -1,5 +1,8 @@
+import warnings
+
 import math
 import numpy as np
+import tensorflow as tf
 from keras.layers import Dense
 from keras.layers import LSTM
 from keras.models import Sequential
@@ -9,6 +12,9 @@ from statsmodels.tsa.holtwinters import ExponentialSmoothing
 from statsmodels.tsa.seasonal import seasonal_decompose
 
 from WineApp.models import Prediction
+
+tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
+warnings.filterwarnings('ignore')
 
 
 def detect_anomaly(last: Prediction, new: Prediction, params):
@@ -40,7 +46,7 @@ def _update_stats(m, v, val, n):
 def exp(train_set, test_set, params):
     model = ExponentialSmoothing(train_set, trend='add', seasonal='add', seasonal_periods=365)
     fit_model = model.fit(smoothing_seasonal=params['smoothing_seasonal'], smoothing_level=params['smoothing_level'])
-    return fit_model.forecast(len(test_set))
+    return fit_model.forecast(len(test_set)), None
 
 
 def stl(train_set, test_set, params):
@@ -48,7 +54,7 @@ def stl(train_set, test_set, params):
     decompose = seasonal_decompose(complete_set, model='additive', two_sided=False, freq=365)
     forecast = [(decompose.seasonal[i] + decompose.trend[i]) for i in range(0, len(decompose.seasonal)) if
                 not np.isnan(decompose.trend[i])]
-    return forecast[-len(test_set):]
+    return forecast[-len(test_set):], None
 
 
 def lstm(train_set, test_set, params):
@@ -68,18 +74,21 @@ def lstm(train_set, test_set, params):
     # reshape input to be [samples, time steps, features]
     train_x = np.reshape(train_x, (train_x.shape[0], 1, train_x.shape[1]))
     test_x = np.reshape(test_x, (test_x.shape[0], 1, test_x.shape[1]))
-    # create and fit the LSTM network
-    model = Sequential()
-    model.add(LSTM(params['neurons'], input_shape=(1, params['lookback'])))
-    model.add(Dense(1))
-    model.compile(loss='mean_squared_error', optimizer=Adam(lr=0.0001))
-    model.fit(train_x, train_y, epochs=params['epochs'], batch_size=params['batchsize'], verbose=2,
-              validation_data=[test_x, test_y])
+    if params.get('model', False):
+        model = params['model']
+    else:
+        # create and fit the LSTM network
+        model = Sequential()
+        model.add(LSTM(params['neurons'], input_shape=(1, params['lookback'])))
+        model.add(Dense(1))
+        model.compile(loss='mean_squared_error', optimizer=Adam(lr=0.0001))
+        model.fit(train_x, train_y, epochs=params['epochs'], batch_size=params['batchsize'], verbose=2,
+                  validation_data=[test_x, test_y])
     # make predictions
     test_predict = model.predict(test_x)
     # invert predictions
     forecast = scaler.inverse_transform(test_predict).reshape(1, -1)
-    return forecast[0]
+    return forecast[0], model
 
 
 def _create_dataset(dataset, look_back=1):
