@@ -264,3 +264,9 @@ html {
 .trasparent {
     opacity: 0;
 }
+
+.selected{
+    /*color: var(--color1)!important;*/
+    font-size: 24px;
+    font-weight: 600;
+}

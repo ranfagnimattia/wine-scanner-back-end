@@ -4,6 +4,9 @@
  * @prop chart3Btn
  */
 class Dashboard {
+    constructor() {
+        $('#navigation a:contains(Anomalies)').addClass('selected');
+    }
     static initButtons(data) {
         return {chart1: data.methods, chart2: data.methods, linkedButtons: true};
     }

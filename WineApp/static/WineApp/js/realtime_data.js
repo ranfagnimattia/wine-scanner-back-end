@@ -4,6 +4,9 @@
  * @param data.trend.lastDay
  */
 class Dashboard {
+    constructor() {
+        $('#navigation a:contains(Hourly)').addClass('selected');
+    }
     static initButtons() {
         return {chart2: ['Avg', 'Diff']};
     }

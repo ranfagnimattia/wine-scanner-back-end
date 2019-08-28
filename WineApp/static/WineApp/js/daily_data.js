@@ -1,4 +1,7 @@
 class Dashboard {
+    constructor() {
+        $('#navigation  a:contains(Daily)').addClass('selected');
+    }
     static initButtons() {
         return {chart1: ['Tot', 'Avg', 'Max', 'Min'], chart2: ['Tot', 'Avg', 'Max', 'Min'], linkedButtons: true};
     }

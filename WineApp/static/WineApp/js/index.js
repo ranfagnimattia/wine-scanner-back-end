@@ -1,6 +1,8 @@
 class Dashboard {
     constructor() {
         Popper.Defaults.modifiers.computeStyle.gpuAcceleration = !(window.devicePixelRatio < 1.5 && /Win/.test(navigator.platform));
+        $('#navigation a:contains(Home)').addClass('selected');
+
 
         const $this = this;
         var calendar = $('#calendar').fullCalendar({
