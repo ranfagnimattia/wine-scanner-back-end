@@ -270,3 +270,9 @@ html {
     font-size: 24px;
     font-weight: 600;
 }
+.notselected{
+    color: #7389ba !important;
+}
+.notselected:hover{
+    color: #FFFFFF !important;
+}

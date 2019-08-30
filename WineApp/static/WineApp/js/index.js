@@ -1,7 +1,10 @@
 class Dashboard {
     constructor() {
         Popper.Defaults.modifiers.computeStyle.gpuAcceleration = !(window.devicePixelRatio < 1.5 && /Win/.test(navigator.platform));
-        $('#navigation a:contains(Home)').addClass('selected');
+        $('#navigation a.selected').removeClass('selected');
+        var selected = $('#navigation a.js-navbar-home');
+        selected.removeClass('notselected');
+        selected.addClass('selected');
 
 
         const $this = this;
