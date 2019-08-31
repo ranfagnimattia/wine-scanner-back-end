@@ -1,14 +1,11 @@
 class Dashboard {
     constructor() {
         Popper.Defaults.modifiers.computeStyle.gpuAcceleration = !(window.devicePixelRatio < 1.5 && /Win/.test(navigator.platform));
-        $('#navigation a.selected').removeClass('selected');
-        var selected = $('#navigation a.js-navbar-home');
-        selected.removeClass('notselected');
-        selected.addClass('selected');
+        $('#navigation a.js-navbar-home').addClass('selected');
 
 
         const $this = this;
-        var calendar = $('#calendar').fullCalendar({
+        $('#calendar').fullCalendar({
             header: {
                 left: 'title',
                 right: 'prev,next today'
@@ -93,20 +90,7 @@ class Dashboard {
         this.dataMonth = data.dataMonth;
     }
 
-    updateCards(animation) {
+    updateCards() {
         $('#calendar').updateFullCalendar(this.allAnomalies);
-
-        // const methodMonth = [];
-        // const methodTot = [];
-        // const methodMse = [];
-        // this.methods.forEach((method) => {
-        //     const m = method.toLowerCase();
-        //     methodMonth.push([$('.js-' + m + '-month'), this.methodStats[m]['lastMonth'], Animation.INT]);
-        //     methodTot.push([$('.js-' + m + '-tot'), this.methodStats[m]['tot'], Animation.INT]);
-        //     methodMse.push([$('.js-' + m + '-mse'), this.methodStats[m]['mse']]);
-        // });
-        // animation.setValues(methodMonth, $('.js-method-month-space'));
-        // animation.setValues(methodTot, $('.js-method-tot-space'));
-        // animation.setValues(methodMse, $('.js-method-mse-space'));
     }
 }

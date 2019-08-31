@@ -5,10 +5,7 @@
  */
 class Dashboard {
     constructor() {
-        $('#navigation a.selected').removeClass('selected');
-        var selected = $('#navigation a.js-navbar-hourly');
-        selected.removeClass('notselected');
-        selected.addClass('selected');
+        $('#navigation a.js-navbar-hourly').addClass('selected');
     }
     static initButtons() {
         return {chart2: ['Avg', 'Diff']};

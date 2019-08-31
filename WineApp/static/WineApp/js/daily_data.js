@@ -1,9 +1,6 @@
 class Dashboard {
     constructor() {
-       $('#navigation a.selected').removeClass('selected');
-        var selected = $('#navigation a.js-navbar-daily');
-        selected.removeClass('notselected');
-        selected.addClass('selected');
+        $('#navigation a.js-navbar-daily').addClass('selected');
     }
     static initButtons() {
         return {chart1: ['Tot', 'Avg', 'Max', 'Min'], chart2: ['Tot', 'Avg', 'Max', 'Min'], linkedButtons: true};

@@ -270,9 +270,11 @@ html {
     font-size: 24px;
     font-weight: 600;
 }
-.notselected{
+
+a.nav-link:not(.selected) {
     color: #7389ba !important;
 }
-.notselected:hover{
+
+a.nav-link:not(.selected):hover {
     color: #FFFFFF !important;
 }

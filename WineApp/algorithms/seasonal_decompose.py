@@ -5,14 +5,28 @@ from statsmodels.tsa.seasonal import seasonal_decompose
 from WineApp.algorithms.anomaly_detection import detect_anomalies
 
 
-def stl_debug(train_set, test_set):
+def stl(train_set, test_set):
     # Code for Test in Python Console
     """
-        from WineApp.models import Sensor
-        from WineApp.algorithms import seasonal_decompose
-        from WineApp.data import sensor_data
-        test,train,date = sensor_data.get_series(Sensor.objects.get(pk=1),'avg')
-        seasonal_decompose.stl(train,test)
+import matplotlib.pyplot as plt
+from WineApp.models import Sensor
+from statsmodels.tsa.seasonal import seasonal_decompose
+from WineApp.data.anomalies import update
+test,train,date = update._get_series(Sensor.objects.get(pk=1),'avg')
+complete_set = train[1000:] + test
+decompose = seasonal_decompose(complete_set, model='additive', two_sided=False, freq=365)
+decompose.plot()
+plt.show()
+
+import matplotlib.pyplot as plt
+from WineApp.models import Sensor
+from stldecompose import decompose
+from WineApp.data.anomalies import update
+test,train,date = update._get_series(Sensor.objects.get(pk=1),'avg')
+complete_set = train[1000:] + test
+decompose = decompose(complete_set, period=365)
+decompose.plot()
+plt.show()
     """
     complete_set = train_set + test_set
     decompose = seasonal_decompose(complete_set, model='additive', two_sided=False, freq=365)

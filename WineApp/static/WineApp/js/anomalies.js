@@ -5,10 +5,7 @@
  */
 class Dashboard {
     constructor() {
-        $('#navigation a.selected').removeClass('selected');
-        var selected = $('#navigation a.js-navbar-anomalies');
-        selected.removeClass('notselected');
-        selected.addClass('selected');
+        $('#navigation a.js-navbar-anomalies').addClass('selected');
     }
     static initButtons(data) {
         return {chart1: data.methods, chart2: data.methods, linkedButtons: true};
