@@ -9,7 +9,7 @@ from keras.models import Sequential
 from keras.optimizers import Adam
 from sklearn.preprocessing import MinMaxScaler
 from statsmodels.tsa.holtwinters import ExponentialSmoothing
-from statsmodels.tsa.seasonal import seasonal_decompose
+from stldecompose import decompose
 
 from WineApp.models import Prediction
 
@@ -51,9 +51,8 @@ def exp(train_set, test_set, params):
 
 def stl(train_set, test_set, params):
     complete_set = train_set + test_set
-    decompose = seasonal_decompose(complete_set, model='additive', two_sided=False, freq=365)
-    forecast = [(decompose.seasonal[i] + decompose.trend[i]) for i in range(0, len(decompose.seasonal)) if
-                not np.isnan(decompose.trend[i])]
+    decomposition = decompose(complete_set, period=365)
+    forecast = [(decomposition.seasonal[i] + decomposition.trend[i]) for i in range(0, len(decomposition.seasonal))]
     return forecast[-len(test_set):], None
 
 
