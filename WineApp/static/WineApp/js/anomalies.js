@@ -7,8 +7,9 @@ class Dashboard {
     constructor() {
         $('#navigation a.js-navbar-anomalies').addClass('selected');
     }
+
     static initButtons(data) {
-        return {chart1: data.methods, chart2: data.methods, linkedButtons: true};
+        return {chart1: data.methods, chart2: data.methods, chart3: ['All'].concat(data.methods), linkedButtons: true};
     }
 
     update(data) {
@@ -16,11 +17,14 @@ class Dashboard {
         this.methods = data.methods;
 
         this.allData = data.allData;
+        this.allDataPrediction = data.allDataPrediction;
         this.allAnomalies = data.allAnomalies;
         this.lastMonth = data.lastMonth;
 
         this.methodStats = data.methodStats;
         this.anomaliesStats = data.anomaliesStats;
+
+        this.chart3Btn = 'all';
 
         this.lastMonthScheme = [{
             name: "Time",
@@ -74,7 +78,7 @@ class Dashboard {
         $('.js-chart1-method').text(this.chart1Btn);
 
         chart.create(this.lastMonth[this.chart1Btn], this.lastMonthScheme, {
-            colors: [themeColors.color2, '#25002b', themeColors.color2, themeColors.color3],
+            colors: [themeColors.color2, '#25002b', themeColors.color2],
             yAxis: {
                 "plot": [{
                     value: 'Upper limit',
@@ -99,12 +103,7 @@ class Dashboard {
                 }, {
                     value: 'Actual',
                     type: 'smooth-line'
-                },
-                    // {
-                    //     value: 'Prediction',
-                    //     type: 'smooth-line'
-                    // }
-                ],
+                }],
                 "format": {"suffix": this.sensor.unit}
             },
             limits: this.sensor
@@ -125,39 +124,74 @@ class Dashboard {
 
     updateChart3(chart) {
         const colors = [0, themeColors.color2, themeColors.color3, themeColors.color4];
-        chart.create(this.allData, [{
-            name: "Time",
-            type: "date",
-            format: "%Y-%m-%d"
-        }, {
-            name: 'Actual',
-            type: "number"
-        }], {
-            navigator: true,
-            yAxis: {
-                "plot": {
-                    value: 'Actual'
+        if (this.chart3Btn !== 'all') {
+            $('.js-chart3-method').text('con il metodo ' + this.chart3Btn);
+
+            chart.create(this.allDataPrediction[this.chart3Btn], this.lastMonthScheme, {
+                colors: [themeColors.color1, '#290902', themeColors.color1],
+                navigator: true,
+                yAxis: {
+                    "plot": [{
+                        value: 'Upper limit',
+                        type: 'smooth-area',
+                        style: {
+                            plot: {
+                                "fill-opacity": 0.15
+                            }, "line": {
+                                "opacity": 0
+                            }
+                        }
+                    }, {
+                        value: 'Lower limit',
+                        type: 'smooth-area',
+                        style: {
+                            plot: {
+                                "fill-opacity": 0.32
+                            }, "line": {
+                                "opacity": 0
+                            }
+                        }
+                    }, {
+                        value: 'Actual',
+                        type: 'smooth-line'
+                    }],
+                    "format": {"suffix": this.sensor.unit}
                 },
-                "format": {"suffix": this.sensor.unit}
-            },
-            dataMarker: this.allAnomalies.map((d) => ({
-                seriesName: "Actual",
-                time: d.date,
-                identifier: '',
-                timeFormat: "%Y-%m-%d",
-                toolText: d.methods.map((m) =>
-                    '<i class="fas fa-caret-' + (m[1] ? 'up' : 'down') + ' pr-1"></i>' + m[0]).join(', '),
-                "style": {
-                    "marker": {
-                        "fill": colors[d['gravity']]
+                limits: this.sensor
+            });
+        } else {
+            $('.js-chart3-method').text('');
+            chart.create(this.allData, [{
+                name: "Time",
+                type: "date",
+                format: "%Y-%m-%d"
+            }, {
+                name: 'Actual',
+                type: "number"
+            }], {
+                navigator: true,
+                yAxis: {
+                    "plot": {
+                        value: 'Actual'
+                    },
+                    "format": {"suffix": this.sensor.unit}
+                },
+                dataMarker: this.allAnomalies.map((d) => ({
+                    seriesName: "Actual",
+                    time: d.date,
+                    identifier: '',
+                    timeFormat: "%Y-%m-%d",
+                    toolText: d.methods.map((m) =>
+                        '<i class="fas fa-caret-' + (m[1] ? 'up' : 'down') + ' pr-1"></i>' + m[0]).join(', '),
+                    "style": {
+                        "marker": {
+                            "fill": colors[d['gravity']]
+                        }
                     }
-                }
-            })),
-            initialInterval: {
-                from: this.lastMonth[this.chart1Btn][0][0]
-            },
-            limits: this.sensor
-        });
+                })),
+                limits: this.sensor
+            });
+        }
     }
 }
 

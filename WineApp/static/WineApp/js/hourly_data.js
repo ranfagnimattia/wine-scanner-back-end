@@ -7,6 +7,7 @@ class Dashboard {
     constructor() {
         $('#navigation a.js-navbar-hourly').addClass('selected');
     }
+
     static initButtons() {
         return {chart2: ['Avg', 'Diff']};
     }
@@ -115,6 +116,7 @@ class Dashboard {
             type: "number"
         }], {
             navigator: true,
+            legend: true,
             yAxis: {
                 "plot": {
                     value: 'Rilevazione',

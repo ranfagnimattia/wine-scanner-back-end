@@ -19,6 +19,7 @@ def get_data(sensor_id: int = 1, measure: str = 'avg') -> dict:
     last_date = predictions.last().date
     methods = PredictionMethod.objects.all()
     last_month = {}
+    all_data_prediction = {}
     method_stats = {}
     for method in methods:
         method_predictions = predictions.filter(method=method)
@@ -38,6 +39,20 @@ def get_data(sensor_id: int = 1, measure: str = 'avg') -> dict:
             del prediction['sensor__max']
             prediction['error'] = prediction['actual'] - prediction['prediction']
         last_month[method.name.lower()] = [list(elem.values()) for elem in method_last_month]
+
+        for prediction in method_data:
+            prediction['upperLimit'] = prediction['prediction'] + prediction['limit']
+            if prediction['sensor__max'] is not None and prediction['upperLimit'] > prediction['sensor__max']:
+                prediction['upperLimit'] = prediction['sensor__max']
+            prediction['lowerLimit'] = prediction['prediction'] - prediction['limit']
+            if prediction['sensor__min'] is not None and prediction['lowerLimit'] < prediction['sensor__min']:
+                prediction['lowerLimit'] = prediction['sensor__min']
+
+            del prediction['limit']
+            del prediction['sensor__min']
+            del prediction['sensor__max']
+            prediction['error'] = prediction['actual'] - prediction['prediction']
+        all_data_prediction[method.name.lower()] = [list(elem.values()) for elem in method_data]
 
         anomalies = method_predictions.filter(anomaly=True)
         method_stats[method.name.lower()] = {
@@ -79,6 +94,7 @@ def get_data(sensor_id: int = 1, measure: str = 'avg') -> dict:
         'measure': measure,
         'methods': [e.name for e in methods],
         'allData': [list(elem.values()) for elem in all_data],
+        'allDataPrediction': all_data_prediction,
         'allAnomalies': anomalies_aggr,
         'lastMonth': last_month,
         'methodStats': method_stats,

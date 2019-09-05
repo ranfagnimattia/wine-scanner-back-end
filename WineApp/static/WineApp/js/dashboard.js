@@ -114,7 +114,7 @@ class Chart {
                 chart: {
                     theme: 'candy',
                     paletteColors: options && options.colors ? options.colors.join(',') : undefined,
-                    "showLegend": enabled
+                    "showLegend": options && options.legend ? '1' : '0'
                 },
                 "extensions": {
                     "standardRangeSelector": {
@@ -157,7 +157,7 @@ class Button {
             return;
 
         let html = '';
-        const color = key === 'chart1' ? '2' : '3';
+        const color = key === 'chart1' ? '2' : (key === 'chart2' ? '3' : '1');
         this.buttons.forEach((btn, i) => {
             if (typeof btn === 'string' || btn instanceof String)
                 this.buttons[i] = {name: btn};

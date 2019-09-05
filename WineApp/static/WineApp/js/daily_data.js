@@ -104,6 +104,7 @@ class Dashboard {
 
         chart.create(this.allData, scheme, {
             navigator: true,
+            legend: true,
             yAxis: {
                 "plot": this.measures.map((m) => ({value: ucFirst(m)})),
                 "format": {"suffix": this.sensor.unit}

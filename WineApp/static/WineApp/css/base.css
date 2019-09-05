@@ -99,6 +99,22 @@ html {
 
 
 /* Colors */
+/* Colors */
+.btn-color1.btn-simple, .btn-color1.btn-simple:hover, .btn-color1.btn-simple:focus,
+.btn-color1.btn-simple:active, .btn-color1.btn-simple:not(:disabled):not(.disabled):active {
+    border: 1px solid var(--color1);
+    color: var(--color1);
+    background: transparent;
+}
+
+.btn-color1.btn-simple.active, .btn-color1.btn-simple.active:hover,
+.btn-color1.btn-simple.active:focus, .btn-color1.btn-simple.active:active,
+.btn-color1.btn-simple.active:not(:disabled):not(.disabled):active {
+    color: #fff;
+    border: none !important;
+    background: var(--color1) !important;
+}
+
 .btn-color2.btn-simple, .btn-color2.btn-simple:hover, .btn-color2.btn-simple:focus,
 .btn-color2.btn-simple:active, .btn-color2.btn-simple:not(:disabled):not(.disabled):active {
     border: 1px solid var(--color2);
