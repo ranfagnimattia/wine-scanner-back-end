@@ -14,6 +14,7 @@ class Sensor(models.Model):
     values = models.BooleanField(default=True)
     tot = models.BooleanField(default=False)
     startTestSet = models.DateField(default=None, blank=True, null=True)
+    table = models.CharField(max_length=50)
 
     def get_measures(self):
         measures = []
@@ -57,16 +58,109 @@ class DailyData(models.Model):
         return self.date.strftime('%d/%m/%Y') + '-' + str(self.sensor)
 
 
-class RealTimeData(models.Model):
-    time = models.DateTimeField()
-    sensor = models.ForeignKey(Sensor, on_delete=models.CASCADE)
+# Hourly
+class HourlyAirTemperature(models.Model):
+    time = models.DateTimeField(primary_key=True)
     value = models.FloatField()
 
-    class Meta:
-        unique_together = ('time', 'sensor')
+    def __str__(self):
+        return self.time.strftime('%d/%m/%Y %H:%M') + '-' + str(self.value)
+
+
+class HourlyAirHumidity(models.Model):
+    time = models.DateTimeField(primary_key=True)
+    value = models.FloatField()
 
     def __str__(self):
-        return self.time.strftime('%d/%m/%Y %H:%M') + '-' + str(self.sensor)
+        return self.time.strftime('%d/%m/%Y %H:%M') + '-' + str(self.value)
+
+
+class HourlyDewPoint(models.Model):
+    time = models.DateTimeField(primary_key=True)
+    value = models.FloatField()
+
+    def __str__(self):
+        return self.time.strftime('%d/%m/%Y %H:%M') + '-' + str(self.value)
+
+
+class HourlyRain(models.Model):
+    time = models.DateTimeField(primary_key=True)
+    value = models.FloatField()
+
+    def __str__(self):
+        return self.time.strftime('%d/%m/%Y %H:%M') + '-' + str(self.value)
+
+
+class HourlySolarRadiation(models.Model):
+    time = models.DateTimeField(primary_key=True)
+    value = models.FloatField()
+
+    def __str__(self):
+        return self.time.strftime('%d/%m/%Y %H:%M') + '-' + str(self.value)
+
+
+class HourlyWindSpeed(models.Model):
+    time = models.DateTimeField(primary_key=True)
+    value = models.FloatField()
+
+    def __str__(self):
+        return self.time.strftime('%d/%m/%Y %H:%M') + '-' + str(self.value)
+
+
+class HourlyGustOfWind(models.Model):
+    time = models.DateTimeField(primary_key=True)
+    value = models.FloatField()
+
+    def __str__(self):
+        return self.time.strftime('%d/%m/%Y %H:%M') + '-' + str(self.value)
+
+
+class HourlyWindDirection(models.Model):
+    time = models.DateTimeField(primary_key=True)
+    value = models.FloatField()
+
+    def __str__(self):
+        return self.time.strftime('%d/%m/%Y %H:%M') + '-' + str(self.value)
+
+
+class HourlyPressure(models.Model):
+    time = models.DateTimeField(primary_key=True)
+    value = models.FloatField()
+
+    def __str__(self):
+        return self.time.strftime('%d/%m/%Y %H:%M') + '-' + str(self.value)
+
+
+class HourlyUpperLeafWetness(models.Model):
+    time = models.DateTimeField(primary_key=True)
+    value = models.FloatField()
+
+    def __str__(self):
+        return self.time.strftime('%d/%m/%Y %H:%M') + '-' + str(self.value)
+
+
+class HourlyLowerLeafWetness(models.Model):
+    time = models.DateTimeField(primary_key=True)
+    value = models.FloatField()
+
+    def __str__(self):
+        return self.time.strftime('%d/%m/%Y %H:%M') + '-' + str(self.value)
+
+
+class HourlyGroundTemperature(models.Model):
+    time = models.DateTimeField(primary_key=True)
+    value = models.FloatField()
+
+    def __str__(self):
+        return self.time.strftime('%d/%m/%Y %H:%M') + '-' + str(self.value)
+
+
+class HourlyGroundHumidity(models.Model):
+    time = models.DateTimeField(primary_key=True)
+    value = models.FloatField()
+
+    def __str__(self):
+        return self.time.strftime('%d/%m/%Y %H:%M') + '-' + str(self.value)
 
 
 class PredictionMethod(models.Model):

@@ -1,10 +1,11 @@
+import sys
 from datetime import datetime, timedelta
 from itertools import groupby
 from xml.etree import ElementTree
 
 import requests
 
-from WineApp.models import LastUpdate
+from WineApp.models import *
 
 
 def get_date_interval(values, date, start, end=0):
@@ -44,6 +45,10 @@ def get_last_update(update_type: str) -> dict:
 
 def sort_and_group(iterable, key=None):
     return groupby(sorted(iterable, key=key), key=key)
+
+
+def str_to_class(classname):
+    return getattr(sys.modules[__name__], classname)
 
 
 # Private

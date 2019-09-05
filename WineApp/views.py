@@ -8,11 +8,11 @@ import WineApp.data.anomalies.update
 import WineApp.data.daily as daily_data
 import WineApp.data.daily.get
 import WineApp.data.daily.update
+import WineApp.data.hourly as hourly_data
+import WineApp.data.hourly.get
+import WineApp.data.hourly.update
 import WineApp.data.index as index
 import WineApp.data.index.get
-import WineApp.data.realtime as realtime_data
-import WineApp.data.realtime.get
-import WineApp.data.realtime.update
 from WineApp.models import Sensor
 
 
@@ -64,30 +64,30 @@ def ajax_update_daily_data(request):
     return JsonResponse(daily_data.update.update_data())
 
 
-# RealTime Dashboard
-def show_realtime_data(request):
-    data_js = realtime_data.get.get_data()
+# Hourly Dashboard
+def show_hourly_data(request):
+    data_js = hourly_data.get.get_data()
     data_js.update({
         'autoUpdate': True,
-        'getUrl': reverse('WineApp:ajax.getRealTimeData'),
-        'updateUrl': reverse('WineApp:ajax.updateRealTimeData')
+        'getUrl': reverse('WineApp:ajax.getHourlyData'),
+        'updateUrl': reverse('WineApp:ajax.updateHourlyData')
     })
     sensors = Sensor.objects.all()
     for sensor in sensors:
         sensor.disabled = not sensor.values
-    return render(request, 'WineApp/realtime_data.html', {
+    return render(request, 'WineApp/hourly_data.html', {
         'sensors': sensors,
         'data_js': data_js
     })
 
 
-def ajax_get_realtime_data(request):
+def ajax_get_hourly_data(request):
     sensor_id = request.GET.get('sensorId', 1)
-    return JsonResponse(realtime_data.get.get_data(sensor_id))
+    return JsonResponse(hourly_data.get.get_data(sensor_id))
 
 
-def ajax_update_realtime_data(request):
-    return JsonResponse(realtime_data.update.update_data())
+def ajax_update_hourly_data(request):
+    return JsonResponse(hourly_data.update.update_data())
 
 
 # Anomalies Dashboard
