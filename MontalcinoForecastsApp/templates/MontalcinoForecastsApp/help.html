@@ -1,0 +1,92 @@
+{% extends "MontalcinoForecastsApp/base.html" %}
+
+{% block js %}
+{% load static %}
+<!-- MathJax -->
+<script src="{% static "MontalcinoForecastsApp/lib/mathjax/tex-mml-chtml.js" %}"></script>
+<script>
+    $(document).ready(function() {
+        $("#home-link").addClass("active");
+        $("#home-link").find("a").append('<span class="sr-only">(current)</span>');
+    });
+</script>
+{% endblock %}
+
+{% block main %}
+<div class="container">
+    <div class="row">
+        <div class="card w-100">
+            <div class="card-header"><h4 class="card-title">Benvenuto su Montalcino Forecasts App</h4></div>
+            <div class="card-body text-justify">
+                <p>
+                    <span class="text-white">Montalcino Forecasts App</span> è un sito per effettuare previsioni sulla qualità delle annate del <span class="font-italic">Brunello di Montalcino</span> basandosi sui dati meteorologici raccolti nella zona di Montalcino.
+                </p>
+                <p>
+                    Il database contiene dati giornalieri su temperatura, precipitazioni, umidità, pressione, vento, radiazione solare e punto di rugiada.
+                    Per poter generare le previsioni è necessario definire un modello, in questo caso la regressione lineare, gli indici climatici che questo userà per calcolare la qualità, e il range di date da usare per l'addestramento del modello.
+                </p>  
+                <p>Il sito è strutturato in due sezioni descritte qui sotto.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-6 pl-0 under-lg-pr-0 d-flex">
+            <div class="card w-100 flex-grow-1">
+                <div class="card-header"><h4 class="card-title">App semplificata</h4></div>
+                <div class="card-body text-justify">
+                    <p>
+                        La versione semplificata dell'app determina automaticamente i migliori indici climatici da usare per le previsioni.
+                        É necessario scegliere il periodo di dati da usare nell'addestramento (di default è selezionato il più lungo) e selezionare una delle opzioni proposte.
+                    </p>
+                    <p>
+                        Con il modello scelto è poi possibile fare previsioni sulla qualità di un'annata.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 pr-0 under-lg-pl-0">
+            <div class="card w-100">
+                <div class="card-header"><h4 class="card-title">App completa</h4></div>
+                <div class="card-body text-justify">
+                    <p>
+                        La versione completa permette di selezionare manualmente una qualsiasi combinazione di indici climatici come regressori per la regressione lineare e scegliere il range di date da usare per l'addestramento.
+                    </p>
+                    <p>
+                        Dopodiché, verrà mostrata una schermata riassuntiva dei risultati con il coefficiente di determinazione (R<sup>2</sup>), un grafico che mette a confronto le annate usate per l'addestramento e i valori predetti per quegli anni e per ciascun regressore viene mostrato coefficiente e valore p.
+                    </p>
+                    <p>
+                        Dopo l'addestramento è quindi possibile usare il modello per effettuare previsioni sulla qualità di una qualsiasi annata.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <a id="indices"></a>
+    <div class="row">
+        <div class="card w-100">
+            <div class="card-header"><h4 class="card-title">Indici climatici</h4></div>
+            <div class="card-body text-justify">
+                <p>
+                    Per addestrare il modello è necessario selezionare uno o più indici climatici da usare per predizione. Questi danno un'indicazione sintetica delle condizioni meteorologiche verificatesi durante l'anno. Molti di questi sono autoesplicativi (ad es. "Pressione media tra aprile e ottobre"), mentre per gli altri diamo qui una definizione sintetica:
+                </p>
+                <ul>
+                    <li class="pb-3"><span class="font-weight-bold">GST (Growing Season Temperature):</span> è la temperatura media del periodo vegetativo della vite ovvero aprile-ottobre.</li>
+                    <li class="pb-2">
+                        <span class="font-weight-bold">Indice di Winkler:</span> considerando le temperature medie giornaliere tra aprile e ottobre superiori a 10&deg;C, l'indice di Winkler è la somma delle differenze tra queste temperature e 10&deg;C. La formula usata è
+                        <br>
+                        $$WI = \sum_{1 Aprile}^{31 Ottobre} max((T_{avg} - 10\text{°}C), 0)$$
+                    </li>
+                    <li class="pb-2">
+                        <span class="font-weight-bold">Indice di Huglin:</span> è il prodotto tra un coefficiente K, dipendente dalla latitudione e pari a 1.03 per Montalcino, e la somma tra aprile e settembre della media tra temperatura media giornaliera e temperatura massima giornaliera meno 10&deg;C. La formula usata è
+                        <br>
+                        $$HI = K \cdot \sum_{1 Aprile}^{30 Settembre} (\frac{T_{avg} + T_{max}}{2} - 10\text{°}C)$$
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

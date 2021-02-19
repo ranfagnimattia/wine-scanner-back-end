@@ -29,6 +29,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'polymorphic',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -36,9 +37,17 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'WineApp.apps.WineappConfig',
+    'MontalcinoForecastsApp.apps.MontalcinoforecastsappConfig',
+    'WinePredictionREST.apps.WinepredictionrestConfig',
+    'corsheaders',
+    'rest_framework',
 ]
 
+ALLOWED_HOSTS = ["localhost","127.0.0.1","192.168.1.2","192.168.1.8", "192.168.1.6",]
+CORS_ORIGIN_ALLOW_ALL = True
+
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -73,7 +82,7 @@ WSGI_APPLICATION = 'VineyardsDataAnalysis.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'WineDB'),
+        'NAME': os.path.join(BASE_DIR, 'WineDB.sqlite3'),
     }
 }
 
@@ -108,3 +117,7 @@ USE_L10N = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]

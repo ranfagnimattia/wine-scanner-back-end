@@ -17,6 +17,12 @@ from django.contrib import admin
 from django.urls import include, path
 
 urlpatterns = [
-    path('WineApp/', include('WineApp.urls')),
     path('admin/', admin.site.urls),
+    path('MontalcinoForecastsApp/', include('MontalcinoForecastsApp.urls')),
+    path('WinePredictionREST/', include('WinePredictionREST.urls')),
+
 ]
+
+"""    path('WineApp/', include('WineApp.urls')),
+    path('MontalcinoForecastsApp/', include('MontalcinoForecastsApp.urls')),
+    path('WinePredictionREST/', include('WinePredictionREST.urls')),"""

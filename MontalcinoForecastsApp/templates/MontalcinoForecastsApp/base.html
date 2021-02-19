@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Montalcino Forecasts App</title>
+
+    {% load static %}
+    <link rel="icon" href="{% static "MontalcinoForecastsApp/img/icon.png" %}" type="image/png"/>
+    
+    <!-- Stylesheets -->
+    
+    <!-- Bootstrap, fonts, icons -->
+    <link rel="stylesheet" type="text/css" href="{% static "lib/bootstrap/bootstrap.min.css" %}">
+    <link rel="stylesheet" type="text/css" href="{% static "fonts/poppins/poppins.css" %}">
+    <link rel="stylesheet" type="text/css" href="{% static "fonts/fontawesome/css/all.min.css" %}">
+    
+    <!-- Air-datepicker -->
+    <link rel="stylesheet" type="text/css" href="{% static 'MontalcinoForecastsApp/lib/air-datepicker/css/datepicker.min.css' %}">
+    
+    <style>
+        #top-btn {
+            background: url({% static 'MontalcinoForecastsApp/img/cd-top-arrow.svg' %}) no-repeat center 50%;
+        }
+        .spinner {
+            background-image: url({% static 'MontalcinoForecastsApp/img/spinner.svg' %});
+        }
+    </style>
+    
+    <link rel="stylesheet" type="text/css" href="{% static 'MontalcinoForecastsApp/css/main.css' %}">
+    
+    <!-- Scripts -->
+    
+    <!-- jQuery, Popper and Bootstrap -->
+    <script src="{% static "lib/jquery/jquery.min.js" %}"></script>
+    <script src="{% static "lib/popper/popper.min.js" %}"></script>
+    <script src="{% static "lib/bootstrap/bootstrap.min.js" %}"></script>
+    
+    <!-- Air-datepicker -->
+    <script src="{% static "MontalcinoForecastsApp/lib/air-datepicker/js/datepicker.min.js" %}"></script>
+    <script src="{% static "MontalcinoForecastsApp/lib/air-datepicker/js/i18n/datepicker.en.js" %}"></script>
+
+    <!-- Fusion charts -->
+    <script src="{% static "lib/fusioncharts/fusioncharts.js" %}"></script>
+    <script src="{% static "lib/fusioncharts/fusioncharts.charts.js" %}"></script>
+    <script src="{% static "lib/fusioncharts/themes/theme.black-timeseries.js" %}"></script>
+    <script src="{% static "lib/fusioncharts/themes/fusioncharts.theme.candy.js" %}"></script>
+    <script src="{% static "lib/fusioncharts/jquery-fusioncharts.min.js" %}"></script>
+    
+    <script>
+        var startDateString = "{{start_db}}";
+        var endDateString = "{{end_db}}";
+    </script>
+    
+    {% block js %}
+    {% endblock %}
+
+    <script src="{% static "MontalcinoForecastsApp/js/base.js" %}"></script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-transparent">
+        <div class="container-fluid">
+            
+            <a class="navbar-brand" href="{% url 'MontalcinoForecastsApp:simplified' %}">
+                <span>Montalcino Forecasts App</span>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-kebab"></span>
+                <span class="navbar-kebab"></span>
+                <span class="navbar-kebab"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ml-auto">
+                    <li id="simplified-link" class="nav-item px-2">
+                        <h5><a class="nav-link" href="{% url 'MontalcinoForecastsApp:simplified' %}">App Semplificata</a></h5>
+                    </li>
+                    <li id="complete-link" class="nav-item px-2">
+                        <h5><a class="nav-link" href="{% url 'MontalcinoForecastsApp:complete' %}">App Completa</a></h5>
+                    </li>
+                    <li id="home-link" class="nav-item px-2">
+                        <h5><a class="nav-link" href="{% url 'MontalcinoForecastsApp:help' %}">Help</a></h5>
+                    </li>
+                </ul>
+            </div>
+            
+        </div>
+    </nav>
+
+    <main>
+        {% block main %}
+        {% endblock %}
+        
+        <a href="#" id="top-btn">
+            <span class="sr-only">Back to top arrow</span>
+        </a>
+    </main>
+    
+    <footer class="pt-3 pb-4 w-100">
+        <div class="container">
+            <div class="text-center" style="opacity: 0.7;">
+                &copy;2020 made by Beatrice Paoli
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

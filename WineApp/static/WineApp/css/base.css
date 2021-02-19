@@ -21,6 +21,10 @@
     height: 300px;
 }
 
+.wrapper {
+    height: auto;
+}
+
 .scroll-y {
     overflow: hidden !important;
     position: relative;

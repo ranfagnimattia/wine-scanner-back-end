@@ -1,0 +1,343 @@
+:root {
+    --color1: #1e1e2f; /* bg e datepicker*/
+    --color2: #27293d; /* card */
+    --color3: #525f7f; /* input */
+    --color4: #ab47bc; /* btn purple */
+    --color5: #790e8b; /* btn purple hover */
+    --color6: #bcceff; /* font */
+    --color7: #ffc107; /* checked star and warning */
+    --color8: #f44336; /* danger */
+}
+
+* {
+    box-sizing: border-box;
+}
+
+/* ------- BASE E NAVBAR -------- */
+
+body {
+    background-color: var(--color1);
+    font-family: "Poppins", sans-serif;
+    color:  var(--color6);
+    font-size: .9rem;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: white;
+    font-weight: 100;
+}
+
+.navbar {
+    position: absolute;
+    z-index: 1050;
+    width: 100%;
+}
+
+.navbar-brand {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1.25rem;
+    text-transform: uppercase;
+}
+
+.navbar-light .navbar-brand, .navbar-light .navbar-brand:hover {
+    color: white;
+}
+
+.navbar-brand:hover {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.navbar .navbar-kebab {
+    display: block;
+    position: relative;
+    background-color: white;
+    height: 4px;
+    width: 4px;
+    margin-bottom: 3px;
+    border-radius: 50%;
+}
+
+.navbar.navbar-light .navbar-kebab {
+    background-color: black;
+}
+
+.navbar .navbar-nav li .nav-link {
+    font-size: 1.15rem;
+    padding: .5rem;
+    color: var(--color6);
+    transition: all 300ms ease 0s;
+}
+
+.navbar .navbar-nav li .nav-link:hover {
+    color: white;
+}
+
+.navbar.navbar-light .navbar-nav li .nav-link, .navbar.navbar-light .navbar-nav li .nav-link:hover, .navbar.navbar-light .navbar-nav li.active .nav-link, .navbar.navbar-light .navbar-nav li.active .nav-link:hover {
+    color: black;
+}
+
+.navbar .navbar-nav li.active .nav-link {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: white;
+    vertical-align: text-bottom;
+}
+
+main {
+    padding-top: 3rem;
+}
+
+.card {
+    background-color: var(--color2);
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.card-header {
+    border-bottom: none;
+    background-color: inherit;
+}
+
+/* ------- DATEPICKER -------- */
+
+.date-input {
+    background-color: var(--color3);
+    color: white;
+    width: 120px;
+    border: none;
+    border-radius: 3px;
+    padding: .2rem .2rem .2rem .6rem;
+    margin: .75rem;
+    font-size: .9rem;
+    font-weight: 100;
+}
+
+.datepicker {
+    font-family: inherit;
+    color: white;
+    background-color: var(--color1);
+    border: none;
+    border-radius: 0;
+}
+
+.datepicker--nav {
+    border-bottom-color: var(--color3);
+}
+
+.datepicker--pointer {
+    background: var(--color1);
+    border: none;
+}
+
+.datepicker .-focus-, .datepicker .datepicker--nav-title:hover, .datepicker .datepicker--nav-action:hover {
+    background-color: var(--color3);
+}
+
+.datepicker .-focus-.-current- {
+    color: yellow;
+}
+
+.datepicker .datepicker--cell.-selected- {
+    background-color: var(--color4);
+}
+
+.datepicker .datepicker--cell.-selected-.-focus- {
+    background-color: var(--color5);
+}
+
+.datepicker .datepicker--cell-year.-other-decade-.-disabled-, .datepicker .datepicker--cell-day.-other-month-.-disabled- {
+    color: #aeaeae;
+}
+
+/* ------- FORMS -------- */
+
+.form-check {
+    padding-top: .2rem;
+    padding-bottom: .2rem;
+}
+
+.d-flex .form-check {
+    width: 360px;
+}
+
+.btn-purple {
+    color: white;
+    background-color: var(--color4);
+    border-color: var(--color4);
+    box-shadow: none !important;
+}
+
+.btn-purple:hover, .btn-purple.active {
+    color: white;
+    background-color: var(--color5);
+    border-color: var(--color5);
+}
+
+.alert-danger {
+    background-color: rgba(0, 0, 0, 0.1);
+    color: var(--color8);
+    border-color: var(--color8);
+}
+
+/* ------- COMPLETE -------- */
+
+.numbers {
+    color: #d2d2d2;
+    font-size: 1rem;
+    padding-left: .3rem;
+    padding-right: .3rem;
+}
+
+#chart {
+    height: 300px;
+}
+
+#chart span svg {
+    background-color: transparent !important;
+}
+
+.info-icon {
+    height: 36px;
+    width: 36px;
+    border-radius: 50%;
+    background-color: var(--color4);
+    margin: 0 1rem 1rem 0;
+}
+
+.info-icon i {
+    color: white;
+    font-size: 1.4rem;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+    line-height: 35px;
+}
+
+/* ------- STAR SYSTEM -------- */
+
+.rating-container svg {
+    fill: var(--color3);
+}
+
+.rating-container svg.checked {
+    transition: fill 1s;
+    fill: var(--color7);
+    -webkit-filter: drop-shadow( 0px 0px 7px var(--color7));
+    filter: drop-shadow( 0px 0px 7px var(--color7));
+}
+
+/* ------- SIMPLIFIED -------- */
+
+.list-group-item-blue, .list-group-item-blue:hover, .list-group-item-blue.active, .list-group-item-blue:active, .list-group-item-blue:focus {
+    color: white;
+}
+
+.list-group-item-blue {
+    background-color: rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--primary);
+}
+
+.list-group-item-blue:hover {
+    background-color: black;
+    border-color: var(--primary);
+}
+
+.list-group-item-blue.active, .list-group-item-blue:active, .list-group-item-blue:focus {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+
+.badge {
+    font-size: 90%;
+}
+
+.badge-custom {
+    color: white;
+    background-color: var(--primary);
+}
+
+.active .badge-custom {
+    color: var(--primary);
+    background-color: white;
+}
+
+.btn-help {
+    font-size: .9rem;
+    color: var(--primary);
+    background-color: transparent;
+    border: 1px solid var(--primary);
+    border-radius: 50%;
+    padding: 0rem .5rem;
+}
+
+.btn-help:hover {
+    color: white;
+    border-color: white;
+    box-shadow: 0 0 10px white;
+}
+.active .btn-help {
+    color: white;
+    border-color: white;
+}
+
+.modal .btn {
+    font-size: .9rem;
+}
+
+.modal-content {
+    background-color: var(--color2);
+}
+
+/* ------- FOOTER E TOP BUTTON -------- */
+
+.fixed-footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+
+#top-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    height: 40px;
+    width: 40px;
+    z-index: 100;
+    border-radius: 5px;
+    background-color: var(--color4);
+}
+
+#top-btn:hover {
+    background-color: var(--color5);
+}
+
+/* ------- MEDIA QUERIES -------- */
+
+@media screen and (max-width: 576px) {   
+    main {
+        padding-left: .75rem;
+        padding-right: .75rem;
+    }
+    
+    .navbar-brand {
+        font-size: 1rem;
+    }
+    
+    #chart {
+        height: 200px;
+    }
+    
+    .list-group button {
+        font-size: .8rem;
+    }
+}
+
+@media screen and (max-width: 992px) {
+    .under-lg-pr-0 {
+        padding-right: 0;
+    }
+    
+    .under-lg-pl-0 {
+        padding-left: 0;
+    }
+}

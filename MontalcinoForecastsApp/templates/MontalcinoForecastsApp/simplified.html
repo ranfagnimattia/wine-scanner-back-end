@@ -1,0 +1,149 @@
+{% extends "MontalcinoForecastsApp/base.html" %}
+
+{% block js %}
+{% load static %}
+<script src="{% static "MontalcinoForecastsApp/js/simplified.js" %}"></script>
+<script>
+    var csfrtoken = "{{ csrf_token }}";
+    
+    $(document).ready(function() {
+        $("#simplified-link").addClass("active");
+        $("#simplified-link").find("a").append('<span class="sr-only">(current)</span>');
+    });
+</script>
+{% endblock %}
+
+{% block main %}
+<div class="container">
+    <div class="row">
+        <div class="card w-100">
+            <div class="card-header"><h4 class="card-title">Addestramento del modello</h4></div>
+            <div class="card-body">
+                <form id="train-form" action="" method="post">
+                    <h6>Scegli un range di date:</h6>
+                    <p class="pb-1 text-justify">Il periodo scelto determina i dati utilizzati per addestrare i modelli.</p>
+                    <div class="d-flex flex-row flex-wrap pb-3">
+                        <div>
+                            <label class="m-2" for="startDate">Inizio: </label>
+                            <input class="date-input readonly" type="text" id="startDate" placeholder="gg/mm/aaaa" name="startDate" required>
+                        </div>
+                        <div>
+                            <label class="m-2" for="endDate">Fine: </label>
+                            <input class="date-input readonly" type="text" id="endDate" placeholder="gg/mm/aaaa" name="endDate" required>
+                        </div>
+                    </div>
+                    <button class="btn btn-purple" type="submit">Ok</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="training-error" class="row"></div>
+    
+    <div id="model-select" class="row d-none">
+        <div class="col-lg-6 pl-0 under-lg-pr-0">
+            <div class="card w-100">
+                <div class="card-header">
+                    <h4 class="card-title">Selezione del modello</h4>
+                </div>
+                <div class="card-body">
+                    <p class="pb-1 text-justify">Elenco delle migliori combinazioni di indici climatici, in ordine decrescente di accuratezza. Seleziona quella che preferisci.</p>
+                    <div class="list-group"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-6 pr-0 under-lg-pl-0 d-flex">
+            <div class="card w-100 flex-grow-1">
+                <div class="card-header pb-0"><h4 class="card-title">Previsioni</h4></div>
+                <div class="card-body pt-0">
+                    <form id="forecast-form" action="" method="post">
+                        <label for="forecastYear">Scegli l'anno su cui vuoi fare la previsione: </label>
+                        <input class="date-input readonly" type="text" id="forecastYear" placeholder="aaaa" name="forecastYear" required>
+                        <br>
+                        <button class="btn btn-purple mb-4 mt-2" type="submit">Ok</button>
+                    </form>
+                    
+                    <div id="forecast-error"></div>
+
+                    <div class="rating-container py-1 text-center d-flex flex-row flex-wrap justify-content-center">
+                        <div class="px-3">
+                            <svg id="star-1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
+                        </div>
+                        <div class="px-3">
+                            <svg id="star-2" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
+                        </div>
+                        <div class="px-3">
+                            <svg id="star-3" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
+                        </div>
+                        <div class="px-3">
+                            <svg id="star-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
+                        </div>
+                        <div class="px-3">
+                            <svg id="star-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
+                        </div>
+                    </div>
+                    
+                    <div id="forecast-results"></div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal per l'indice GST -->
+    <div class="modal fade" id="gst-modal" tabindex="-1" role="dialog" aria-labelledby="gst-modal-label" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="gst-modal-label">GST (Growing Season Temperature)</h5>
+                </div>
+                <div class="modal-body">
+                    É la temperatura media del periodo vegetativo della vite ovvero aprile-ottobre.
+                </div>
+                <div class="modal-footer">
+                    <a href="{% url 'MontalcinoForecastsApp:help' %}#indices" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Maggiori dettagli</a>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal per l'indice di Winkler -->
+    <div class="modal fade" id="winkler-modal" tabindex="-1" role="dialog" aria-labelledby="winkler-modal-label" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="winkler-modal-label">Indice di Winkler</h5>
+                </div>
+                <div class="modal-body">
+                    Considerando le temperature medie giornaliere tra aprile e ottobre superiori a 10&deg;C, l'indice di Winkler è la somma delle differenze tra queste temperature e 10&deg;C.
+                </div>
+                <div class="modal-footer">
+                    <a href="{% url 'MontalcinoForecastsApp:help' %}#indices" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Maggiori dettagli</a>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal per l'indice di Huglin -->
+    <div class="modal fade" id="huglin-modal" tabindex="-1" role="dialog" aria-labelledby="huglin-modal-label" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="huglin-modal-label">Indice di Huglin</h5>
+                </div>
+                <div class="modal-body">
+                    É il prodotto tra un coefficiente K, dipendente dalla latitudione e pari a 1.03 per Montalcino, e la somma tra aprile e settembre della media tra temperatura media giornaliera e temperatura massima giornaliera meno 10&deg;C.
+                </div>
+                <div class="modal-footer">
+                    <a href="{% url 'MontalcinoForecastsApp:help' %}#indices" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Maggiori dettagli</a>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

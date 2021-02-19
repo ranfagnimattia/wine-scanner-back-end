@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="2820d964-193e-475f-a380-f12b7b019de8" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/VineyardsDataAnalysis/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/VineyardsDataAnalysis/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/VineyardsDataAnalysis/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/VineyardsDataAnalysis/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/models/LSTM/Umidità aria avg.h5" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/models/LSTM/Umidità aria max.h5" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/models/LSTM/Umidità aria min.h5" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/models/LSTM/Velocità vento avg.h5" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/models/LSTM/Velocità vento max.h5" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/models/LSTM/Velocità vento min.h5" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/css/base.css" beforeDir="false" afterPath="$PROJECT_DIR$/WineApp/static/WineApp/css/base.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/fonts/fontawesome/css/all.min.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/fonts/fontawesome/css/all.min.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/fonts/fontawesome/webfonts/fa-brands-400.eot" beforeDir="false" afterPath="$PROJECT_DIR$/static/fonts/fontawesome/webfonts/fa-brands-400.eot" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/fonts/fontawesome/webfonts/fa-brands-400.svg" beforeDir="false" afterPath="$PROJECT_DIR$/static/fonts/fontawesome/webfonts/fa-brands-400.svg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/fonts/fontawesome/webfonts/fa-brands-400.ttf" beforeDir="false" afterPath="$PROJECT_DIR$/static/fonts/fontawesome/webfonts/fa-brands-400.ttf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/fonts/fontawesome/webfonts/fa-brands-400.woff" beforeDir="false" afterPath="$PROJECT_DIR$/static/fonts/fontawesome/webfonts/fa-brands-400.woff" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/fonts/fontawesome/webfonts/fa-brands-400.woff2" beforeDir="false" afterPath="$PROJECT_DIR$/static/fonts/fontawesome/webfonts/fa-brands-400.woff2" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/fonts/fontawesome/webfonts/fa-regular-400.eot" beforeDir="false" afterPath="$PROJECT_DIR$/static/fonts/fontawesome/webfonts/fa-regular-400.eot" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/fonts/fontawesome/webfonts/fa-regular-400.svg" beforeDir="false" afterPath="$PROJECT_DIR$/static/fonts/fontawesome/webfonts/fa-regular-400.svg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/fonts/fontawesome/webfonts/fa-regular-400.ttf" beforeDir="false" afterPath="$PROJECT_DIR$/static/fonts/fontawesome/webfonts/fa-regular-400.ttf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/fonts/fontawesome/webfonts/fa-regular-400.woff" beforeDir="false" afterPath="$PROJECT_DIR$/static/fonts/fontawesome/webfonts/fa-regular-400.woff" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/fonts/fontawesome/webfonts/fa-regular-400.woff2" beforeDir="false" afterPath="$PROJECT_DIR$/static/fonts/fontawesome/webfonts/fa-regular-400.woff2" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/fonts/fontawesome/webfonts/fa-solid-900.eot" beforeDir="false" afterPath="$PROJECT_DIR$/static/fonts/fontawesome/webfonts/fa-solid-900.eot" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/fonts/fontawesome/webfonts/fa-solid-900.svg" beforeDir="false" afterPath="$PROJECT_DIR$/static/fonts/fontawesome/webfonts/fa-solid-900.svg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/fonts/fontawesome/webfonts/fa-solid-900.ttf" beforeDir="false" afterPath="$PROJECT_DIR$/static/fonts/fontawesome/webfonts/fa-solid-900.ttf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/fonts/fontawesome/webfonts/fa-solid-900.woff" beforeDir="false" afterPath="$PROJECT_DIR$/static/fonts/fontawesome/webfonts/fa-solid-900.woff" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/fonts/fontawesome/webfonts/fa-solid-900.woff2" beforeDir="false" afterPath="$PROJECT_DIR$/static/fonts/fontawesome/webfonts/fa-solid-900.woff2" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/fonts/material-icons/MaterialIcons-Regular.eot" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/fonts/material-icons/MaterialIcons-Regular.ttf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/fonts/material-icons/MaterialIcons-Regular.woff" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/fonts/material-icons/MaterialIcons-Regular.woff2" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/fonts/material-icons/material-icons.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/fonts/poppins/poppins-v8-latin-200.woff" beforeDir="false" afterPath="$PROJECT_DIR$/static/fonts/poppins/poppins-v8-latin-200.woff" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/fonts/poppins/poppins-v8-latin-200.woff2" beforeDir="false" afterPath="$PROJECT_DIR$/static/fonts/poppins/poppins-v8-latin-200.woff2" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/fonts/poppins/poppins-v8-latin-300.woff" beforeDir="false" afterPath="$PROJECT_DIR$/static/fonts/poppins/poppins-v8-latin-300.woff" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/fonts/poppins/poppins-v8-latin-300.woff2" beforeDir="false" afterPath="$PROJECT_DIR$/static/fonts/poppins/poppins-v8-latin-300.woff2" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/fonts/poppins/poppins-v8-latin-600.woff" beforeDir="false" afterPath="$PROJECT_DIR$/static/fonts/poppins/poppins-v8-latin-600.woff" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/fonts/poppins/poppins-v8-latin-600.woff2" beforeDir="false" afterPath="$PROJECT_DIR$/static/fonts/poppins/poppins-v8-latin-600.woff2" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/fonts/poppins/poppins-v8-latin-700.woff" beforeDir="false" afterPath="$PROJECT_DIR$/static/fonts/poppins/poppins-v8-latin-700.woff" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/fonts/poppins/poppins-v8-latin-700.woff2" beforeDir="false" afterPath="$PROJECT_DIR$/static/fonts/poppins/poppins-v8-latin-700.woff2" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/fonts/poppins/poppins-v8-latin-800.woff" beforeDir="false" afterPath="$PROJECT_DIR$/static/fonts/poppins/poppins-v8-latin-800.woff" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/fonts/poppins/poppins-v8-latin-800.woff2" beforeDir="false" afterPath="$PROJECT_DIR$/static/fonts/poppins/poppins-v8-latin-800.woff2" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/fonts/poppins/poppins-v8-latin-regular.woff" beforeDir="false" afterPath="$PROJECT_DIR$/static/fonts/poppins/poppins-v8-latin-regular.woff" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/fonts/poppins/poppins-v8-latin-regular.woff2" beforeDir="false" afterPath="$PROJECT_DIR$/static/fonts/poppins/poppins-v8-latin-regular.woff2" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/fonts/poppins/poppins.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/fonts/poppins/poppins.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/fonts/varela_round/varela-round-v12-latin-regular.woff" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/fonts/varela_round/varela-round-v12-latin-regular.woff2" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/fonts/varela_round/varela_round.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/lib/black-dashboard/black-dashboard.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/lib/black-dashboard/black-dashboard.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/lib/bootstrap/bootstrap.min.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/lib/bootstrap/bootstrap.min.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/lib/bootstrap/bootstrap.min.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/lib/bootstrap/bootstrap.min.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/lib/calendar/calendar.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/lib/calendar/calendar.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/lib/fusioncharts/fusioncharts.charts.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/lib/fusioncharts/fusioncharts.charts.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/lib/fusioncharts/fusioncharts.excelexport.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/lib/fusioncharts/fusioncharts.excelexport.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/lib/fusioncharts/fusioncharts.gantt.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/lib/fusioncharts/fusioncharts.gantt.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/lib/fusioncharts/fusioncharts.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/lib/fusioncharts/fusioncharts.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/lib/fusioncharts/fusioncharts.maps.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/lib/fusioncharts/fusioncharts.maps.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/lib/fusioncharts/fusioncharts.overlappedbar2d.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/lib/fusioncharts/fusioncharts.overlappedbar2d.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/lib/fusioncharts/fusioncharts.overlappedcolumn2d.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/lib/fusioncharts/fusioncharts.overlappedcolumn2d.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/lib/fusioncharts/fusioncharts.powercharts.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/lib/fusioncharts/fusioncharts.powercharts.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/lib/fusioncharts/fusioncharts.timeseries.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/lib/fusioncharts/fusioncharts.timeseries.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/lib/fusioncharts/fusioncharts.treemap.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/lib/fusioncharts/fusioncharts.treemap.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/lib/fusioncharts/fusioncharts.vml.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/lib/fusioncharts/fusioncharts.vml.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/lib/fusioncharts/fusioncharts.widgets.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/lib/fusioncharts/fusioncharts.widgets.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/lib/fusioncharts/fusioncharts.zoomline.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/lib/fusioncharts/fusioncharts.zoomline.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/lib/fusioncharts/fusioncharts.zoomscatter.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/lib/fusioncharts/fusioncharts.zoomscatter.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/lib/fusioncharts/jquery-fusioncharts.min.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/lib/fusioncharts/jquery-fusioncharts.min.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/lib/fusioncharts/maps/fusioncharts.usa.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/lib/fusioncharts/maps/fusioncharts.usa.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/lib/fusioncharts/maps/fusioncharts.world.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/lib/fusioncharts/maps/fusioncharts.world.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/lib/fusioncharts/maps/readme.txt" beforeDir="false" afterPath="$PROJECT_DIR$/static/lib/fusioncharts/maps/readme.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/lib/fusioncharts/themes/fusioncharts.theme.candy.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/lib/fusioncharts/themes/fusioncharts.theme.candy.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/lib/fusioncharts/themes/fusioncharts.theme.carbon.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/lib/fusioncharts/themes/fusioncharts.theme.carbon.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/lib/fusioncharts/themes/fusioncharts.theme.fint.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/lib/fusioncharts/themes/fusioncharts.theme.fint.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/lib/fusioncharts/themes/fusioncharts.theme.fusion.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/lib/fusioncharts/themes/fusioncharts.theme.fusion.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/lib/fusioncharts/themes/fusioncharts.theme.gammel.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/lib/fusioncharts/themes/fusioncharts.theme.gammel.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/lib/fusioncharts/themes/fusioncharts.theme.ocean.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/lib/fusioncharts/themes/fusioncharts.theme.ocean.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/lib/fusioncharts/themes/fusioncharts.theme.umber.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/lib/fusioncharts/themes/fusioncharts.theme.umber.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/lib/fusioncharts/themes/fusioncharts.theme.zune.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/lib/fusioncharts/themes/fusioncharts.theme.zune.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/lib/fusioncharts/themes/theme.black-timeseries.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/lib/fusioncharts/themes/theme.black-timeseries.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/lib/jquery/jquery-easing.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/lib/jquery/jquery.min.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/lib/jquery/jquery.min.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/lib/jquery/perfect-scrollbar.jquery.min.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/static/WineApp/lib/popper/popper.min.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/lib/popper/popper.min.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineApp/templates/WineApp/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/WineApp/templates/WineApp/base.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WineDB" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/manage.py" beforeDir="false" afterPath="$PROJECT_DIR$/manage.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+        <option value="HTML File" />
+      </list>
+    </option>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>data_py</find>
+    </findStrings>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectConfigurationFiles">
+    <option name="files">
+      <list>
+        <option value="$PROJECT_DIR$/.idea/vcs.xml" />
+        <option value="$PROJECT_DIR$/.idea/VineyardsDataAnalysis.iml" />
+        <option value="$PROJECT_DIR$/.idea/misc.xml" />
+        <option value="$PROJECT_DIR$/.idea/modules.xml" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectId" id="1lVdElw5BWFrzw3SUBlYXT3ZLX2" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="DefaultHtmlFileTemplate" value="HTML File" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\beapa\Desktop\PyCharmProjects\VineyardsDataAnalysis\MontalcinoForecastsApp\static\MontalcinoForecastsApp\js" />
+      <recent name="C:\Users\beapa\Desktop\PyCharmProjects\VineyardsDataAnalysis\MontalcinoForecastsApp\static\MontalcinoForecastsApp\css" />
+      <recent name="C:\Users\beapa\Desktop\PyCharmProjects\VineyardsDataAnalysis\static" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="PythonConfigurationType" factoryName="Python">
+      <module name="VineyardsDataAnalysis" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/virtualenv2" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="2820d964-193e-475f-a380-f12b7b019de8" name="Default Changelist" comment="" />
+      <created>1600873215871</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1600873215871</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1612614061055">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1612614061055" />
+  </component>
+</project>
